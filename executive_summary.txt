@@ -1,0 +1,29 @@
+Executive Summary - Classroom & Room Schedule Display 
+System
+Overview
+This project delivers a cloud-based platform that displays real-time classroom and event schedules on iPads 
+mounted outside each room. The system provides event titles, facilitators, start and end times, duration, real-time 
+availability, and any custom messaging needed.
+Objectives
+•	Provide globally scalable room signage.
+•	Replace manual and outdated schedule boards.
+•	Enable automated, hands-free updates through an admin portal or calendar integration.
+•	Support education, corporate, government, and event venues worldwide.
+Key Capabilities
+•	Real-time automatic updates.
+•	Support for multiple organizations, buildings, and rooms.
+•	Integration with Microsoft 365, Exchange, and Google Workspace.
+•	Admin dashboard for managing schedules, devices, and content.
+•	Offline support for iPad displays.
+•	Branding, themes, and customization options.
+Business Value
+•	Improves student/visitor navigation.
+•	Eliminates staff workload related to daily room sign updates.
+•	Provides a scalable SaaS product capable of international deployment.
+•	Supports on-prem, hybrid, and cloud-only workflows.
+Technology Summary
+•	Cloud API backend.
+•	Multi-tenant architecture.
+•	Admin management portal.
+•	iPad kiosk-mode display interface (native or PWA).
+•	WebSockets or SSE real-time updates.

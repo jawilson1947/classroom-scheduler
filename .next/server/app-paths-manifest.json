@@ -1,0 +1,14 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/api/config/route": "app/api/config/route.js",
+  "/api/device/heartbeat/route": "app/api/device/heartbeat/route.js",
+  "/api/device/pair/route": "app/api/device/pair/route.js",
+  "/api/events/route": "app/api/events/route.js",
+  "/api/rooms/route": "app/api/rooms/route.js",
+  "/display/[id]/page": "app/display/[id]/page.js",
+  "/display/setup/page": "app/display/setup/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js"
+}

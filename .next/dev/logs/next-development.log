@@ -1,0 +1,2147 @@
+[00:00:01.081] Server  LOG      ✓ Ready in 764ms
+[00:00:38.137] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <RootLayout>
+                        <html
+                          lang="en"
+-                         data-jetski-tab-id="1370582974"
+                        >
+                          <body
++                           className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+                          >
+                  ...
+
+[00:00:38.881] Browser WARN    Unable to access iframe: {"stack":"Error: Failed to read a named property 'document' from 'Window': Blocked a frame with origin \"http://localhost:3000\" from accessing a cross-origin frame.\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1489:57)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1530:15)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1369:28)\n    at eval (eval at evaluate (:234:30), <anonymous>:1570:18)\n    at UtilityScript.evaluate (<anonymous>:241:19)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"}
+[00:00:44.277] Browser WARN    Unable to access iframe: {"stack":"Error: Failed to read a named property 'document' from 'Window': Blocked a frame with origin \"http://localhost:3000\" from accessing a cross-origin frame.\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1489:57)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1530:15)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1369:28)\n    at eval (eval at evaluate (:234:30), <anonymous>:1570:18)\n    at UtilityScript.evaluate (<anonymous>:241:19)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"}
+[00:00:48.196] Browser WARN    Unable to access iframe: {"stack":"Error: Failed to read a named property 'document' from 'Window': Blocked a frame with origin \"http://localhost:3000\" from accessing a cross-origin frame.\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1489:57)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1530:15)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1369:28)\n    at eval (eval at evaluate (:234:30), <anonymous>:1570:18)\n    at UtilityScript.evaluate (<anonymous>:241:19)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"}
+[00:05:48.817] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/admin" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <RootLayout>
+                        <html
+                          lang="en"
+-                         data-jetski-tab-id="1370583038"
+                        >
+                          <body
++                           className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+                          >
+                  ...
+
+[00:05:49.537] Browser WARN    Unable to access iframe: {"stack":"Error: Failed to read a named property 'document' from 'Window': Blocked a frame with origin \"http://localhost:3000\" from accessing a cross-origin frame.\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1489:57)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1530:15)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1369:28)\n    at eval (eval at evaluate (:234:30), <anonymous>:1570:18)\n    at UtilityScript.evaluate (<anonymous>:241:19)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"}
+[00:05:58.256] Browser WARN    Unable to access iframe: {"stack":"Error: Failed to read a named property 'document' from 'Window': Blocked a frame with origin \"http://localhost:3000\" from accessing a cross-origin frame.\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1489:57)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1530:15)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1369:28)\n    at eval (eval at evaluate (:234:30), <anonymous>:1570:18)\n    at UtilityScript.evaluate (<anonymous>:241:19)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"}
+[00:06:04.155] Browser WARN    Unable to access iframe: {"stack":"Error: Failed to read a named property 'document' from 'Window': Blocked a frame with origin \"http://localhost:3000\" from accessing a cross-origin frame.\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1489:57)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1530:15)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1369:28)\n    at eval (eval at evaluate (:234:30), <anonymous>:1570:18)\n    at UtilityScript.evaluate (<anonymous>:241:19)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"}
+[00:06:08.417] Browser WARN    Unable to access iframe: {"stack":"Error: Failed to read a named property 'document' from 'Window': Blocked a frame with origin \"http://localhost:3000\" from accessing a cross-origin frame.\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1489:57)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1530:15)\n    at buildDomTree (eval at evaluate (:234:30), <anonymous>:1369:28)\n    at eval (eval at evaluate (:234:30), <anonymous>:1570:18)\n    at UtilityScript.evaluate (<anonymous>:241:19)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"}
+[00:17:05.755] Server  LOG        Reload env: .env.local
+[00:17:53.446] Server  LOG      ✓ Compiled in 36ms
+[02:57:29.600] Server  LOG      ✓ Compiled in 31ms
+[02:57:46.370] Server  LOG      ✓ Compiled in 37ms
+[02:57:46.473] Browser ERROR   ./src/app/admin/page.tsx:47:5
+Parsing ecmascript source code failed
+  45 |     facilitator_name: string | null;
+  46 |     start_time: string;
+> 47 |     );
+     |     ^
+  48 |     const { data: rooms, mutate: mutateRooms } = useSWR<Room[]>(
+  49 |         `/api/rooms?tenant_id=${selectedTenant}`,
+  50 |         fetcher
+
+Expected ident
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[02:58:01.256] Server  LOG      ✓ Compiled in 27ms
+[02:58:01.361] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[02:58:20.521] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[02:58:44.721] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[02:59:01.373] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:00:48.842] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:48.961] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:00:49.570] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:00:49.570] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:00:49.891] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:00:49.918] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:49.974] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.005] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.034] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.058] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.070] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:00:50.085] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.112] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.139] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.164] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.189] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.214] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.239] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.262] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.287] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.314] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.337] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.361] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.386] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.409] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.433] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.457] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.479] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.505] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.528] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.555] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.581] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.604] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.629] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.655] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.677] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.701] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.725] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.749] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.771] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.796] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:50.830] Server  ERROR    ⨯ ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:51.205] Browser ERROR   uncaughtError: Error: ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+
+
+[03:00:51.721] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:00:51.722] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:00:52.967] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:01:01.968] Server  LOG      ✓ Compiled in 43ms
+[03:01:02.077] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:02:17.530] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\ssr\node_modules_cc232e9d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:02:17.531] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\ssr\[root-of-the-server]__5b876959._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:02:17.534] Server  ERROR    ⨯ Error: [next-auth]: `useSession` must be wrapped in a <SessionProvider />
+[03:02:18.281] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:02:18.281] Browser ERROR   uncaughtError: Error: [next-auth]: `useSession` must be wrapped in a <SessionProvider />
+[03:02:18.281] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:02:26.403] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\ssr\node_modules_cc232e9d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:02:26.404] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\ssr\[root-of-the-server]__5b876959._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:02:26.404] Server  ERROR    ⨯ Error: [next-auth]: `useSession` must be wrapped in a <SessionProvider />
+[03:02:26.796] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:02:26.796] Browser ERROR   uncaughtError: Error: [next-auth]: `useSession` must be wrapped in a <SessionProvider />
+[03:02:26.796] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:03:34.143] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:03:43.354] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:03:43.461] Browser ERROR   ./src/app/admin/page.tsx:46:9
+Parsing ecmascript source code failed
+  44 |     title: string;
+  45 |     facilitator_name: string | null;
+> 46 |     try {
+     |         ^
+  47 |     const response = await fetch('/api/tenants', {
+  48 |         method: 'POST',
+  49 |         headers: { 'Content-Type': 'application/json' },
+
+Expected ';', got '{'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:04:45.556] Server  LOG      ✓ Compiled in 47ms
+[03:11:29.840] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\ssr\node_modules_cc232e9d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:11:29.841] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\ssr\[root-of-the-server]__5b876959._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:11:29.841] Server  ERROR    ⨯ Error: [next-auth]: `useSession` must be wrapped in a <SessionProvider />
+[03:11:30.150] Browser ERROR   uncaughtError: Error: [next-auth]: `useSession` must be wrapped in a <SessionProvider />
+[03:12:10.465] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__4dfec0a2._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.485] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.497] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ec451e8d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.501] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.504] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.505] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.506] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.507] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.508] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.508] Server  ERROR   Error fetching tenants: Error: Unauthorized
+[03:12:10.513] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__807b8dc8._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.514] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.529] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_e8c268a0._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.530] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.530] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.531] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.531] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.531] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.532] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.532] Server  ERROR   Error fetching events: Error: Unauthorized
+[03:12:10.536] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__373cc18f._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.537] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.549] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_f30b366a._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.549] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.550] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.550] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.550] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.551] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.551] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:10.552] Server  ERROR   Error fetching rooms: Error: Unauthorized
+[03:12:10.626] Browser ERROR   uncaughtError: TypeError: tenants?.map is not a function
+[03:12:16.249] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__4dfec0a2._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.250] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.251] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ec451e8d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.252] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.252] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.252] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.253] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.253] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.254] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.254] Server  ERROR   Error fetching tenants: Error: Unauthorized
+[03:12:16.270] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__373cc18f._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.271] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.271] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_f30b366a._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.272] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.272] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.273] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.273] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.274] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.274] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.275] Server  ERROR   Error fetching rooms: Error: Unauthorized
+[03:12:16.278] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__807b8dc8._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.279] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.279] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_e8c268a0._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.280] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.281] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.281] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.282] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.282] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.283] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:16.283] Server  ERROR   Error fetching events: Error: Unauthorized
+[03:12:16.381] Browser ERROR   uncaughtError: TypeError: tenants?.map is not a function
+[03:12:27.687] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__4dfec0a2._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.689] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.690] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ec451e8d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.690] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.691] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.691] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.692] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.692] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.693] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.693] Server  ERROR   Error fetching tenants: Error: Unauthorized
+[03:12:27.699] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__373cc18f._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.700] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.701] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_f30b366a._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.702] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.703] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.703] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.704] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.705] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.705] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.706] Server  ERROR   Error fetching rooms: Error: Unauthorized
+[03:12:27.710] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__807b8dc8._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.711] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.712] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_e8c268a0._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.712] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.713] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.713] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.714] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.715] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.715] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:12:27.716] Server  ERROR   Error fetching events: Error: Unauthorized
+[03:12:27.884] Browser ERROR   uncaughtError: TypeError: tenants?.map is not a function
+[03:14:20.384] Server  LOG      ✓ Compiled in 42ms
+[03:14:20.505] Browser ERROR   ./src/app/admin/page.tsx:1:5
+Parsing ecmascript source code failed
+> 1 |     );
+    |     ^
+  2 | const { data: rooms, mutate: mutateRooms } = useSWR<Room[]>(
+  3 |     `/api/rooms?tenant_id=${selectedTenant}`,
+  4 |     fetcher
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[03:15:30.325] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\ssr\node_modules_fc12eab6._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:15:30.326] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\ssr\[root-of-the-server]__960f7157._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[03:15:30.327] Server  ERROR    ⨯ Error: [next-auth]: `useSession` must be wrapped in a <SessionProvider />
+[03:15:30.340] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[03:15:30.910] Browser ERROR   uncaughtError: Error: [next-auth]: `useSession` must be wrapped in a <SessionProvider />
+[05:42:26.899] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\ssr\node_modules_cc232e9d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:42:26.900] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\ssr\[root-of-the-server]__5b876959._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:42:26.900] Server  ERROR    ⨯ Error: [next-auth]: `useSession` must be wrapped in a <SessionProvider />
+[05:42:27.439] Browser ERROR   uncaughtError: Error: [next-auth]: `useSession` must be wrapped in a <SessionProvider />
+[05:43:39.449] Server  LOG      ✓ Compiled in 72ms
+[05:43:39.454] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[05:43:40.188] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__4dfec0a2._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.189] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.190] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ec451e8d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.190] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.191] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.192] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.192] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.193] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.194] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.195] Server  ERROR   Error fetching tenants: Error: Unauthorized
+[05:43:40.394] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__373cc18f._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.394] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__52372a53._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.395] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.409] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ca5fd531._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.410] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.410] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.411] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.411] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.412] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.412] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:43:40.413] Server  ERROR   Error fetching users: Error: Unauthorized
+[05:43:40.601] Browser ERROR   uncaughtError: TypeError: users.map is not a function
+[05:47:10.578] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__4dfec0a2._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.579] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.579] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ec451e8d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.581] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.581] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.582] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.582] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.583] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.583] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.584] Server  ERROR   Error fetching tenants: Error: Unauthorized
+[05:47:10.587] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__373cc18f._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.588] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__52372a53._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.589] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.589] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ca5fd531._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.589] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.590] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.590] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.591] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.591] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.592] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:10.592] Server  ERROR   Error fetching users: Error: Unauthorized
+[05:47:10.737] Browser ERROR   uncaughtError: TypeError: users.map is not a function
+[05:47:13.053] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__4dfec0a2._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.054] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.055] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ec451e8d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.056] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.056] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.057] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.057] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.058] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.058] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.059] Server  ERROR   Error fetching tenants: Error: Unauthorized
+[05:47:13.063] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__373cc18f._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.063] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__52372a53._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.064] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.065] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ca5fd531._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.065] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.066] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.066] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.067] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.067] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.068] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:13.068] Server  ERROR   Error fetching users: Error: Unauthorized
+[05:47:13.306] Browser ERROR   uncaughtError: TypeError: users.map is not a function
+[05:47:14.162] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__4dfec0a2._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.163] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.164] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ec451e8d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.165] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.165] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.166] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.167] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.167] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.168] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.168] Server  ERROR   Error fetching tenants: Error: Unauthorized
+[05:47:14.172] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__373cc18f._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.172] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__52372a53._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.173] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.173] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ca5fd531._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.174] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.175] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.175] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.175] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.176] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.176] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:14.177] Server  ERROR   Error fetching users: Error: Unauthorized
+[05:47:14.333] Browser ERROR   uncaughtError: TypeError: users.map is not a function
+[05:47:19.995] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__4dfec0a2._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:19.996] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:19.997] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ec451e8d._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:19.998] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:19.998] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:19.999] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:19.999] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.000] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.001] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.001] Server  ERROR   Error fetching tenants: Error: Unauthorized
+[05:47:20.007] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__373cc18f._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.008] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\[root-of-the-server]__52372a53._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.008] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.009] Server  ERROR   C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_ca5fd531._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.010] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.010] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.011] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.011] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.012] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.013] Server  ERROR   C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[05:47:20.013] Server  ERROR   Error fetching users: Error: Unauthorized
+[05:47:20.155] Browser ERROR   uncaughtError: TypeError: users.map is not a function
+[05:58:37.609] Server  LOG      ✓ Compiled in 53ms
+[05:58:38.601] Browser ERROR   ./src/app/admin/page.tsx:41:16
+Parsing ecmascript source code failed
+  39 |     start_time: string;
+  40 |     end_time: string;
+> 41 |         status === 'authenticated' ? `/api/rooms?tenant_id=${selectedTenant}` : null,
+     |                ^^^
+  42 |     fetcher
+  43 |     );
+  44 | const { data: events, mutate: mutateEvents } = useSWR<Event[]>(
+
+Expected ';', got '==='
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[05:59:34.592] Browser ERROR   ./src/app/admin/page.tsx:41:16
+Parsing ecmascript source code failed
+  39 |     start_time: string;
+  40 |     end_time: string;
+> 41 |         status === 'authenticated' ? `/api/rooms?tenant_id=${selectedTenant}` : null,
+     |                ^^^
+  42 |     fetcher
+  43 |     );
+  44 | const { data: events, mutate: mutateEvents } = useSWR<Event[]>(
+
+Expected ';', got '==='
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[05:59:36.601] Browser ERROR   ./src/app/admin/page.tsx:41:16
+Parsing ecmascript source code failed
+  39 |     start_time: string;
+  40 |     end_time: string;
+> 41 |         status === 'authenticated' ? `/api/rooms?tenant_id=${selectedTenant}` : null,
+     |                ^^^
+  42 |     fetcher
+  43 |     );
+  44 | const { data: events, mutate: mutateEvents } = useSWR<Event[]>(
+
+Expected ';', got '==='
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[06:01:13.874] Server  LOG      ✓ Compiled in 46ms
+[06:01:14.590] Browser ERROR   ./src/app/admin/page.tsx:41:16
+Parsing ecmascript source code failed
+  39 |     start_time: string;
+  40 |     end_time: string;
+> 41 |         status === 'authenticated' ? `/api/rooms?tenant_id=${selectedTenant}` : null,
+     |                ^^^
+  42 |     fetcher
+  43 |     );
+  44 | const { data: events, mutate: mutateEvents } = useSWR<Event[]>(
+
+Expected ';', got '==='
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[06:01:18.551] Server  LOG      ✓ Compiled in 52ms
+[06:01:19.592] Browser ERROR   ./src/app/admin/page.tsx:41:16
+Parsing ecmascript source code failed
+  39 |     start_time: string;
+  40 |     end_time: string;
+> 41 |         status === 'authenticated' ? `/api/rooms?tenant_id=${selectedTenant}` : null,
+     |                ^^^
+  42 |     fetcher
+  43 |     );
+  44 | const { data: events, mutate: mutateEvents } = useSWR<Event[]>(
+
+Expected ';', got '==='
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.tsx [Client Component Browser]
+    ./src/app/admin/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.tsx [Client Component SSR]
+    ./src/app/admin/page.tsx [Server Component]
+[06:40:04.599] Browser ERROR   Failed to create tenant: {}
+[06:40:58.550] Browser ERROR   Failed to create building: {}
+[06:41:43.366] Browser ERROR   Failed to create room: {}
+[06:42:11.876] Browser ERROR   Failed to create building: {}
+[06:42:53.613] Browser ERROR   Failed to create room: {}
+[06:44:05.806] Browser ERROR   Failed to create building: {}
+[06:44:20.406] Browser ERROR   Failed to create building: {}
+[06:44:32.768] Browser ERROR   Failed to create building: {}
+[06:44:43.181] Browser ERROR   Failed to create building: {}
+[06:47:02.186] Server  ERROR   [auth][error] CredentialsSignin: Read more at https://errors.authjs.dev#credentialssignin
+[06:47:02.187] Server  ERROR       at Module.callback (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_@auth_core_36df0127._.js:4314:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async AuthInternal (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_@auth_core_36df0127._.js:5148:24)
+    at async Auth (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_@auth_core_36df0127._.js:5370:34)
+    at async AppRouteRouteModule.do (C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:37789)
+    at async AppRouteRouteModule.handle (C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:45045)
+    at async responseGenerator (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_5d661447._.js:16104:38)
+    at async AppRouteRouteModule.handleResponse (C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:1:187851)
+    at async handleResponse (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_5d661447._.js:16166:32)
+    at async handler (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_5d661447._.js:16219:13)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js:1413:9)
+    at async DevServer.renderPageComponent (C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js:1465:24)
+    at async DevServer.renderToResponseImpl (C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js:1515:32)
+    at async DevServer.pipeImpl (C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js:1021:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js:394:17)
+    at async DevServer.handleRequestImpl (C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js:912:17)
+    at async C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js:382:20
+    at async Span.traceAsyncFn (C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js:378:24)
+    at async invokeRender (C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js:240:21)
+    at async handleRequest (C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js:436:24)
+    at async requestHandlerImpl (C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js:484:13)
+    at async Server.requestListener (C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js:226:13)
+[06:47:15.721] Server  ERROR   [auth][error] CredentialsSignin: Read more at https://errors.authjs.dev#credentialssignin
+[06:47:15.722] Server  ERROR       at Module.callback (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_@auth_core_36df0127._.js:4314:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async AuthInternal (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_@auth_core_36df0127._.js:5148:24)
+    at async Auth (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_@auth_core_36df0127._.js:5370:34)
+    at async AppRouteRouteModule.do (C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:37789)
+    at async AppRouteRouteModule.handle (C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:5:45045)
+    at async responseGenerator (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_5d661447._.js:16104:38)
+    at async AppRouteRouteModule.handleResponse (C:\ipad-classroom-scheduler\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js:1:187851)
+    at async handleResponse (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_5d661447._.js:16166:32)
+    at async handler (C:\ipad-classroom-scheduler\.next\dev\server\chunks\node_modules_next_5d661447._.js:16219:13)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js:1413:9)
+    at async DevServer.renderPageComponent (C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js:1465:24)
+    at async DevServer.renderToResponseImpl (C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js:1515:32)
+    at async DevServer.pipeImpl (C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js:1021:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\ipad-classroom-scheduler\node_modules\next\dist\server\next-server.js:394:17)
+    at async DevServer.handleRequestImpl (C:\ipad-classroom-scheduler\node_modules\next\dist\server\base-server.js:912:17)
+    at async C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js:382:20
+    at async Span.traceAsyncFn (C:\ipad-classroom-scheduler\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (C:\ipad-classroom-scheduler\node_modules\next\dist\server\dev\next-dev-server.js:378:24)
+    at async invokeRender (C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js:240:21)
+    at async handleRequest (C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js:436:24)
+    at async requestHandlerImpl (C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\router-server.js:484:13)
+    at async Server.requestListener (C:\ipad-classroom-scheduler\node_modules\next\dist\server\lib\start-server.js:226:13)
+[06:53:35.602] Browser ERROR   {"kind":"error","name":"ClientFetchError","type":"AuthError"}
+[06:53:35.602] Browser ERROR   {"kind":"error","name":"ClientFetchError","type":"AuthError"}
+[06:54:04.598] Browser ERROR   {"kind":"error","name":"ClientFetchError","type":"AuthError"}
+[06:54:04.598] Browser ERROR   {"kind":"error","name":"ClientFetchError","type":"AuthError"}
+[06:54:23.009] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.010] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.011] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.012] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.017] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.018] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.019] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.019] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.020] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.021] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.022] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.022] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.278] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.279] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.281] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.282] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.283] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.284] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.285] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.286] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.287] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.288] Server  ERROR    ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[06:54:23.592] Browser ERROR   ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[06:54:23.592] Browser ERROR   ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[06:54:26.586] Browser ERROR   ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/providers'
+  2 | import { Geist, Geist_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { Providers } from "@/components/providers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const geistSans = Geist({
+  7 |   variable: "--font-geist-sans",
+
+Import map: aliased to relative './src/components/providers' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
