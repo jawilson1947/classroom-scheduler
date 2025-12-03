@@ -1,6 +1,23 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Smart Resume: Check if this device is already paired
+    const roomId = localStorage.getItem('room_id');
+    const tenantId = localStorage.getItem('tenant_id');
+
+    if (roomId && tenantId) {
+      console.log('Device already paired, redirecting to display...');
+      router.push(`/display/${roomId}`);
+    }
+  }, [router]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-8">
       <div className="text-center">

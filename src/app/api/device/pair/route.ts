@@ -14,8 +14,8 @@ export async function POST(request: NextRequest) {
         if (pairing_code) {
             // Device is submitting a pairing code to pair itself
             const [devices] = await pool.query<RowDataPacket[]>(
-                'SELECT * FROM devices WHERE pairing_code = ? AND tenant_id = ?',
-                [pairing_code, tenant_id]
+                'SELECT * FROM devices WHERE pairing_code = ?',
+                [pairing_code]
             );
 
             if (devices.length === 0) {
@@ -26,7 +26,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({
                 success: true,
                 device_id: device.id,
-                room_id: device.room_id
+                room_id: device.room_id,
+                tenant_id: device.tenant_id
             });
         } else {
             // Admin is generating a new pairing code

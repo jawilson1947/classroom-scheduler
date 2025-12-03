@@ -2,8 +2,58 @@ import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { RowDataPacket } from 'mysql2';
 
-export async function GET() {
+import { auth } from '@/auth';
+
+export async function GET(request: NextRequest) {
     try {
+        const session = await auth();
+        if (!session) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const userRole = (session.user as any).role;
+        const userTenantId = (session.user as any).tenant_id;
+
+        const searchParams = request.nextUrl.searchParams;
+        const id = searchParams.get('id');
+
+        // ORG_ADMIN can only see their own tenant
+        if (userRole === 'ORG_ADMIN') {
+            const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM tenants WHERE id = ?', [userTenantId]);
+            if (rows.length === 0) {
+                return NextResponse.json({ error: 'Tenant not found' }, { status: 404 });
+            }
+            return NextResponse.json(rows[0]); // Return single object if ID logic implies single fetch, or array if list. 
+            // However, the dashboard expects an object if fetching by ID, but the list logic expects an array.
+            // Let's align with the previous logic: if ID is requested, return object. If list, return array.
+            // But ORG_ADMIN should probably just get their tenant info.
+            // If the caller expects an array (admin page), we should return an array.
+            // If the caller expects an object (dashboard), we should return an object.
+            // The dashboard calls with ?id=... so it expects an object (based on my previous change).
+            // The admin page calls without params, expects array.
+
+            // Wait, if I change the dashboard to use the array endpoint it might be safer, but let's stick to the plan.
+            // If ID is provided, return object.
+            if (id) {
+                // If they requested a specific ID, ensure it matches theirs
+                if (id !== userTenantId.toString()) {
+                    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+                }
+                return NextResponse.json(rows[0]);
+            }
+
+            // If no ID provided (listing), return array of 1
+            return NextResponse.json(rows);
+        }
+
+        if (id) {
+            const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM tenants WHERE id = ?', [id]);
+            if (rows.length === 0) {
+                return NextResponse.json({ error: 'Tenant not found' }, { status: 404 });
+            }
+            return NextResponse.json(rows[0]);
+        }
+
         const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM tenants ORDER BY name');
         return NextResponse.json(rows);
     } catch (error) {
@@ -46,5 +96,95 @@ export async function POST(request: NextRequest) {
         }
 
         return NextResponse.json({ error: 'Failed to create tenant' }, { status: 500 });
+    }
+}
+
+export async function PUT(request: NextRequest) {
+    try {
+        const body = await request.json();
+        const { id, name, slug, time_zone } = body;
+
+        if (!id || !name || !slug || !time_zone) {
+            return NextResponse.json({
+                error: 'All fields are required (id, name, slug, time_zone)'
+            }, { status: 400 });
+        }
+
+        await pool.query(
+            'UPDATE tenants SET name = ?, slug = ?, time_zone = ? WHERE id = ?',
+            [name, slug, time_zone, id]
+        );
+
+        return NextResponse.json({ success: true });
+    } catch (error: any) {
+        console.error('Error updating tenant:', error);
+
+        if (error.code === 'ER_DUP_ENTRY') {
+            return NextResponse.json({
+                error: 'Slug already exists'
+            }, { status: 409 });
+        }
+
+        return NextResponse.json({ error: 'Failed to update tenant' }, { status: 500 });
+    }
+}
+
+export async function DELETE(request: NextRequest) {
+    try {
+        const searchParams = request.nextUrl.searchParams;
+        const id = searchParams.get('id');
+
+        if (!id) {
+            return NextResponse.json({ error: 'Tenant ID is required' }, { status: 400 });
+        }
+
+        // Check for dependencies
+        const [buildings] = await pool.query<RowDataPacket[]>(
+            'SELECT COUNT(*) as count FROM buildings WHERE tenant_id = ?',
+            [id]
+        );
+        const [rooms] = await pool.query<RowDataPacket[]>(
+            'SELECT COUNT(*) as count FROM rooms WHERE tenant_id = ?',
+            [id]
+        );
+        const [devices] = await pool.query<RowDataPacket[]>(
+            'SELECT COUNT(*) as count FROM devices WHERE tenant_id = ?',
+            [id]
+        );
+        const [events] = await pool.query<RowDataPacket[]>(
+            'SELECT COUNT(*) as count FROM events WHERE tenant_id = ?',
+            [id]
+        );
+        const [users] = await pool.query<RowDataPacket[]>(
+            'SELECT COUNT(*) as count FROM users WHERE tenant_id = ?',
+            [id]
+        );
+
+        const buildingCount = buildings[0].count;
+        const roomCount = rooms[0].count;
+        const deviceCount = devices[0].count;
+        const eventCount = events[0].count;
+        const userCount = users[0].count;
+
+        if (buildingCount > 0 || roomCount > 0 || deviceCount > 0 || eventCount > 0 || userCount > 0) {
+            const dependencies = [];
+            if (buildingCount > 0) dependencies.push(`${buildingCount} building(s)`);
+            if (roomCount > 0) dependencies.push(`${roomCount} room(s)`);
+            if (deviceCount > 0) dependencies.push(`${deviceCount} device(s)`);
+            if (eventCount > 0) dependencies.push(`${eventCount} event(s)`);
+            if (userCount > 0) dependencies.push(`${userCount} user(s)`);
+
+            return NextResponse.json({
+                error: 'Cannot delete tenant with dependencies',
+                dependencies: dependencies.join(', ')
+            }, { status: 409 });
+        }
+
+        await pool.query('DELETE FROM tenants WHERE id = ?', [id]);
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting tenant:', error);
+        return NextResponse.json({ error: 'Failed to delete tenant' }, { status: 500 });
     }
 }

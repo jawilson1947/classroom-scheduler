@@ -1,0 +1,8 @@
+create a React, Typescript application with a nextjs backend that manages events and classroom schedules displayed
+on ipads mounted at the entrance of each room. Data is stored in a MYSQL database with the following specifications:
+HOST: 162.144.105.50
+USER: scheduler_admin
+PASSWORD: Y&U*i9o0p
+The database and tables are set up and ready for testing
+The executive summary and specifications documents located in the root folder.
+GitHub has already been provisioned at https://github.com/jawilson1947/classroom-scheduler/ with eventual deployment to the Vercel platform

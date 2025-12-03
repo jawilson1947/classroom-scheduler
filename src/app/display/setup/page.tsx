@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function SetupPage() {
@@ -30,6 +30,7 @@ export default function SetupPage() {
                 // Store device info in localStorage
                 localStorage.setItem('device_id', data.device_id);
                 localStorage.setItem('room_id', data.room_id);
+                localStorage.setItem('tenant_id', data.tenant_id);
 
                 // Redirect to display page
                 router.push(`/display/${data.room_id}`);
@@ -42,6 +43,16 @@ export default function SetupPage() {
             setLoading(false);
         }
     };
+
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return null; // or a loading spinner
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-8">
