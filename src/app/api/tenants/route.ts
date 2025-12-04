@@ -17,25 +17,15 @@ export async function GET(request: NextRequest) {
         const searchParams = request.nextUrl.searchParams;
         const id = searchParams.get('id');
 
-        // ORG_ADMIN can only see their own tenant
-        if (userRole === 'ORG_ADMIN') {
+        // ORG_ADMIN, SCHEDULER, VIEWER can only see their own tenant
+        if (['ORG_ADMIN', 'SCHEDULER', 'VIEWER'].includes(userRole)) {
             const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM tenants WHERE id = ?', [userTenantId]);
             if (rows.length === 0) {
                 return NextResponse.json({ error: 'Tenant not found' }, { status: 404 });
             }
-            return NextResponse.json(rows[0]); // Return single object if ID logic implies single fetch, or array if list. 
-            // However, the dashboard expects an object if fetching by ID, but the list logic expects an array.
-            // Let's align with the previous logic: if ID is requested, return object. If list, return array.
-            // But ORG_ADMIN should probably just get their tenant info.
-            // If the caller expects an array (admin page), we should return an array.
-            // If the caller expects an object (dashboard), we should return an object.
-            // The dashboard calls with ?id=... so it expects an object (based on my previous change).
-            // The admin page calls without params, expects array.
 
-            // Wait, if I change the dashboard to use the array endpoint it might be safer, but let's stick to the plan.
-            // If ID is provided, return object.
+            // If ID is provided, return object (specific fetch)
             if (id) {
-                // If they requested a specific ID, ensure it matches theirs
                 if (id !== userTenantId.toString()) {
                     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
                 }

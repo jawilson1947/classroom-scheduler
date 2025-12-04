@@ -71,7 +71,7 @@ export default function AdminPage() {
                 .then(data => {
                     console.log('Fetched tenants:', data);
                     if (Array.isArray(data)) {
-                        const tenant = data.find((t: Tenant) => t.id === user.tenant_id);
+                        const tenant = data.find((t: Tenant) => t.id === Number(user.tenant_id));
                         console.log('Found tenant:', tenant);
                         if (tenant) {
                             setCurrentTenant(tenant);
@@ -453,7 +453,7 @@ export default function AdminPage() {
                         <h1 className="text-3xl font-bold text-slate-900">
                             {(() => {
                                 const tenantName = currentTenant ? currentTenant.name : (Array.isArray(tenants) && selectedTenantId ? tenants.find(t => t.id === selectedTenantId)?.name : null);
-                                return tenantName ? `${tenantName} - Admin Dashboard` : 'Admin Dashboard';
+                                return tenantName ? tenantName : 'Admin Dashboard';
                             })()}
                         </h1>
                     </div>
