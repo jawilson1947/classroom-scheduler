@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import useSWR from 'swr';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -45,7 +45,7 @@ interface Event {
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export default function AdminPage() {
+function AdminPageContent() {
     const { data: session } = useSession();
     const searchParams = useSearchParams();
     const view = searchParams.get('view');
@@ -1009,5 +1009,13 @@ export default function AdminPage() {
                 )
             }
         </div >
+    );
+}
+
+export default function AdminPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-slate-50 p-6 flex items-center justify-center"><div className="text-slate-600">Loading...</div></div>}>
+            <AdminPageContent />
+        </Suspense>
     );
 }
