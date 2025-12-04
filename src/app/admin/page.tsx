@@ -53,6 +53,8 @@ export default function AdminPage() {
     // State
     const [selectedTenantId, setSelectedTenantId] = useState<number | null>(null);
     const [pairingCode, setPairingCode] = useState<string | null>(null);
+    const [pairingUrl, setPairingUrl] = useState<string | null>(null);
+    const [generatingToken, setGeneratingToken] = useState(false);
 
     const user = session?.user as any;
     const isOrgAdmin = user?.role === 'ORG_ADMIN';
@@ -400,6 +402,28 @@ export default function AdminPage() {
         } catch (err) { setError('Error generating pairing code'); }
     };
 
+    const handleGeneratePairingUrl = async (roomId: number) => {
+        if (!selectedTenantId) return;
+        setGeneratingToken(true);
+        try {
+            const res = await fetch('/api/device/generate-token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tenant_id: selectedTenantId, room_id: roomId })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setPairingUrl(data.pairingUrl);
+            } else {
+                setError('Failed to generate pairing URL');
+            }
+        } catch (err) {
+            setError('Error generating pairing URL');
+        } finally {
+            setGeneratingToken(false);
+        }
+    };
+
     // Helper to get room name
     const getRoomName = (id: number) => rooms?.find(r => r.id === id)?.name || 'Unknown Room';
 
@@ -429,6 +453,42 @@ export default function AdminPage() {
                             >
                                 Close
                             </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Pairing URL Modal */}
+                {pairingUrl && (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                        <div className="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full">
+                            <h3 className="text-2xl font-bold mb-4">Auto-Pairing URL</h3>
+                            <p className="text-slate-600 mb-4">
+                                Navigate the iPad to this URL to automatically pair it with the room:
+                            </p>
+                            <div className="bg-slate-100 p-4 rounded-lg mb-4 font-mono text-sm break-all border-2 border-slate-300">
+                                {pairingUrl}
+                            </div>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(pairingUrl);
+                                        setMessage('URL copied to clipboard!');
+                                        setTimeout(() => setMessage(''), 2000);
+                                    }}
+                                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold"
+                                >
+                                    📋 Copy URL
+                                </button>
+                                <button
+                                    onClick={() => setPairingUrl(null)}
+                                    className="flex-1 bg-slate-200 hover:bg-slate-300 px-6 py-3 rounded-lg font-semibold"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                            <p className="text-xs text-slate-500 mt-4">
+                                💡 Tip: This URL will automatically configure the iPad and redirect it to the display page. The token expires in 7 days and can only be used once.
+                            </p>
                         </div>
                     </div>
                 )}
@@ -635,12 +695,21 @@ export default function AdminPage() {
                                                         Device ID: {room.device_id}
                                                     </div>
                                                 ) : (
-                                                    <button
-                                                        onClick={() => handlePairDevice(room.id)}
-                                                        className="w-full mt-2 bg-slate-800 text-white py-2 rounded text-sm hover:bg-slate-700 flex items-center justify-center gap-2"
-                                                    >
-                                                        <span>📱</span> Pair iPad
-                                                    </button>
+                                                    <div className="flex gap-2 mt-2">
+                                                        <button
+                                                            onClick={() => handlePairDevice(room.id)}
+                                                            className="flex-1 bg-slate-800 text-white py-2 rounded text-sm hover:bg-slate-700 flex items-center justify-center gap-2"
+                                                        >
+                                                            <span>📱</span> Pairing Code
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleGeneratePairingUrl(room.id)}
+                                                            disabled={generatingToken}
+                                                            className="flex-1 bg-blue-700 text-white py-2 rounded text-sm hover:bg-blue-800 flex items-center justify-center gap-2 disabled:opacity-50"
+                                                        >
+                                                            <span>🔗</span> Pairing URL
+                                                        </button>
+                                                    </div>
                                                 )}
                                             </div>
                                         ))}

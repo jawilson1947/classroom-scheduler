@@ -33,13 +33,12 @@ export default function DisplayPage() {
 
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
-    const [currentTime, setCurrentTime] = useState<Date | null>(null);
+    const [currentTime, setCurrentTime] = useState(new Date());
     const [isOnline, setIsOnline] = useState(true);
     const [tenantId, setTenantId] = useState<string | null>(null);
 
     useEffect(() => {
         setMounted(true);
-        setCurrentTime(new Date()); // Set initial time on mount
         const storedTenantId = localStorage.getItem('tenant_id');
         console.log('Stored Tenant ID:', storedTenantId);
         if (!storedTenantId) {
@@ -47,6 +46,18 @@ export default function DisplayPage() {
         } else {
             setTenantId(storedTenantId);
         }
+
+        // Request fullscreen to hide browser chrome
+        const enterFullscreen = async () => {
+            try {
+                if (document.documentElement.requestFullscreen) {
+                    await document.documentElement.requestFullscreen();
+                }
+            } catch (err) {
+                console.log('Fullscreen request failed:', err);
+            }
+        };
+        enterFullscreen();
     }, [router]);
 
     // Fetch room details
@@ -158,7 +169,7 @@ export default function DisplayPage() {
     }
 
     // Get all events for today
-    const todaysEvents = (currentTime && Array.isArray(events)) ? events.filter((event) => {
+    const todaysEvents = Array.isArray(events) ? events.filter((event) => {
         // Handle recurring events
         if (event.recurrence_days && event.daily_start_time && event.daily_end_time) {
             const todayDay = format(currentTime, 'EEE'); // Mon, Tue, etc.
@@ -193,7 +204,7 @@ export default function DisplayPage() {
             (isBefore(start, todayStart) && isAfter(end, todayEnd)));
     }).map((event) => {
         // For recurring events, create a version with today's times
-        if (event.recurrence_days && event.daily_start_time && event.daily_end_time && currentTime) {
+        if (event.recurrence_days && event.daily_start_time && event.daily_end_time) {
             const todayStr = format(currentTime, 'yyyy-MM-dd');
             return {
                 ...event,
@@ -210,19 +221,16 @@ export default function DisplayPage() {
 
     // Find current event
     const currentEvent = todaysEvents.find((event) => {
-        if (!currentTime) return false;
         return isWithinInterval(currentTime, { start: event.display_start!, end: event.display_end! });
     });
 
     // All events that haven't started yet (upcoming)
     const upcomingEvents = todaysEvents.filter((event) => {
-        if (!currentTime) return false;
         return isAfter(event.display_start!, currentTime);
     });
 
     // Events that already finished today (past)
     const pastEvents = todaysEvents.filter((event) => {
-        if (!currentTime) return false;
         return isBefore(event.display_end!, currentTime) && !currentEvent;
     });
 
@@ -233,73 +241,62 @@ export default function DisplayPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-8">
             {/* Header */}
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h1 className="text-5xl font-bold">{room?.name || 'Loading...'}</h1>
-                    <p className="text-2xl text-slate-400 mt-2">{room?.building_name}</p>
+                    <h1 className="text-4xl font-bold">{room?.name || 'Loading...'}</h1>
+                    <p className="text-lg text-slate-400">{room?.building_name}</p>
                 </div>
                 <div className="text-right">
-                    {mounted && currentTime ? (
-                        <>
-                            <div className="text-4xl font-bold" suppressHydrationWarning>{format(currentTime, 'h:mm a')}</div>
-                            <div className="text-xl text-slate-400" suppressHydrationWarning>{format(currentTime, 'EEEE, MMMM d')}</div>
-                        </>
-                    ) : (
-                        <div className="text-4xl font-bold">--:--</div>
-                    )}
-                    <div className={`mt-2 text-sm ${isOnline ? 'text-green-400' : 'text-red-400'}`}>
-                        {isOnline ? '● Online' : '● Offline'}
+                    <div className="text-3xl font-bold">
+                        {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    <div className="text-base text-slate-400">
+                        {currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                    </div>
+                    <div className="flex items-center justify-end gap-2 mt-1">
+                        <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                        <span className="text-xs text-slate-500">{isOnline ? 'Online' : 'Offline'}</span>
                     </div>
                 </div>
             </div>
 
             {/* Current Event */}
-            {currentEvent ? (
-                <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl p-8 mb-8 shadow-2xl">
-                    <div className="text-sm uppercase tracking-wider opacity-90 mb-2">Current Event</div>
-                    <h2 className="text-4xl font-bold mb-4">{currentEvent.title}</h2>
+            {currentEvent && (
+                <div className="mb-6 bg-gradient-to-r from-blue-600 to-blue-700 p-6 rounded-xl shadow-lg">
+                    <div className="text-xs font-semibold text-white/90 uppercase tracking-wider mb-2">Current Event</div>
+                    <h2 className="text-3xl font-bold mb-2">{currentEvent.title}</h2>
                     {currentEvent.facilitator_name && (
-                        <p className="text-2xl mb-2">Facilitator: {currentEvent.facilitator_name}</p>
+                        <p className="text-lg text-white/90 mb-2">Facilitator: {currentEvent.facilitator_name}</p>
                     )}
-                    <p className="text-xl opacity-90">
-                        {currentEvent.recurrence_days && currentEvent.daily_start_time && currentEvent.daily_end_time ? (
-                            // Parse daily times (e.g. "10:00:00") to show AM/PM
-                            `${format(new Date(`2000-01-01T${currentEvent.daily_start_time}`), 'h:mm a')} - ${format(new Date(`2000-01-01T${currentEvent.daily_end_time}`), 'h:mm a')}`
-                        ) : (
-                            `${format(new Date(currentEvent.start_time), 'h:mm a')} - ${format(new Date(currentEvent.end_time), 'h:mm a')}`
-                        )}
+                    <p className="text-base text-white/90">
+                        {currentEvent.display_start?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {currentEvent.display_end?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                     </p>
                     {currentEvent.description && (
-                        <p className="mt-4 text-lg opacity-80">{currentEvent.description}</p>
+                        <p className="text-sm text-white/80 mt-2">{currentEvent.description}</p>
                     )}
-                </div>
-            ) : (
-                <div className="bg-slate-800 rounded-2xl p-8 mb-8 border-2 border-dashed border-slate-600">
-                    <h2 className="text-3xl font-bold text-slate-400">Room Available</h2>
-                    <p className="text-xl text-slate-500 mt-2">No current event scheduled</p>
                 </div>
             )}
 
             {/* Upcoming Events */}
             {upcomingEvents.length > 0 && (
-                <div>
-                    <h3 className="text-2xl font-bold mb-4 text-slate-300">Upcoming Events</h3>
-                    <div className="space-y-4">
+                <div className="mb-6">
+                    <h3 className="text-lg font-bold text-slate-300 mb-3">Upcoming Events</h3>
+                    <div className="space-y-3">
                         {upcomingEvents.map((event) => (
-                            <div key={event.id} className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                            <div key={event.id} className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <h4 className="text-2xl font-semibold">{event.title}</h4>
+                                        <h4 className="text-base font-semibold">{event.title}</h4>
                                         {event.facilitator_name && (
-                                            <p className="text-lg text-slate-400 mt-1">{event.facilitator_name}</p>
+                                            <p className="text-sm text-slate-400">{event.facilitator_name}</p>
                                         )}
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-xl font-medium">
-                                            {format(event.display_start!, 'h:mm a')}
+                                        <div className="text-sm font-medium">
+                                            {event.display_start?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                         </div>
-                                        <div className="text-sm text-slate-400">
-                                            {format(event.display_end!, 'h:mm a')}
+                                        <div className="text-xs text-slate-500">
+                                            {event.display_end?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                         </div>
                                     </div>
                                 </div>
@@ -311,24 +308,23 @@ export default function DisplayPage() {
 
             {/* Past Events */}
             {pastEvents.length > 0 && (
-                <div>
-                    <h3 className="text-2xl font-bold mb-4 text-slate-300">Earlier Today</h3>
-                    <div className="space-y-4">
+                <div className="mb-6">
+                    <div className="space-y-3">
                         {pastEvents.map((event) => (
-                            <div key={event.id} className="bg-slate-800/50 rounded-xl p-6 border border-slate-700 opacity-60">
+                            <div key={event.id} className="bg-slate-800/30 p-4 rounded-lg border border-slate-700/50">
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <h4 className="text-2xl font-semibold">{event.title}</h4>
+                                        <h4 className="text-base font-semibold italic text-green-500">{event.title}</h4>
                                         {event.facilitator_name && (
-                                            <p className="text-lg text-slate-400 mt-1">{event.facilitator_name}</p>
+                                            <p className="text-sm text-green-500/70 italic">{event.facilitator_name}</p>
                                         )}
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-xl font-medium">
-                                            {format(event.display_start!, 'h:mm a')}
+                                        <div className="text-sm font-medium italic text-green-500">
+                                            {event.display_start?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                         </div>
-                                        <div className="text-sm text-slate-400">
-                                            {format(event.display_end!, 'h:mm a')}
+                                        <div className="text-xs text-green-500/70 italic">
+                                            {event.display_end?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                         </div>
                                     </div>
                                 </div>
@@ -338,9 +334,10 @@ export default function DisplayPage() {
                 </div>
             )}
 
-            {upcomingEvents.length === 0 && !currentEvent && pastEvents.length === 0 && (
-                <div className="text-center text-slate-500 mt-8">
-                    <p className="text-xl">No events scheduled for today</p>
+            {/* No Events */}
+            {todaysEvents.length === 0 && !isLoading && (
+                <div className="text-center py-12">
+                    <p className="text-base text-slate-500">No events scheduled for today</p>
                 </div>
             )}
         </div>

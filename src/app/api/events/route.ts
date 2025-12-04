@@ -41,24 +41,119 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { tenant_id, room_id, title, facilitator_name, start_time, end_time, description, event_type, force } = body;
 
-        // Check for conflicts
-        const [conflicts] = await pool.query<RowDataPacket[]>(
-            `SELECT id, title, start_time, end_time FROM events 
-       WHERE tenant_id = ? AND room_id = ? 
-       AND ((start_time < ? AND end_time > ?) OR (start_time < ? AND end_time > ?))`,
-            [tenant_id, room_id, end_time, start_time, end_time, start_time]
+        // Check for conflicts - need to handle both recurring and non-recurring events
+        // For recurring events, check if they occur on the same days of the week with overlapping times
+        // For non-recurring events, check if they overlap on any specific day
+
+        const [existingEvents] = await pool.query<RowDataPacket[]>(
+            `SELECT id, title, start_time, end_time, recurrence_days, daily_start_time, daily_end_time 
+             FROM events 
+             WHERE tenant_id = ? AND room_id = ?`,
+            [tenant_id, room_id]
         );
+
+        const conflicts: any[] = [];
+        const isNewRecurring = body.recurrence_days && body.daily_start_time && body.daily_end_time;
+
+        for (const existing of existingEvents) {
+            const isExistingRecurring = existing.recurrence_days && existing.daily_start_time && existing.daily_end_time;
+
+            if (isNewRecurring && isExistingRecurring) {
+                // Both are recurring - check if they share any days of the week
+                const newDays = body.recurrence_days.split(',');
+                const existingDays = existing.recurrence_days.split(',');
+                const sharedDays = newDays.filter((day: string) => existingDays.includes(day));
+
+                if (sharedDays.length > 0) {
+                    // They occur on the same day(s), check if times overlap
+                    const newStart = body.daily_start_time;
+                    const newEnd = body.daily_end_time;
+                    const existingStart = existing.daily_start_time;
+                    const existingEnd = existing.daily_end_time;
+
+                    // Check for time overlap: (start1 < end2) AND (end1 > start2)
+                    if (newStart < existingEnd && newEnd > existingStart) {
+                        conflicts.push({
+                            id: existing.id,
+                            title: existing.title,
+                            recurrence_days: existing.recurrence_days,
+                            daily_start_time: existing.daily_start_time,
+                            daily_end_time: existing.daily_end_time,
+                            shared_days: sharedDays
+                        });
+                    }
+                }
+            } else if (isNewRecurring && !isExistingRecurring) {
+                // New is recurring, existing is one-time
+                // Check if the one-time event falls on a day when the recurring event occurs
+                const existingDate = new Date(existing.start_time);
+                const dayOfWeek = existingDate.toLocaleDateString('en-US', { weekday: 'short' });
+
+                if (body.recurrence_days.includes(dayOfWeek)) {
+                    // Extract time from existing event
+                    const existingStartTime = existing.start_time.split('T')[1] || existing.start_time.substring(11, 19);
+                    const existingEndTime = existing.end_time.split('T')[1] || existing.end_time.substring(11, 19);
+
+                    // Check if times overlap
+                    if (body.daily_start_time < existingEndTime && body.daily_end_time > existingStartTime) {
+                        conflicts.push({
+                            id: existing.id,
+                            title: existing.title,
+                            start_time: existing.start_time,
+                            end_time: existing.end_time
+                        });
+                    }
+                }
+            } else if (!isNewRecurring && isExistingRecurring) {
+                // New is one-time, existing is recurring
+                const newDate = new Date(start_time);
+                const dayOfWeek = newDate.toLocaleDateString('en-US', { weekday: 'short' });
+
+                if (existing.recurrence_days.includes(dayOfWeek)) {
+                    // Extract time from new event
+                    const newStartTime = start_time.split('T')[1] || start_time.substring(11, 19);
+                    const newEndTime = end_time.split('T')[1] || end_time.substring(11, 19);
+
+                    // Check if times overlap
+                    if (newStartTime < existing.daily_end_time && newEndTime > existing.daily_start_time) {
+                        conflicts.push({
+                            id: existing.id,
+                            title: existing.title,
+                            recurrence_days: existing.recurrence_days,
+                            daily_start_time: existing.daily_start_time,
+                            daily_end_time: existing.daily_end_time
+                        });
+                    }
+                }
+            } else {
+                // Both are one-time events
+                // Check if they occur on the same day
+                const newDate = new Date(start_time);
+                const existingDate = new Date(existing.start_time);
+
+                // Compare dates (ignore time)
+                const newDay = newDate.toISOString().split('T')[0];
+                const existingDay = existingDate.toISOString().split('T')[0];
+
+                if (newDay === existingDay) {
+                    // Same day, check if times overlap
+                    if (start_time < existing.end_time && end_time > existing.start_time) {
+                        conflicts.push({
+                            id: existing.id,
+                            title: existing.title,
+                            start_time: existing.start_time,
+                            end_time: existing.end_time
+                        });
+                    }
+                }
+            }
+        }
 
         // If conflicts exist and not forced, return conflict details
         if (conflicts.length > 0 && !force) {
             return NextResponse.json({
                 error: 'Time conflict detected',
-                conflicts: conflicts.map(c => ({
-                    id: c.id,
-                    title: c.title,
-                    start_time: c.start_time,
-                    end_time: c.end_time
-                }))
+                conflicts
             }, { status: 409 });
         }
 
@@ -92,23 +187,101 @@ export async function PUT(request: NextRequest) {
         }
 
         // Check for conflicts (excluding current event)
-        const [conflicts] = await pool.query<RowDataPacket[]>(
-            `SELECT id, title, start_time, end_time FROM events 
-       WHERE tenant_id = ? AND room_id = ? AND id != ?
-       AND ((start_time < ? AND end_time > ?) OR (start_time < ? AND end_time > ?))`,
-            [tenant_id, room_id, id, end_time, start_time, end_time, start_time]
+        const [existingEvents] = await pool.query<RowDataPacket[]>(
+            `SELECT id, title, start_time, end_time, recurrence_days, daily_start_time, daily_end_time 
+             FROM events 
+             WHERE tenant_id = ? AND room_id = ? AND id != ?`,
+            [tenant_id, room_id, id]
         );
+
+        const conflicts: any[] = [];
+        const isNewRecurring = body.recurrence_days && body.daily_start_time && body.daily_end_time;
+
+        for (const existing of existingEvents) {
+            const isExistingRecurring = existing.recurrence_days && existing.daily_start_time && existing.daily_end_time;
+
+            if (isNewRecurring && isExistingRecurring) {
+                const newDays = body.recurrence_days.split(',');
+                const existingDays = existing.recurrence_days.split(',');
+                const sharedDays = newDays.filter((day: string) => existingDays.includes(day));
+
+                if (sharedDays.length > 0) {
+                    const newStart = body.daily_start_time;
+                    const newEnd = body.daily_end_time;
+                    const existingStart = existing.daily_start_time;
+                    const existingEnd = existing.daily_end_time;
+
+                    if (newStart < existingEnd && newEnd > existingStart) {
+                        conflicts.push({
+                            id: existing.id,
+                            title: existing.title,
+                            recurrence_days: existing.recurrence_days,
+                            daily_start_time: existing.daily_start_time,
+                            daily_end_time: existing.daily_end_time,
+                            shared_days: sharedDays
+                        });
+                    }
+                }
+            } else if (isNewRecurring && !isExistingRecurring) {
+                const existingDate = new Date(existing.start_time);
+                const dayOfWeek = existingDate.toLocaleDateString('en-US', { weekday: 'short' });
+
+                if (body.recurrence_days.includes(dayOfWeek)) {
+                    const existingStartTime = existing.start_time.split('T')[1] || existing.start_time.substring(11, 19);
+                    const existingEndTime = existing.end_time.split('T')[1] || existing.end_time.substring(11, 19);
+
+                    if (body.daily_start_time < existingEndTime && body.daily_end_time > existingStartTime) {
+                        conflicts.push({
+                            id: existing.id,
+                            title: existing.title,
+                            start_time: existing.start_time,
+                            end_time: existing.end_time
+                        });
+                    }
+                }
+            } else if (!isNewRecurring && isExistingRecurring) {
+                const newDate = new Date(start_time);
+                const dayOfWeek = newDate.toLocaleDateString('en-US', { weekday: 'short' });
+
+                if (existing.recurrence_days.includes(dayOfWeek)) {
+                    const newStartTime = start_time.split('T')[1] || start_time.substring(11, 19);
+                    const newEndTime = end_time.split('T')[1] || end_time.substring(11, 19);
+
+                    if (newStartTime < existing.daily_end_time && newEndTime > existing.daily_start_time) {
+                        conflicts.push({
+                            id: existing.id,
+                            title: existing.title,
+                            recurrence_days: existing.recurrence_days,
+                            daily_start_time: existing.daily_start_time,
+                            daily_end_time: existing.daily_end_time
+                        });
+                    }
+                }
+            } else {
+                const newDate = new Date(start_time);
+                const existingDate = new Date(existing.start_time);
+
+                const newDay = newDate.toISOString().split('T')[0];
+                const existingDay = existingDate.toISOString().split('T')[0];
+
+                if (newDay === existingDay) {
+                    if (start_time < existing.end_time && end_time > existing.start_time) {
+                        conflicts.push({
+                            id: existing.id,
+                            title: existing.title,
+                            start_time: existing.start_time,
+                            end_time: existing.end_time
+                        });
+                    }
+                }
+            }
+        }
 
         // If conflicts exist and not forced, return conflict details
         if (conflicts.length > 0 && !force) {
             return NextResponse.json({
                 error: 'Time conflict detected',
-                conflicts: conflicts.map(c => ({
-                    id: c.id,
-                    title: c.title,
-                    start_time: c.start_time,
-                    end_time: c.end_time
-                }))
+                conflicts
             }, { status: 409 });
         }
 

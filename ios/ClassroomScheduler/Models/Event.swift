@@ -1,0 +1,90 @@
+import Foundation
+
+struct Event: Codable, Identifiable {
+    let id: Int
+    let title: String
+    let facilitatorName: String?
+    let startTime: String
+    let endTime: String
+    let description: String?
+    let recurrenceDays: String?
+    let dailyStartTime: String?
+    let dailyEndTime: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case facilitatorName = "facilitator_name"
+        case startTime = "start_time"
+        case endTime = "end_time"
+        case description
+        case recurrenceDays = "recurrence_days"
+        case dailyStartTime = "daily_start_time"
+        case dailyEndTime = "daily_end_time"
+    }
+    
+    // Computed properties for display
+    var displayStart: Date? {
+        if let recurrenceDays = recurrenceDays,
+           let dailyStart = dailyStartTime {
+            return parseTimeForToday(dailyStart)
+        }
+        return ISO8601DateFormatter().date(from: startTime)
+    }
+    
+    var displayEnd: Date? {
+        if let recurrenceDays = recurrenceDays,
+           let dailyEnd = dailyEndTime {
+            return parseTimeForToday(dailyEnd)
+        }
+        return ISO8601DateFormatter().date(from: endTime)
+    }
+    
+    var isRecurring: Bool {
+        recurrenceDays != nil
+    }
+    
+    func occursToday() -> Bool {
+        if let recurrenceDays = recurrenceDays {
+            let today = Date()
+            let formatter = DateFormatter()
+            formatter.dateFormat = "EEE"
+            let todayDay = formatter.string(from: today)
+            return recurrenceDays.contains(todayDay)
+        }
+        
+        // For non-recurring events, check if they occur today
+        guard let start = displayStart, let end = displayEnd else { return false }
+        let calendar = Calendar.current
+        let today = Date()
+        return calendar.isDate(start, inSameDayAs: today) || 
+               calendar.isDate(end, inSameDayAs: today) ||
+               (start < today && end > today)
+    }
+    
+    private func parseTimeForToday(_ timeString: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm:ss"
+        guard let time = formatter.date(from: timeString) else { return nil }
+        
+        let calendar = Calendar.current
+        let now = Date()
+        let components = calendar.dateComponents([.hour, .minute, .second], from: time)
+        return calendar.date(bySettingHour: components.hour ?? 0,
+                            minute: components.minute ?? 0,
+                            second: components.second ?? 0,
+                            of: now)
+    }
+}
+
+struct Room: Codable, Identifiable {
+    let id: Int
+    let name: String
+    let buildingName: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case buildingName = "building_name"
+    }
+}
