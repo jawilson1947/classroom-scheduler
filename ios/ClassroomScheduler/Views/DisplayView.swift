@@ -50,11 +50,6 @@ struct DisplayView: View {
                         let upcoming = getUpcomingEvents()
                         if !upcoming.isEmpty {
                             VStack(alignment: .leading, spacing: 12) {
-                                Text("Upcoming Events")
-                                    .font(.system(size: 18, weight: .bold))
-                                    .foregroundColor(Color(white: 0.7))
-                                    .padding(.horizontal, 32)
-                                
                                 ForEach(upcoming) { event in
                                     EventCardView(event: event, isPast: false)
                                         .padding(.horizontal, 32)
@@ -120,7 +115,7 @@ struct DisplayView: View {
     private func getPastEvents() -> [Event] {
         apiService.events.filter { event in
             guard let end = event.displayEnd else { return false }
-            return end < currentTime && getCurrentEvent() == nil
+            return end < currentTime
         }
     }
 }

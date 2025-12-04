@@ -58,11 +58,27 @@ export default function AdminPage() {
 
     const user = session?.user as any;
     const isOrgAdmin = user?.role === 'ORG_ADMIN';
+    const [currentTenant, setCurrentTenant] = useState<Tenant | null>(null);
 
-    // Auto-select tenant for ORG_ADMIN
+    // Auto-select tenant for ORG_ADMIN and fetch tenant details
     useEffect(() => {
-        if (isOrgAdmin && user?.tenant_id) {
+        console.log('User role:', user?.role, 'Tenant ID:', user?.tenant_id);
+        if ((isOrgAdmin || user?.role === 'SCHEDULER' || user?.role === 'VIEWER') && user?.tenant_id) {
             setSelectedTenantId(user.tenant_id);
+            // Fetch the tenant details
+            fetch(`/api/tenants`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log('Fetched tenants:', data);
+                    if (Array.isArray(data)) {
+                        const tenant = data.find((t: Tenant) => t.id === user.tenant_id);
+                        console.log('Found tenant:', tenant);
+                        if (tenant) {
+                            setCurrentTenant(tenant);
+                        }
+                    }
+                })
+                .catch(err => console.error('Error fetching tenant:', err));
         }
     }, [isOrgAdmin, user]);
 
@@ -94,6 +110,8 @@ export default function AdminPage() {
         daily_end_time: ''
     });
     const [editingEventId, setEditingEventId] = useState<number | null>(null);
+    const [conflictModalOpen, setConflictModalOpen] = useState(false);
+    const [conflictData, setConflictData] = useState<any[]>([]);
     const [editingTenantId, setEditingTenantId] = useState<number | null>(null);
     const [editingBuildingId, setEditingBuildingId] = useState<number | null>(null);
     const [editingRoomId, setEditingRoomId] = useState<number | null>(null);
@@ -296,22 +314,19 @@ export default function AdminPage() {
             });
 
             if (res.status === 409) {
-                const data = await res.json();
+                const text = await res.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error('Failed to parse JSON:', e);
+                    setError('Server returned invalid conflict data');
+                    return;
+                }
+
                 if (data.conflicts && data.conflicts.length > 0) {
-                    // Format conflicts for display
-                    const conflictList = data.conflicts.map((c: any) => {
-                        const start = new Date(c.start_time).toLocaleString();
-                        const end = new Date(c.end_time).toLocaleTimeString();
-                        return `• ${c.title} (${start} - ${end})`;
-                    }).join('\n');
-
-                    const message = `⚠️ SCHEDULE CONFLICT DETECTED\n\nThe following event(s) are already scheduled for this room at this time:\n\n${conflictList}\n\nDo you want to schedule this event anyway?`;
-
-                    if (confirm(message)) {
-                        // Retry with force flag
-                        const forceEvent = new Event('submit', { bubbles: true, cancelable: true }) as any;
-                        await handleCreateEvent(forceEvent, true);
-                    }
+                    setConflictData(data.conflicts);
+                    setConflictModalOpen(true);
                 }
                 return;
             }
@@ -428,12 +443,24 @@ export default function AdminPage() {
     const getRoomName = (id: number) => rooms?.find(r => r.id === id)?.name || 'Unknown Room';
 
     return (
-        <div className="min-h-screen bg-slate-50 p-8">
-            <div className="max-w-7xl mx-auto space-y-8">
+        <div className="min-h-screen bg-slate-50 p-6">
+            <div className="max-w-7xl mx-auto space-y-6">
                 <header className="flex justify-between items-center">
-                    <h1 className="text-4xl font-bold text-slate-900">Admin Dashboard</h1>
-                    {message && <div className="bg-green-100 text-green-800 px-4 py-2 rounded">{message}</div>}
-                    {error && <div className="bg-red-100 text-red-800 px-4 py-2 rounded">{error}</div>}
+                    <div className="flex items-center gap-4">
+                        <a href="/dashboard" className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                            ← Back
+                        </a>
+                        <h1 className="text-3xl font-bold text-slate-900">
+                            {(() => {
+                                const tenantName = currentTenant ? currentTenant.name : (Array.isArray(tenants) && selectedTenantId ? tenants.find(t => t.id === selectedTenantId)?.name : null);
+                                return tenantName ? `${tenantName} - Admin Dashboard` : 'Admin Dashboard';
+                            })()}
+                        </h1>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        {message && <div className="bg-green-100 text-green-800 px-3 py-2 rounded text-sm">{message}</div>}
+                        {error && <div className="bg-red-100 text-red-800 px-3 py-2 rounded text-sm">{error}</div>}
+                    </div>
                 </header>
 
                 {/* Pairing Code Modal */}
@@ -493,14 +520,14 @@ export default function AdminPage() {
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Left Column: Tenants & Buildings */}
-                    <div className="space-y-8">
+                    <div className="space-y-6">
                         {/* Tenant Management - Only for SYSTEM_ADMIN */}
                         {!isOrgAdmin && (
-                            <section className="bg-white rounded-xl shadow p-6">
-                                <h2 className="text-xl font-bold mb-4">1. Organizations</h2>
-                                <form onSubmit={handleCreateTenant} className={`space-y-3 mb-6 p-4 rounded ${editingTenantId ? 'bg-orange-50 border-2 border-orange-200' : ''}`}>
+                            <section className="bg-white rounded-xl shadow p-5">
+                                <h2 className="text-lg font-bold mb-3">1. Organizations</h2>
+                                <form onSubmit={handleCreateTenant} className={`space-y-2 mb-4 p-3 rounded ${editingTenantId ? 'bg-orange-50 border-2 border-orange-200' : ''}`}>
                                     {editingTenantId && (
                                         <div className="flex justify-between items-center mb-2">
                                             <h3 className="font-bold text-orange-800">Editing Organization</h3>
@@ -543,12 +570,12 @@ export default function AdminPage() {
                                         onChange={(e) => setSelectedTenantId(Number(e.target.value))}
                                         value={selectedTenantId || ''}
                                     >
-                                        {tenants?.map(t => (
+                                        {Array.isArray(tenants) && tenants.map(t => (
                                             <option key={t.id} value={t.id}>{t.name} ({t.slug})</option>
                                         ))}
                                     </select>
                                     <div className="grid grid-cols-2 gap-2 mt-2">
-                                        {tenants?.find(t => t.id === selectedTenantId) && (
+                                        {Array.isArray(tenants) && tenants.find(t => t.id === selectedTenantId) && (
                                             <>
                                                 <button
                                                     type="button"
@@ -573,8 +600,8 @@ export default function AdminPage() {
 
                         {/* Building Management */}
                         {selectedTenantId && (
-                            <section id="buildings" className="bg-white rounded-xl shadow p-6">
-                                <h2 className="text-xl font-bold mb-4">2. Buildings</h2>
+                            <section id="buildings" className="bg-white rounded-xl shadow p-5">
+                                <h2 className="text-lg font-bold mb-3">2. Buildings</h2>
                                 <form onSubmit={handleCreateBuilding} className={`space-y-3 mb-6 p-4 rounded ${editingBuildingId ? 'bg-orange-50 border-2 border-orange-200' : ''}`}>
                                     {editingBuildingId && (
                                         <div className="flex justify-between items-center mb-2">
@@ -627,8 +654,8 @@ export default function AdminPage() {
                         {selectedTenantId ? (
                             <>
                                 {/* Rooms Section */}
-                                <section id="rooms" className="bg-white rounded-xl shadow p-6">
-                                    <h2 className="text-xl font-bold mb-4">3. Rooms & Devices</h2>
+                                <section id="rooms" className="bg-white rounded-xl shadow p-5">
+                                    <h2 className="text-lg font-bold mb-3">3. Rooms & Devices</h2>
 
                                     <form onSubmit={handleCreateRoom} className={`grid grid-cols-1 md:grid-cols-4 gap-3 mb-8 p-4 rounded-lg ${editingRoomId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
                                         {editingRoomId && (
@@ -720,14 +747,20 @@ export default function AdminPage() {
                                 </section>
 
                                 {/* Events Section */}
-                                <section id="events" className="bg-white rounded-xl shadow p-6">
-                                    <h2 className="text-xl font-bold mb-4">4. Events & Schedule</h2>
+                                <section id="events" className="bg-white rounded-xl shadow p-5">
+                                    <h2 className="text-lg font-bold mb-3">4. Events & Schedule</h2>
 
-                                    <form id="event-form" onSubmit={handleCreateEvent} className={`grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-6 rounded-lg ${editingEventId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
+                                    <form id="event-form" onSubmit={handleCreateEvent} noValidate className={`grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-6 rounded-lg ${editingEventId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
                                         {editingEventId && (
                                             <div className="col-span-2 flex justify-between items-center mb-2">
                                                 <h3 className="font-bold text-orange-800">Editing Event</h3>
-                                                <button type="button" onClick={handleCancelEdit} className="text-sm text-slate-500 hover:text-slate-800">Cancel Edit</button>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleCancelEdit}
+                                                    className="bg-slate-500 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                                                >
+                                                    Cancel
+                                                </button>
                                             </div>
                                         )}
                                         <div className="col-span-2 md:col-span-1">
@@ -862,7 +895,7 @@ export default function AdminPage() {
                                         </div>
 
                                         <div className="col-span-2">
-                                            <button className={`w-full text-white py-3 rounded font-semibold ${editingEventId ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700'}`}>
+                                            <button type="submit" className={`w-full text-white py-3 rounded font-semibold ${editingEventId ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700'}`}>
                                                 {editingEventId ? 'Update Event' : 'Schedule Event'}
                                             </button>
                                         </div>
@@ -918,6 +951,63 @@ export default function AdminPage() {
                     </div>
                 </div>
             </div>
-        </div>
+
+            {/* Conflict Resolution Modal */}
+            {
+                conflictModalOpen && (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                        <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6">
+                            <h3 className="text-xl font-bold text-red-600 mb-4 flex items-center gap-2">
+                                ⚠️ Schedule Conflict Detected
+                            </h3>
+                            <p className="text-slate-600 mb-4">
+                                The following event(s) are already scheduled for this room at this time:
+                            </p>
+                            <div className="bg-red-50 border border-red-100 rounded-lg p-4 mb-6 max-h-60 overflow-y-auto">
+                                <ul className="space-y-2">
+                                    {conflictData.map((c, i) => {
+                                        let timeString = '';
+                                        if (c.recurrence_days) {
+                                            timeString = `${c.recurrence_days} ${c.daily_start_time} - ${c.daily_end_time}`;
+                                        } else {
+                                            const start = new Date(c.start_time).toLocaleString();
+                                            const end = new Date(c.end_time).toLocaleTimeString();
+                                            timeString = `${start} - ${end}`;
+                                        }
+                                        return (
+                                            <li key={i} className="text-sm text-red-800 flex items-start gap-2">
+                                                <span>•</span>
+                                                <span><strong>{c.title}</strong><br /><span className="text-xs opacity-75">{timeString}</span></span>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div>
+                            <p className="text-slate-600 mb-6 font-medium">
+                                Do you want to schedule this event anyway?
+                            </p>
+                            <div className="flex justify-end gap-3">
+                                <button
+                                    onClick={() => setConflictModalOpen(false)}
+                                    className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={async () => {
+                                        setConflictModalOpen(false);
+                                        const mockEvent = { preventDefault: () => { } } as React.FormEvent;
+                                        await handleCreateEvent(mockEvent, true);
+                                    }}
+                                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+                                >
+                                    Schedule Anyway
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+        </div >
     );
 }

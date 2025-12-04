@@ -231,7 +231,7 @@ export default function DisplayPage() {
 
     // Events that already finished today (past)
     const pastEvents = todaysEvents.filter((event) => {
-        return isBefore(event.display_end!, currentTime) && !currentEvent;
+        return isBefore(event.display_end!, currentTime);
     });
 
     if (!mounted) {
@@ -262,25 +262,30 @@ export default function DisplayPage() {
 
             {/* Current Event */}
             {currentEvent && (
-                <div className="mb-6 bg-gradient-to-r from-blue-600 to-blue-700 p-6 rounded-xl shadow-lg">
-                    <div className="text-xs font-semibold text-white/90 uppercase tracking-wider mb-2">Current Event</div>
-                    <h2 className="text-3xl font-bold mb-2">{currentEvent.title}</h2>
-                    {currentEvent.facilitator_name && (
-                        <p className="text-lg text-white/90 mb-2">Facilitator: {currentEvent.facilitator_name}</p>
-                    )}
-                    <p className="text-base text-white/90">
-                        {currentEvent.display_start?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {currentEvent.display_end?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                    {currentEvent.description && (
-                        <p className="text-sm text-white/80 mt-2">{currentEvent.description}</p>
-                    )}
+                <div className="mb-6 bg-gradient-to-r from-blue-600 to-blue-700 p-4 rounded-lg">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <div className="text-xs font-medium text-white/90 italic mb-1">In Progress...</div>
+                            <h4 className="text-base font-semibold text-white">{currentEvent.title}</h4>
+                            {currentEvent.facilitator_name && (
+                                <p className="text-sm text-white/80">{currentEvent.facilitator_name}</p>
+                            )}
+                        </div>
+                        <div className="text-right">
+                            <div className="text-sm font-medium text-white">
+                                {currentEvent.display_start?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                            <div className="text-xs text-white/80">
+                                {currentEvent.display_end?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
 
             {/* Upcoming Events */}
             {upcomingEvents.length > 0 && (
                 <div className="mb-6">
-                    <h3 className="text-lg font-bold text-slate-300 mb-3">Upcoming Events</h3>
                     <div className="space-y-3">
                         {upcomingEvents.map((event) => (
                             <div key={event.id} className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
