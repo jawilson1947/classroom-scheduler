@@ -917,7 +917,7 @@ function AdminPageContent() {
                                                             <div className="text-sm text-slate-600 space-y-1">
                                                                 <p>📍 {getRoomName(event.room_id)}</p>
                                                                 <p>👤 {event.facilitator_name || 'No facilitator'}</p>
-                                                                <p>🕒 {new Date(event.start_time).toLocaleString()} - {new Date(event.end_time).toLocaleTimeString()}</p>
+                                                                <p>🕒 {new Date(event.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} • {new Date(event.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {new Date(event.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-center">
