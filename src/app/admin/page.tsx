@@ -96,15 +96,17 @@ function AdminPageContent() {
     const [tenantForm, setTenantForm] = useState({ uuid: '', name: '', slug: '', time_zone: 'America/Chicago' });
     const [buildingForm, setBuildingForm] = useState({ name: '', time_zone: 'America/Chicago' });
     const [roomForm, setRoomForm] = useState({ building_id: '', name: '', capacity: '' });
+    // Date range defaults (persist across event entries)
+    const [dateRangeDefaults, setDateRangeDefaults] = useState({
+        start_date: '',
+        end_date: ''
+    });
     const [eventForm, setEventForm] = useState({
         room_id: '',
         title: '',
         facilitator_name: '',
-        start_time: '',
-        end_time: '',
         description: '',
         event_type: 'class',
-        is_recurring: false,
         recurrence_days: [] as string[],
         daily_start_time: '',
         daily_end_time: ''
@@ -294,13 +296,20 @@ function AdminPageContent() {
         e.preventDefault();
         if (!selectedTenantId) return;
 
+        // Build start_time and end_time from date range + daily times
+        const isRecurring = dateRangeDefaults.start_date !== dateRangeDefaults.end_date;
+        const start_time = `${dateRangeDefaults.start_date}T${eventForm.daily_start_time}`;
+        const end_time = `${dateRangeDefaults.end_date}T${eventForm.daily_end_time}`;
+
         const url = editingEventId ? '/api/events' : '/api/events';
         const method = editingEventId ? 'PUT' : 'POST';
         const body = {
             ...eventForm,
-            recurrence_days: eventForm.is_recurring ? eventForm.recurrence_days.join(',') : null,
-            daily_start_time: eventForm.is_recurring ? eventForm.daily_start_time : null,
-            daily_end_time: eventForm.is_recurring ? eventForm.daily_end_time : null,
+            start_time,
+            end_time,
+            recurrence_days: isRecurring ? eventForm.recurrence_days.join(',') : null,
+            daily_start_time: isRecurring ? eventForm.daily_start_time : null,
+            daily_end_time: isRecurring ? eventForm.daily_end_time : null,
             tenant_id: selectedTenantId,
             id: editingEventId,
             force: forceCreate
@@ -334,15 +343,13 @@ function AdminPageContent() {
             if (!res.ok) throw new Error(`Failed to ${editingEventId ? 'update' : 'create'} event`);
 
             mutateEvents();
+            // Clear form but keep date range defaults
             setEventForm({
                 room_id: '',
                 title: '',
                 facilitator_name: '',
-                start_time: '',
-                end_time: '',
                 description: '',
                 event_type: 'class',
-                is_recurring: false,
                 recurrence_days: [],
                 daily_start_time: '',
                 daily_end_time: ''
@@ -354,18 +361,24 @@ function AdminPageContent() {
 
     const handleEditEvent = (event: Event) => {
         setEditingEventId(event.id);
+
+        // Populate date range from event's start/end times
+        const startDate = new Date(event.start_time).toISOString().slice(0, 10);
+        const endDate = new Date(event.end_time).toISOString().slice(0, 10);
+        setDateRangeDefaults({
+            start_date: startDate,
+            end_date: endDate
+        });
+
         setEventForm({
             room_id: event.room_id.toString(),
             title: event.title,
             facilitator_name: event.facilitator_name || '',
-            start_time: new Date(event.start_time).toISOString().slice(0, 16),
-            end_time: new Date(event.end_time).toISOString().slice(0, 16),
             description: event.description || '',
             event_type: event.event_type || 'class',
-            is_recurring: !!event.recurrence_days,
             recurrence_days: event.recurrence_days ? event.recurrence_days.split(',') : [],
-            daily_start_time: event.daily_start_time || '',
-            daily_end_time: event.daily_end_time || ''
+            daily_start_time: event.daily_start_time || new Date(event.start_time).toISOString().slice(11, 16),
+            daily_end_time: event.daily_end_time || new Date(event.end_time).toISOString().slice(11, 16)
         });
         // Scroll to form
         const form = document.getElementById('event-form');
@@ -378,11 +391,8 @@ function AdminPageContent() {
             room_id: '',
             title: '',
             facilitator_name: '',
-            start_time: '',
-            end_time: '',
             description: '',
             event_type: 'class',
-            is_recurring: false,
             recurrence_days: [],
             daily_start_time: '',
             daily_end_time: ''
@@ -750,6 +760,39 @@ function AdminPageContent() {
                                 <section id="events" className="bg-white rounded-xl shadow p-5">
                                     <h2 className="text-lg font-bold mb-3">4. Events & Schedule</h2>
 
+                                    {/* Date Range Defaults Block */}
+                                    <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6">
+                                        <h3 className="text-sm font-bold text-blue-900 mb-3">📅 Event Period (Default for All Events)</h3>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-sm font-medium text-slate-700 mb-1">Start Date</label>
+                                                <input
+                                                    type="date"
+                                                    className="w-full border p-2 rounded"
+                                                    value={dateRangeDefaults.start_date}
+                                                    onChange={e => setDateRangeDefaults({ ...dateRangeDefaults, start_date: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-slate-700 mb-1">End Date</label>
+                                                <input
+                                                    type="date"
+                                                    className="w-full border p-2 rounded"
+                                                    value={dateRangeDefaults.end_date}
+                                                    onChange={e => setDateRangeDefaults({ ...dateRangeDefaults, end_date: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                        {dateRangeDefaults.start_date && dateRangeDefaults.end_date && dateRangeDefaults.start_date !== dateRangeDefaults.end_date && (
+                                            <p className="text-xs text-blue-700 mt-2">📌 Recurring event mode: Select days of week below</p>
+                                        )}
+                                        {dateRangeDefaults.start_date && dateRangeDefaults.end_date && dateRangeDefaults.start_date === dateRangeDefaults.end_date && (
+                                            <p className="text-xs text-green-700 mt-2">✓ One-time event mode</p>
+                                        )}
+                                    </div>
+
                                     <form id="event-form" onSubmit={handleCreateEvent} noValidate className={`grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-6 rounded-lg ${editingEventId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
                                         {editingEventId && (
                                             <div className="col-span-2 flex justify-between items-center mb-2">
@@ -801,87 +844,51 @@ function AdminPageContent() {
                                             />
                                         </div>
 
-                                        <div className="col-span-2 md:col-span-1">
-                                            <label className="block text-sm font-medium text-slate-700 mb-1">Start Date/Time</label>
-                                            <input
-                                                type="datetime-local"
-                                                className="w-full border p-2 rounded"
-                                                value={eventForm.start_time}
-                                                onChange={e => setEventForm({ ...eventForm, start_time: e.target.value })}
-                                                required
-                                            />
-                                        </div>
-
-                                        <div className="col-span-2 md:col-span-1">
-                                            <label className="block text-sm font-medium text-slate-700 mb-1">End Date/Time</label>
-                                            <input
-                                                type="datetime-local"
-                                                className="w-full border p-2 rounded"
-                                                value={eventForm.end_time}
-                                                onChange={e => setEventForm({ ...eventForm, end_time: e.target.value })}
-                                                required
-                                            />
-                                        </div>
-
-                                        <div className="col-span-2">
-                                            <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={eventForm.is_recurring}
-                                                    onChange={e => setEventForm({ ...eventForm, is_recurring: e.target.checked })}
-                                                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                                                />
-                                                Recurring Event
-                                            </label>
-
-                                            {eventForm.is_recurring && (
-                                                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-slate-700 mb-2">Repeat On</label>
-                                                        <div className="flex flex-wrap gap-4">
-                                                            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
-                                                                <label key={day} className="flex items-center gap-2 text-sm text-slate-600">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={eventForm.recurrence_days.includes(day)}
-                                                                        onChange={e => {
-                                                                            const days = e.target.checked
-                                                                                ? [...eventForm.recurrence_days, day]
-                                                                                : eventForm.recurrence_days.filter(d => d !== day);
-                                                                            setEventForm({ ...eventForm, recurrence_days: days });
-                                                                        }}
-                                                                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                                                                    />
-                                                                    {day}
-                                                                </label>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="grid grid-cols-2 gap-4">
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-slate-700 mb-1">Daily Start Time</label>
+                                        {/* Show days of week if start_date !== end_date (recurring) */}
+                                        {dateRangeDefaults.start_date && dateRangeDefaults.end_date && dateRangeDefaults.start_date !== dateRangeDefaults.end_date && (
+                                            <div className="col-span-2">
+                                                <label className="block text-sm font-medium text-slate-700 mb-2">Repeat On</label>
+                                                <div className="flex flex-wrap gap-4">
+                                                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+                                                        <label key={day} className="flex items-center gap-2 text-sm text-slate-600">
                                                             <input
-                                                                type="time"
-                                                                className="w-full border p-2 rounded"
-                                                                value={eventForm.daily_start_time}
-                                                                onChange={e => setEventForm({ ...eventForm, daily_start_time: e.target.value })}
-                                                                required={eventForm.is_recurring}
+                                                                type="checkbox"
+                                                                checked={eventForm.recurrence_days.includes(day)}
+                                                                onChange={e => {
+                                                                    const days = e.target.checked
+                                                                        ? [...eventForm.recurrence_days, day]
+                                                                        : eventForm.recurrence_days.filter(d => d !== day);
+                                                                    setEventForm({ ...eventForm, recurrence_days: days });
+                                                                }}
+                                                                className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                                                             />
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-slate-700 mb-1">Daily End Time</label>
-                                                            <input
-                                                                type="time"
-                                                                className="w-full border p-2 rounded"
-                                                                value={eventForm.daily_end_time}
-                                                                onChange={e => setEventForm({ ...eventForm, daily_end_time: e.target.value })}
-                                                                required={eventForm.is_recurring}
-                                                            />
-                                                        </div>
-                                                    </div>
+                                                            {day}
+                                                        </label>
+                                                    ))}
                                                 </div>
-                                            )}
+                                            </div>
+                                        )}
+
+                                        <div className="col-span-2 md:col-span-1">
+                                            <label className="block text-sm font-medium text-slate-700 mb-1">Daily Start Time</label>
+                                            <input
+                                                type="time"
+                                                className="w-full border p-2 rounded"
+                                                value={eventForm.daily_start_time}
+                                                onChange={e => setEventForm({ ...eventForm, daily_start_time: e.target.value })}
+                                                required
+                                            />
+                                        </div>
+
+                                        <div className="col-span-2 md:col-span-1">
+                                            <label className="block text-sm font-medium text-slate-700 mb-1">Daily End Time</label>
+                                            <input
+                                                type="time"
+                                                className="w-full border p-2 rounded"
+                                                value={eventForm.daily_end_time}
+                                                onChange={e => setEventForm({ ...eventForm, daily_end_time: e.target.value })}
+                                                required
+                                            />
                                         </div>
 
                                         <div className="col-span-2">
@@ -917,7 +924,14 @@ function AdminPageContent() {
                                                             <div className="text-sm text-slate-600 space-y-1">
                                                                 <p>📍 {getRoomName(event.room_id)}</p>
                                                                 <p>👤 {event.facilitator_name || 'No facilitator'}</p>
-                                                                <p>🕒 {new Date(event.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} • {new Date(event.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {new Date(event.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
+                                                                {event.recurrence_days ? (
+                                                                    <>
+                                                                        <p>📅 {event.recurrence_days.split(',').map(d => d.trim()).join(', ')}</p>
+                                                                        <p>🕒 {event.daily_start_time} - {event.daily_end_time}</p>
+                                                                    </>
+                                                                ) : (
+                                                                    <p>🕒 {new Date(event.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} • {new Date(event.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {new Date(event.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
+                                                                )}
                                                             </div>
                                                         </div>
                                                         <div className="flex items-center">
