@@ -164,7 +164,7 @@ export default function BuildingsPage() {
                     <section className="bg-white rounded-xl shadow p-5">
                         <h2 className="text-lg font-bold mb-3">Select Organization</h2>
                         <select
-                            className="w-full border-2 border-slate-200 focus:border-blue-500 p-2 rounded-lg bg-white"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             onChange={(e) => {
                                 const tenantId = Number(e.target.value);
                                 setSelectedTenantId(tenantId);
@@ -195,13 +195,14 @@ export default function BuildingsPage() {
                                 </div>
                             )}
                             <input
-                                className="w-full border-2 border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 p-3 rounded-lg transition-all duration-200 outline-none"
+                                type="text"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 placeholder="Building Name"
                                 value={buildingForm.name}
                                 onChange={e => setBuildingForm({ ...buildingForm, name: e.target.value })}
                                 required
                             />
-                            <button className={`w-full text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 ${editingBuildingId ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700' : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'}`}>
+                            <button type="submit" className={`text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center ${editingBuildingId ? 'bg-yellow-400 hover:bg-yellow-500 focus:ring-yellow-300' : 'bg-green-700 hover:bg-green-800 focus:ring-green-300'}`}>
                                 {editingBuildingId ? '✓ Update Building' : '+ Add Building'}
                             </button>
                         </form>
