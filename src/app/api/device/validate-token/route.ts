@@ -49,6 +49,15 @@ export async function POST(request: NextRequest) {
             [tokenData.id]
         );
 
+        // Create a device record (similar to pairing code method)
+        // Generate a unique pairing code for this device
+        const pairingCode = `URL-${token.substring(0, 6)}`;
+
+        await pool.query(
+            'INSERT INTO devices (tenant_id, room_id, pairing_code) VALUES (?, ?, ?)',
+            [tokenData.tenant_id, tokenData.room_id, pairingCode]
+        );
+
         // Return room and tenant information
         return NextResponse.json({
             success: true,
