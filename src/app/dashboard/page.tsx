@@ -140,9 +140,9 @@ function OrgAdminDashboard({ user }: { user: any }) {
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <DashboardCard
-                    title="Manage Organization"
-                    description="Manage buildings, rooms, and devices"
-                    href="/admin?view=buildings"
+                    title="Manage Buildings"
+                    description="Manage buildings for your organization"
+                    href="/admin/buildings"
                     icon="🏢"
                     color="blue"
                 />
@@ -156,14 +156,14 @@ function OrgAdminDashboard({ user }: { user: any }) {
                 <DashboardCard
                     title="Events & Schedule"
                     description="Create and manage events"
-                    href="/admin?view=events"
+                    href="/admin/events"
                     icon="📅"
                     color="green"
                 />
                 <DashboardCard
-                    title="Device Pairing"
+                    title="Manage Rooms and Devices"
                     description="Pair and manage iPad displays"
-                    href="/admin?view=rooms"
+                    href="/admin/rooms"
                     icon="📱"
                     color="orange"
                 />
@@ -224,18 +224,18 @@ interface DashboardCardProps {
 
 function DashboardCard({ title, description, href, icon, color }: DashboardCardProps) {
     const colorClasses = {
-        blue: 'from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800',
-        purple: 'from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800',
-        green: 'from-green-600 to-green-700 hover:from-green-700 hover:to-green-800',
-        orange: 'from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800'
+        blue: 'from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700',
+        purple: 'from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700',
+        green: 'from-green-500 to-green-600 hover:from-green-600 hover:to-green-700',
+        orange: 'from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700'
     };
 
     return (
         <Link href={href}>
-            <div className={`bg-gradient-to-br ${colorClasses[color]} rounded-xl p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1`}>
-                <div className="text-5xl mb-4">{icon}</div>
-                <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
-                <p className="text-slate-100">{description}</p>
+            <div className={`bg-gradient-to-br ${colorClasses[color]} rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2`}>
+                <div className="text-6xl mb-4">{icon}</div>
+                <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
+                <p className="text-white/90 text-base leading-relaxed">{description}</p>
             </div>
         </Link>
     );

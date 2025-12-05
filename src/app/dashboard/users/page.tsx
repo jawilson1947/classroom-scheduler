@@ -365,6 +365,14 @@ export default function UsersPage() {
                     </div>
                 )}
             </div>
+
+            {/* Footer */}
+            <footer className="mt-12 border-t border-slate-600 pt-6 pb-4">
+                <div className="text-center text-sm text-slate-400">
+                    <p className="mb-1">© {new Date().getFullYear()} Digital Support Systems of Alabama, LLC. All rights reserved.</p>
+                    <p className="text-xs text-slate-500">System developed by Digital Support Systems of Alabama, LLC</p>
+                </div>
+            </footer>
         </div>
     );
 }
