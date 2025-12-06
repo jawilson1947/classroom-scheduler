@@ -2,9 +2,13 @@ import SwiftUI
 
 struct ConfigurationView: View {
     @EnvironmentObject var configService: ConfigurationService
+    @State private var pairingToken: String = ""
     @State private var roomId: String = ""
     @State private var tenantId: String = ""
-    @State private var apiBaseURL: String = "https://"
+    @State private var apiBaseURL: String = "https://your-app.vercel.app" // Set default to production URL or empty
+    @State private var isPairing: Bool = false
+    @State private var errorMessage: String?
+    @State private var activeTab: Int = 0 
     
     var body: some View {
         ZStack {
@@ -21,44 +25,107 @@ struct ConfigurationView: View {
                     .font(.system(size: 32, weight: .bold))
                     .foregroundColor(.white)
                 
-                Text("This device is not configured.\nPlease enter configuration details or deploy via MDM.")
-                    .font(.system(size: 14))
-                    .foregroundColor(Color(white: 0.6))
-                    .multilineTextAlignment(.center)
-                
-                VStack(spacing: 16) {
-                    TextField("Room ID", text: $roomId)
-                        .textFieldStyle(CustomTextFieldStyle())
-                        .keyboardType(.numberPad)
-                    
-                    TextField("Tenant ID", text: $tenantId)
-                        .textFieldStyle(CustomTextFieldStyle())
-                        .keyboardType(.numberPad)
-                    
-                    TextField("API Base URL", text: $apiBaseURL)
-                        .textFieldStyle(CustomTextFieldStyle())
-                        .keyboardType(.URL)
-                        .autocapitalization(.none)
+                Picker("Setup Mode", selection: $activeTab) {
+                    Text("Pairing Token").tag(0)
+                    Text("Manual Config").tag(1)
                 }
+                .pickerStyle(SegmentedPickerStyle())
                 .padding(.horizontal, 32)
                 
-                Button(action: saveConfiguration) {
-                    Text("Save Configuration")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(12)
+                if activeTab == 0 {
+                    // Pairing Mode
+                    VStack(spacing: 16) {
+                        Text("Enter the pairing token displayed in the admin dashboard.")
+                            .font(.system(size: 14))
+                            .foregroundColor(Color(white: 0.6))
+                            .multilineTextAlignment(.center)
+                        
+                        TextField("API Base URL", text: $apiBaseURL)
+                            .textFieldStyle(CustomTextFieldStyle())
+                            .keyboardType(.URL)
+                            .autocapitalization(.none)
+                        
+                        TextField("Pairing Token", text: $pairingToken)
+                            .textFieldStyle(CustomTextFieldStyle())
+                            .autocapitalization(.allCharacters)
+                        
+                        if let error = errorMessage {
+                            Text(error)
+                                .foregroundColor(.red)
+                                .font(.system(size: 12))
+                        }
+                        
+                        Button(action: pairDevice) {
+                            HStack {
+                                if isPairing {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                } else {
+                                    Text("Pair Device")
+                                }
+                            }
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(12)
+                        }
+                        .disabled(pairingToken.isEmpty || apiBaseURL.isEmpty || isPairing)
+                    }
+                    .padding(.horizontal, 32)
+                } else {
+                    // Manual Mode
+                    VStack(spacing: 16) {
+                        TextField("Room ID", text: $roomId)
+                            .textFieldStyle(CustomTextFieldStyle())
+                            .keyboardType(.numberPad)
+                        
+                        TextField("Tenant ID", text: $tenantId)
+                            .textFieldStyle(CustomTextFieldStyle())
+                            .keyboardType(.numberPad)
+                        
+                        TextField("API Base URL", text: $apiBaseURL)
+                            .textFieldStyle(CustomTextFieldStyle())
+                            .keyboardType(.URL)
+                            .autocapitalization(.none)
+                        
+                        Button(action: saveManualConfiguration) {
+                            Text("Save Configuration")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .cornerRadius(12)
+                        }
+                        .disabled(roomId.isEmpty || tenantId.isEmpty || apiBaseURL.isEmpty)
+                    }
+                    .padding(.horizontal, 32)
                 }
-                .padding(.horizontal, 32)
-                .disabled(roomId.isEmpty || tenantId.isEmpty || apiBaseURL.isEmpty)
             }
             .padding()
         }
     }
     
-    private func saveConfiguration() {
+    private func pairDevice() {
+        isPairing = true
+        errorMessage = nil
+        
+        configService.validatePairingToken(pairingToken, apiBaseURL: apiBaseURL) { result in
+            DispatchQueue.main.async {
+                isPairing = false
+                switch result {
+                case .success(let config):
+                    configService.saveConfiguration(config)
+                case .failure(let error):
+                    errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    private func saveManualConfiguration() {
         guard let roomIdInt = Int(roomId),
               let tenantIdInt = Int(tenantId) else {
             return

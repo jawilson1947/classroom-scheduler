@@ -2,17 +2,11 @@ import SwiftUI
 
 struct DisplayView: View {
     @EnvironmentObject var configService: ConfigurationService
-    @StateObject private var apiService: APIService
-    @StateObject private var eventSource: EventSourceService
+    @State private var apiService: APIService?
+    @State private var eventSource: EventSourceService?
     @State private var currentTime = Date()
     
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
-    init() {
-        let config = AppConfig(roomId: 1, tenantId: 1, apiBaseURL: "http://localhost:3000")
-        _apiService = StateObject(wrappedValue: APIService(config: config))
-        _eventSource = StateObject(wrappedValue: EventSourceService(config: config))
-    }
     
     var body: some View {
         ZStack {
@@ -29,10 +23,10 @@ struct DisplayView: View {
             VStack(spacing: 0) {
                 // Header
                 HeaderView(
-                    roomName: apiService.room?.name ?? "Loading...",
-                    buildingName: apiService.room?.buildingName ?? "",
+                    roomName: apiService?.room?.name ?? "Loading...",
+                    buildingName: apiService?.room?.buildingName ?? "",
                     currentTime: currentTime,
-                    isOnline: eventSource.isConnected
+                    isOnline: eventSource?.isConnected ?? false
                 )
                 .padding(.horizontal, 32)
                 .padding(.top, 32)
@@ -69,7 +63,7 @@ struct DisplayView: View {
                         }
                         
                         // No events message
-                        if apiService.events.isEmpty && !apiService.isLoading {
+                        if (apiService?.events.isEmpty ?? true) && !(apiService?.isLoading ?? false) {
                             Text("No events scheduled for today")
                                 .font(.system(size: 16))
                                 .foregroundColor(Color(white: 0.5))
@@ -82,16 +76,26 @@ struct DisplayView: View {
         }
         .onAppear {
             if let config = configService.config {
+                // Initialize services with configuration
                 let service = APIService(config: config)
                 let sse = EventSourceService(config: config)
                 
+                self.apiService = service
+                self.eventSource = sse
+                
+                // Fetch initial data
                 service.refresh()
                 
+                // Connect to SSE for real-time updates
                 sse.connect { eventType in
                     print("[SSE] Received: \(eventType)")
                     service.fetchEvents()
                 }
             }
+        }
+        .onDisappear {
+            // Clean up SSE connection
+            eventSource?.disconnect()
         }
         .onReceive(timer) { _ in
             currentTime = Date()
@@ -99,24 +103,24 @@ struct DisplayView: View {
     }
     
     private func getCurrentEvent() -> Event? {
-        apiService.events.first { event in
+        apiService?.events.first { event in
             guard let start = event.displayStart, let end = event.displayEnd else { return false }
             return currentTime >= start && currentTime <= end
         }
     }
     
     private func getUpcomingEvents() -> [Event] {
-        apiService.events.filter { event in
+        apiService?.events.filter { event in
             guard let start = event.displayStart else { return false }
             return start > currentTime
-        }
+        } ?? []
     }
     
     private func getPastEvents() -> [Event] {
-        apiService.events.filter { event in
+        apiService?.events.filter { event in
             guard let end = event.displayEnd else { return false }
             return end < currentTime
-        }
+        } ?? []
     }
 }
 

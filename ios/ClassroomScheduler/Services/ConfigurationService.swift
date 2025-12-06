@@ -75,7 +75,53 @@ class ConfigurationService: ObservableObject {
         UserDefaults.standard.set(config.tenantId, forKey: "tenantId")
         UserDefaults.standard.set(config.apiBaseURL, forKey: "apiBaseURL")
         
-        self.config = config
-        self.isConfigured = true
+        // Notify observers on main thread
+        DispatchQueue.main.async {
+            self.config = config
+            self.isConfigured = true
+        }
+    }
+    
+    func validatePairingToken(_ token: String, apiBaseURL: String, completion: @escaping (Result<AppConfig, Error>) -> Void) {
+        let urlString = "\(apiBaseURL)/api/device/validate-token"
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body = ["token": token]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode),
+                  let data = data else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response or token"])))
+                return
+            }
+            
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let roomId = json["room_id"] as? Int,
+                   let tenantId = json["tenant_id"] as? Int {
+                    
+                    let config = AppConfig(roomId: roomId, tenantId: tenantId, apiBaseURL: apiBaseURL)
+                    completion(.success(config))
+                } else {
+                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response format"])))
+                }
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
     }
 }

@@ -178,14 +178,14 @@ function SchedulerDashboard() {
             <DashboardCard
                 title="Manage Events"
                 description="Create, edit, and delete events"
-                href="/admin"
+                href="/admin/events"
                 icon="📅"
                 color="green"
             />
             <DashboardCard
                 title="View Schedule"
                 description="View all scheduled events"
-                href="/admin"
+                href="/admin/events"
                 icon="📊"
                 color="blue"
             />
@@ -199,14 +199,14 @@ function ViewerDashboard() {
             <DashboardCard
                 title="View Schedule"
                 description="View all scheduled events (read-only)"
-                href="/admin"
+                href="/admin/events"
                 icon="📅"
                 color="blue"
             />
             <DashboardCard
                 title="Room Schedules"
                 description="See what's happening in each room"
-                href="/admin"
+                href="/admin/events"
                 icon="🚪"
                 color="purple"
             />

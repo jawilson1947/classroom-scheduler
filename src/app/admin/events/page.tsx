@@ -66,6 +66,9 @@ export default function EventsPage() {
 
     const user = session?.user as any;
     const isOrgAdmin = user?.role === 'ORG_ADMIN';
+    const isScheduler = user?.role === 'SCHEDULER';
+    const isViewer = user?.role === 'VIEWER';
+    const canEdit = isOrgAdmin || isScheduler; // Only ORG_ADMIN and SCHEDULER can edit
 
     // Auto-select tenant for ORG_ADMIN and fetch tenant details
     useEffect(() => {
@@ -104,7 +107,10 @@ export default function EventsPage() {
     );
 
     // Helper to get room name
-    const getRoomName = (id: number) => rooms?.find(r => r.id === id)?.name || 'Unknown Room';
+    const getRoomName = (id: number) => {
+        const room = rooms?.find(r => r.id === id);
+        return room ? `${room.building_name}: ${room.name}` : 'Unknown Room';
+    };
 
     // Handlers
     const handleCreateEvent = async (e: React.FormEvent, forceCreate = false) => {
@@ -301,120 +307,123 @@ export default function EventsPage() {
                             )}
                         </div>
 
-                        <form id="event-form" onSubmit={handleCreateEvent} noValidate className={`grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-6 rounded-lg ${editingEventId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
-                            {editingEventId && (
-                                <div className="col-span-2 flex justify-between items-center mb-2">
-                                    <h3 className="font-bold text-orange-800">Editing Event</h3>
-                                    <button
-                                        type="button"
-                                        onClick={handleCancelEdit}
-                                        className="bg-slate-500 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                        {/* Only show form for users who can edit */}
+                        {canEdit && (
+                            <form id="event-form" onSubmit={handleCreateEvent} noValidate className={`grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-6 rounded-lg ${editingEventId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
+                                {editingEventId && (
+                                    <div className="col-span-2 flex justify-between items-center mb-2">
+                                        <h3 className="font-bold text-orange-800">Editing Event</h3>
+                                        <button
+                                            type="button"
+                                            onClick={handleCancelEdit}
+                                            className="bg-slate-500 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                )}
+                                <div className="col-span-2 md:col-span-1">
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Room</label>
+                                    <select
+                                        className="w-full border p-2 rounded"
+                                        value={eventForm.room_id}
+                                        onChange={e => setEventForm({ ...eventForm, room_id: e.target.value })}
+                                        required
                                     >
-                                        Cancel
+                                        <option value="">Select Room...</option>
+                                        {rooms?.map(r => <option key={r.id} value={r.id}>{r.name} ({r.building_name})</option>)}
+                                    </select>
+                                </div>
+
+                                <div className="col-span-2 md:col-span-1">
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Event Type</label>
+                                    <select
+                                        className="w-full border p-2 rounded"
+                                        value={eventForm.event_type}
+                                        onChange={e => setEventForm({ ...eventForm, event_type: e.target.value })}
+                                    >
+                                        <option value="class">Class</option>
+                                        <option value="meeting">Meeting</option>
+                                        <option value="event">Event</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
+                                    <input
+                                        className="w-full border p-2 rounded"
+                                        placeholder="e.g., Intro to Computer Science"
+                                        value={eventForm.title}
+                                        onChange={e => setEventForm({ ...eventForm, title: e.target.value })}
+                                        required
+                                    />
+                                </div>
+
+                                {/* Show days of week if start_date !== end_date (recurring) */}
+                                {dateRangeDefaults.start_date && dateRangeDefaults.end_date && dateRangeDefaults.start_date !== dateRangeDefaults.end_date && (
+                                    <div className="col-span-2">
+                                        <label className="block text-sm font-medium text-slate-700 mb-2">Repeat On</label>
+                                        <div className="flex flex-wrap gap-4">
+                                            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+                                                <label key={day} className="flex items-center gap-2 text-sm text-slate-600">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={eventForm.recurrence_days.includes(day)}
+                                                        onChange={e => {
+                                                            const days = e.target.checked
+                                                                ? [...eventForm.recurrence_days, day]
+                                                                : eventForm.recurrence_days.filter(d => d !== day);
+                                                            setEventForm({ ...eventForm, recurrence_days: days });
+                                                        }}
+                                                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                    />
+                                                    {day}
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="col-span-2 md:col-span-1">
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Daily Start Time</label>
+                                    <input
+                                        type="time"
+                                        className="w-full border p-2 rounded"
+                                        value={eventForm.daily_start_time}
+                                        onChange={e => setEventForm({ ...eventForm, daily_start_time: e.target.value })}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="col-span-2 md:col-span-1">
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Daily End Time</label>
+                                    <input
+                                        type="time"
+                                        className="w-full border p-2 rounded"
+                                        value={eventForm.daily_end_time}
+                                        onChange={e => setEventForm({ ...eventForm, daily_end_time: e.target.value })}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Facilitator (Optional)</label>
+                                    <input
+                                        className="w-full border p-2 rounded"
+                                        placeholder="e.g., Dr. Smith"
+                                        value={eventForm.facilitator_name}
+                                        onChange={e => setEventForm({ ...eventForm, facilitator_name: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="col-span-2">
+                                    <button type="submit" className={`w-full text-white py-3 rounded font-semibold ${editingEventId ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700'}`}>
+                                        {editingEventId ? 'Update Event' : 'Schedule Event'}
                                     </button>
                                 </div>
-                            )}
-                            <div className="col-span-2 md:col-span-1">
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Room</label>
-                                <select
-                                    className="w-full border p-2 rounded"
-                                    value={eventForm.room_id}
-                                    onChange={e => setEventForm({ ...eventForm, room_id: e.target.value })}
-                                    required
-                                >
-                                    <option value="">Select Room...</option>
-                                    {rooms?.map(r => <option key={r.id} value={r.id}>{r.name} ({r.building_name})</option>)}
-                                </select>
-                            </div>
-
-                            <div className="col-span-2 md:col-span-1">
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Event Type</label>
-                                <select
-                                    className="w-full border p-2 rounded"
-                                    value={eventForm.event_type}
-                                    onChange={e => setEventForm({ ...eventForm, event_type: e.target.value })}
-                                >
-                                    <option value="class">Class</option>
-                                    <option value="meeting">Meeting</option>
-                                    <option value="event">Event</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-
-                            <div className="col-span-2">
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
-                                <input
-                                    className="w-full border p-2 rounded"
-                                    placeholder="e.g., Intro to Computer Science"
-                                    value={eventForm.title}
-                                    onChange={e => setEventForm({ ...eventForm, title: e.target.value })}
-                                    required
-                                />
-                            </div>
-
-                            {/* Show days of week if start_date !== end_date (recurring) */}
-                            {dateRangeDefaults.start_date && dateRangeDefaults.end_date && dateRangeDefaults.start_date !== dateRangeDefaults.end_date && (
-                                <div className="col-span-2">
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">Repeat On</label>
-                                    <div className="flex flex-wrap gap-4">
-                                        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
-                                            <label key={day} className="flex items-center gap-2 text-sm text-slate-600">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={eventForm.recurrence_days.includes(day)}
-                                                    onChange={e => {
-                                                        const days = e.target.checked
-                                                            ? [...eventForm.recurrence_days, day]
-                                                            : eventForm.recurrence_days.filter(d => d !== day);
-                                                        setEventForm({ ...eventForm, recurrence_days: days });
-                                                    }}
-                                                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                                                />
-                                                {day}
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="col-span-2 md:col-span-1">
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Daily Start Time</label>
-                                <input
-                                    type="time"
-                                    className="w-full border p-2 rounded"
-                                    value={eventForm.daily_start_time}
-                                    onChange={e => setEventForm({ ...eventForm, daily_start_time: e.target.value })}
-                                    required
-                                />
-                            </div>
-
-                            <div className="col-span-2 md:col-span-1">
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Daily End Time</label>
-                                <input
-                                    type="time"
-                                    className="w-full border p-2 rounded"
-                                    value={eventForm.daily_end_time}
-                                    onChange={e => setEventForm({ ...eventForm, daily_end_time: e.target.value })}
-                                    required
-                                />
-                            </div>
-
-                            <div className="col-span-2">
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Facilitator (Optional)</label>
-                                <input
-                                    className="w-full border p-2 rounded"
-                                    placeholder="e.g., Dr. Smith"
-                                    value={eventForm.facilitator_name}
-                                    onChange={e => setEventForm({ ...eventForm, facilitator_name: e.target.value })}
-                                />
-                            </div>
-
-                            <div className="col-span-2">
-                                <button type="submit" className={`w-full text-white py-3 rounded font-semibold ${editingEventId ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700'}`}>
-                                    {editingEventId ? 'Update Event' : 'Schedule Event'}
-                                </button>
-                            </div>
-                        </form>
+                            </form>
+                        )}
 
                         <div className="space-y-4">
                             <h3 className="font-semibold text-slate-700 border-b pb-2">Upcoming Events</h3>
@@ -435,29 +444,31 @@ export default function EventsPage() {
                                                     {event.recurrence_days ? (
                                                         <>
                                                             <p>📅 {event.recurrence_days.split(',').map(d => d.trim()).join(', ')}</p>
-                                                            <p>🕒 {event.daily_start_time} - {event.daily_end_time}</p>
+                                                            <p>🕒 {event.daily_start_time} - {event.daily_end_time} ({new Date(event.start_time).toLocaleDateString()} - {new Date(event.end_time).toLocaleDateString()})</p>
                                                         </>
                                                     ) : (
                                                         <p>🕒 {new Date(event.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} • {new Date(event.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {new Date(event.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
                                                     )}
                                                 </div>
                                             </div>
-                                            <div className="flex items-center">
-                                                <button
-                                                    onClick={() => handleEditEvent(event)}
-                                                    className="text-blue-600 hover:text-blue-800 p-2"
-                                                    title="Edit Event"
-                                                >
-                                                    ✏️
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDeleteEvent(event.id)}
-                                                    className="text-red-600 hover:text-red-800 p-2"
-                                                    title="Delete Event"
-                                                >
-                                                    🗑️
-                                                </button>
-                                            </div>
+                                            {canEdit && (
+                                                <div className="flex items-center">
+                                                    <button
+                                                        onClick={() => handleEditEvent(event)}
+                                                        className="text-blue-600 hover:text-blue-800 p-2"
+                                                        title="Edit Event"
+                                                    >
+                                                        ✏️
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteEvent(event.id)}
+                                                        className="text-red-600 hover:text-red-800 p-2"
+                                                        title="Delete Event"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     ))}
                                 </div>

@@ -45,19 +45,32 @@ struct Event: Codable, Identifiable {
     }
     
     func occursToday() -> Bool {
+        let calendar = Calendar.current
+        let today = Date()
+        let todayStart = calendar.startOfDay(for: today)
+        
         if let recurrenceDays = recurrenceDays {
-            let today = Date()
+            // Check date range first
+            guard let start = ISO8601DateFormatter().date(from: startTime),
+                  let end = ISO8601DateFormatter().date(from: endTime) else { return false }
+            
+            // Check if today is within the event's overall date range
+            if todayStart < calendar.startOfDay(for: start) || todayStart > calendar.startOfDay(for: end) {
+                return false
+            }
+            
+            // Check if today is one of the recurrence days
             let formatter = DateFormatter()
             formatter.dateFormat = "EEE"
+            formatter.locale = Locale(identifier: "en_US") // Ensure consistent day names
             let todayDay = formatter.string(from: today)
             return recurrenceDays.contains(todayDay)
         }
         
         // For non-recurring events, check if they occur today
         guard let start = displayStart, let end = displayEnd else { return false }
-        let calendar = Calendar.current
-        let today = Date()
-        return calendar.isDate(start, inSameDayAs: today) || 
+        
+        return calendar.isDate(start, inSameDayAs: today) ||
                calendar.isDate(end, inSameDayAs: today) ||
                (start < today && end > today)
     }
