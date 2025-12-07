@@ -5,8 +5,53 @@ class ConfigurationService: ObservableObject {
     @Published var config: AppConfig?
     @Published var isConfigured: Bool = false
     
+    var heartbeatTimer: Timer?
+
     init() {
         loadConfiguration()
+        if isConfigured {
+            startHeartbeat()
+        }
+    }
+    
+    deinit {
+        stopHeartbeat()
+    }
+    
+    func stopHeartbeat() {
+        heartbeatTimer?.invalidate()
+        heartbeatTimer = nil
+    }
+
+    func startHeartbeat() {
+        stopHeartbeat()
+        
+        guard let config = self.config, let deviceId = config.deviceId else { return }
+        
+        // Send immediate heartbeat
+        sendHeartbeat(config: config)
+        
+        // Schedule timer (every 60 seconds)
+        heartbeatTimer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { [weak self] _ in
+            guard let self = self, let currentConfig = self.config else { return }
+            self.sendHeartbeat(config: currentConfig)
+        }
+    }
+    
+    private func sendHeartbeat(config: AppConfig) {
+        guard let deviceId = config.deviceId else { return }
+        
+        let urlString = "\(config.apiBaseURL)/api/device/heartbeat"
+        guard let url = URL(string: urlString) else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body = ["device_id": deviceId]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        
+        URLSession.shared.dataTask(with: request).resume()
     }
     
     func loadConfiguration() {
@@ -45,7 +90,9 @@ class ConfigurationService: ObservableObject {
             return nil
         }
         
-        return AppConfig(roomId: roomId, tenantId: tenantId, apiBaseURL: apiBaseURL)
+        let deviceId = managedConfig["deviceId"] as? Int
+        
+        return AppConfig(roomId: roomId, tenantId: tenantId, apiBaseURL: apiBaseURL, deviceId: deviceId)
     }
     
     private func loadFromUserDefaults() -> AppConfig? {
@@ -55,7 +102,9 @@ class ConfigurationService: ObservableObject {
             return nil
         }
         
-        return AppConfig(roomId: roomId, tenantId: tenantId, apiBaseURL: apiBaseURL)
+        let deviceId = UserDefaults.standard.object(forKey: "deviceId") as? Int
+        
+        return AppConfig(roomId: roomId, tenantId: tenantId, apiBaseURL: apiBaseURL, deviceId: deviceId)
     }
     
     private func loadFromEnvironment() -> AppConfig? {
@@ -67,18 +116,28 @@ class ConfigurationService: ObservableObject {
             return nil
         }
         
-        return AppConfig(roomId: roomId, tenantId: tenantId, apiBaseURL: apiBaseURL)
+        // Optional device ID from env
+        var deviceId: Int? = nil
+        if let deviceIdStr = ProcessInfo.processInfo.environment["DEVICE_ID"] {
+            deviceId = Int(deviceIdStr)
+        }
+        
+        return AppConfig(roomId: roomId, tenantId: tenantId, apiBaseURL: apiBaseURL, deviceId: deviceId)
     }
     
     func saveConfiguration(_ config: AppConfig) {
         UserDefaults.standard.set(config.roomId, forKey: "roomId")
         UserDefaults.standard.set(config.tenantId, forKey: "tenantId")
         UserDefaults.standard.set(config.apiBaseURL, forKey: "apiBaseURL")
+        if let deviceId = config.deviceId {
+            UserDefaults.standard.set(deviceId, forKey: "deviceId")
+        }
         
         // Notify observers on main thread
         DispatchQueue.main.async {
             self.config = config
             self.isConfigured = true
+            self.startHeartbeat()
         }
     }
     
@@ -114,7 +173,8 @@ class ConfigurationService: ObservableObject {
                    let roomId = json["room_id"] as? Int,
                    let tenantId = json["tenant_id"] as? Int {
                     
-                    let config = AppConfig(roomId: roomId, tenantId: tenantId, apiBaseURL: apiBaseURL)
+                    let deviceId = json["device_id"] as? Int
+                    let config = AppConfig(roomId: roomId, tenantId: tenantId, apiBaseURL: apiBaseURL, deviceId: deviceId)
                     completion(.success(config))
                 } else {
                     completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response format"])))

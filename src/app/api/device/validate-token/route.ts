@@ -64,7 +64,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
             success: true,
             room_id: tokenData.room_id,
-            tenant_id: tokenData.tenant_id
+            tenant_id: tokenData.tenant_id,
+            device_id: newDeviceId
         });
 
     } catch (error: any) {
