@@ -41,6 +41,16 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { tenant_id, room_id, title, facilitator_name, start_time, end_time, description, event_type, force } = body;
 
+        // Helper to formatting ISO string to MySQL DATETIME
+        const formatToMySQL = (iso: string) => iso.slice(0, 19).replace('T', ' ');
+        const start_time_db = formatToMySQL(start_time);
+        const end_time_db = formatToMySQL(end_time);
+
+        // Ensure undefined optional fields are null
+        const recurrence_days = body.recurrence_days || null;
+        const daily_start_time = body.daily_start_time || null;
+        const daily_end_time = body.daily_end_time || null;
+
         // Check for conflicts - need to handle both recurring and non-recurring events
         // For recurring events, check if they occur on the same days of the week with overlapping times
         // For non-recurring events, check if they overlap on any specific day
@@ -160,7 +170,7 @@ export async function POST(request: NextRequest) {
         const [result] = await pool.query(
             `INSERT INTO events (tenant_id, room_id, title, facilitator_name, start_time, end_time, description, event_type, recurrence_days, daily_start_time, daily_end_time) 
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [tenant_id, room_id, title, facilitator_name, start_time, end_time, description, event_type, body.recurrence_days, body.daily_start_time, body.daily_end_time]
+            [tenant_id, room_id, title, facilitator_name, start_time_db, end_time_db, description, event_type, recurrence_days, daily_start_time, daily_end_time]
         );
 
         // Broadcast the event creation to all connected clients
@@ -181,6 +191,16 @@ export async function PUT(request: NextRequest) {
     try {
         const body = await request.json();
         const { id, tenant_id, room_id, title, facilitator_name, start_time, end_time, description, event_type, force } = body;
+
+        // Helper to formatting ISO string to MySQL DATETIME
+        const formatToMySQL = (iso: string) => iso.slice(0, 19).replace('T', ' ');
+        const start_time_db = formatToMySQL(start_time);
+        const end_time_db = formatToMySQL(end_time);
+
+        // Ensure undefined optional fields are null
+        const recurrence_days = body.recurrence_days || null;
+        const daily_start_time = body.daily_start_time || null;
+        const daily_end_time = body.daily_end_time || null;
 
         if (!id) {
             return NextResponse.json({ error: 'Event ID is required' }, { status: 400 });
@@ -289,7 +309,7 @@ export async function PUT(request: NextRequest) {
             `UPDATE events 
        SET title = ?, facilitator_name = ?, start_time = ?, end_time = ?, description = ?, event_type = ?, room_id = ?, recurrence_days = ?, daily_start_time = ?, daily_end_time = ?
        WHERE id = ? AND tenant_id = ?`,
-            [title, facilitator_name, start_time, end_time, description, event_type, room_id, body.recurrence_days, body.daily_start_time, body.daily_end_time, id, tenant_id]
+            [title, facilitator_name, start_time_db, end_time_db, description, event_type, room_id, recurrence_days, daily_start_time, daily_end_time, id, tenant_id]
         );
 
         // Broadcast the event update to all connected clients
