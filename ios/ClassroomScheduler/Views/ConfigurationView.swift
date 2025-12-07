@@ -150,7 +150,8 @@ struct ConfigurationView: View {
         let config = AppConfig(
             roomId: roomIdInt,
             tenantId: tenantIdInt,
-            apiBaseURL: apiBaseURL
+            apiBaseURL: apiBaseURL,
+            deviceId: nil
         )
         
         configService.saveConfiguration(config)

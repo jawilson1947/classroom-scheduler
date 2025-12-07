@@ -25,7 +25,7 @@ struct Event: Codable, Identifiable {
     
     // Computed properties for display
     var displayStart: Date? {
-        if let recurrenceDays = recurrenceDays,
+        if recurrenceDays != nil,
            let dailyStart = dailyStartTime {
             return parseTimeForToday(dailyStart)
         }
@@ -33,7 +33,7 @@ struct Event: Codable, Identifiable {
     }
     
     var displayEnd: Date? {
-        if let recurrenceDays = recurrenceDays,
+        if recurrenceDays != nil,
            let dailyEnd = dailyEndTime {
             return parseTimeForToday(dailyEnd)
         }

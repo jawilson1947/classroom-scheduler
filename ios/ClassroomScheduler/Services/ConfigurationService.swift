@@ -26,7 +26,7 @@ class ConfigurationService: ObservableObject {
     func startHeartbeat() {
         stopHeartbeat()
         
-        guard let config = self.config, let deviceId = config.deviceId else { return }
+        guard let config = self.config, config.deviceId != nil else { return }
         
         // Send immediate heartbeat
         sendHeartbeat(config: config)
