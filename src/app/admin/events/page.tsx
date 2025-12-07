@@ -119,8 +119,14 @@ export default function EventsPage() {
 
         // Build start_time and end_time from date range + daily times
         const isRecurring = dateRangeDefaults.start_date !== dateRangeDefaults.end_date;
-        const start_time = `${dateRangeDefaults.start_date}T${eventForm.daily_start_time}`;
-        const end_time = `${dateRangeDefaults.end_date}T${eventForm.daily_end_time}`;
+
+        // Construct Date objects in Local Time
+        const startDateObj = new Date(`${dateRangeDefaults.start_date}T${eventForm.daily_start_time}`);
+        const endDateObj = new Date(`${dateRangeDefaults.end_date}T${eventForm.daily_end_time}`);
+
+        // Send as UTC ISO strings
+        const start_time = startDateObj.toISOString();
+        const end_time = endDateObj.toISOString();
 
         const url = editingEventId ? '/api/events' : '/api/events';
         const method = editingEventId ? 'PUT' : 'POST';
@@ -188,9 +194,23 @@ export default function EventsPage() {
     const handleEditEvent = (event: Event) => {
         setEditingEventId(event.id);
 
-        // Populate date range from event's start/end times
-        const startDate = new Date(event.start_time).toISOString().slice(0, 10);
-        const endDate = new Date(event.end_time).toISOString().slice(0, 10);
+        // Helper to get local date string YYYY-MM-DD
+        const toLocalYMD = (dateStr: string) => {
+            const date = new Date(dateStr);
+            const offset = date.getTimezoneOffset() * 60000;
+            return new Date(date.getTime() - offset).toISOString().slice(0, 10);
+        };
+
+        // Helper to get local time string HH:mm
+        const toLocalHM = (dateStr: string) => {
+            const date = new Date(dateStr);
+            return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        };
+
+        // Populate date range from event's start/end times using Local Time
+        const startDate = toLocalYMD(event.start_time);
+        const endDate = toLocalYMD(event.end_time);
+
         setDateRangeDefaults({
             start_date: startDate,
             end_date: endDate
@@ -203,8 +223,8 @@ export default function EventsPage() {
             description: event.description || '',
             event_type: event.event_type || 'class',
             recurrence_days: event.recurrence_days ? event.recurrence_days.split(',') : [],
-            daily_start_time: event.daily_start_time || new Date(event.start_time).toISOString().slice(11, 16),
-            daily_end_time: event.daily_end_time || new Date(event.end_time).toISOString().slice(11, 16)
+            daily_start_time: event.daily_start_time || toLocalHM(event.start_time),
+            daily_end_time: event.daily_end_time || toLocalHM(event.end_time)
         });
         // Scroll to form
         const form = document.getElementById('event-form');
