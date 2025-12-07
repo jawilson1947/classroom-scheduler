@@ -5,7 +5,7 @@ struct ConfigurationView: View {
     @State private var pairingToken: String = ""
     @State private var roomId: String = ""
     @State private var tenantId: String = ""
-    @State private var apiBaseURL: String = "https://your-app.vercel.app" // Set default to production URL or empty
+    @State private var apiBaseURL: String = "https://ipad-scheduler.com"
     @State private var isPairing: Bool = false
     @State private var errorMessage: String?
     @State private var activeTab: Int = 0 
@@ -40,14 +40,22 @@ struct ConfigurationView: View {
                             .foregroundColor(Color(white: 0.6))
                             .multilineTextAlignment(.center)
                         
-                        TextField("API Base URL", text: $apiBaseURL)
-                            .textFieldStyle(CustomTextFieldStyle())
-                            .keyboardType(.URL)
-                            .autocapitalization(.none)
+                        // API Base URL is hidden/hardcoded for simplicity
                         
                         TextField("Pairing Token", text: $pairingToken)
                             .textFieldStyle(CustomTextFieldStyle())
                             .autocapitalization(.allCharacters)
+                            .onChange(of: pairingToken) { newValue in
+                                // Smart cleanup: If user pasted a full URL, just extract the code
+                                if newValue.lowercased().hasPrefix("http") {
+                                    if let url = URL(string: newValue) {
+                                        let code = url.lastPathComponent
+                                        if !code.isEmpty && code != "/" {
+                                            pairingToken = code
+                                        }
+                                    }
+                                }
+                            }
                         
                         if let error = errorMessage {
                             Text(error)
@@ -71,7 +79,7 @@ struct ConfigurationView: View {
                             .background(Color.blue)
                             .cornerRadius(12)
                         }
-                        .disabled(pairingToken.isEmpty || apiBaseURL.isEmpty || isPairing)
+                        .disabled(pairingToken.isEmpty || isPairing)
                     }
                     .padding(.horizontal, 32)
                 } else {
@@ -112,7 +120,15 @@ struct ConfigurationView: View {
         isPairing = true
         errorMessage = nil
         
-        configService.validatePairingToken(pairingToken, apiBaseURL: apiBaseURL) { result in
+        // Smart cleanup: If user pasted a full URL, just extract the code
+        let cleanToken: String
+        if pairingToken.contains("http") || pairingToken.contains("/") {
+            cleanToken = pairingToken.split(separator: "/").last.map(String.init) ?? pairingToken
+        } else {
+            cleanToken = pairingToken
+        }
+        
+        configService.validatePairingToken(cleanToken, apiBaseURL: apiBaseURL) { result in
             DispatchQueue.main.async {
                 isPairing = false
                 switch result {

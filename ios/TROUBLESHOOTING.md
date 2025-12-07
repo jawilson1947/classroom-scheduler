@@ -28,3 +28,26 @@ This error means the file `ConfigurationService.swift` exists in your folder but
 ### 2. Clean Build Folder
 1.  In the top menu, click **Product** > **Clean Build Folder**.
 2.  Press **Cmd + B** to build again. 
+
+## Error: "Invalid response or token" on iOS
+
+This generic error often occurs during pairing. Here are the most common causes:
+
+### 1. The Token Was Already Used
+**This is the #1 Cause.** The pairing tokens are **SINGLE USE**.
+- If you opened the pairing URL in a web browser to "test it", **the token is now DEAD**.
+- If you ran a `curl` command to test it, **the token is now DEAD**.
+
+**Solution:**
+1.  Generate a **NEW** token in the Admin Dashboard.
+2.  Do **NOT** visit the link.
+3.  Enter the code immediately into the iOS App.
+
+### 2. Incorrect Input Format
+The iOS app requires specific formatting:
+-   **API Base URL**: Must be just the domain (e.g., `https://ipad-scheduler.com`).
+    *   ❌ No trailing slash (`/`) at the end.
+    *   ❌ No path (`/display/pair`).
+-   **Pairing Token**: Must be just the code (e.g., `ABC-123`).
+    *   ❌ Do not paste the full URL.
+

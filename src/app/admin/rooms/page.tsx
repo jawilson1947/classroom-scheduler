@@ -204,7 +204,7 @@ export default function RoomsPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 p-6">
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="max-w-5xl mx-auto space-y-6">
                 <header className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
                         <a href="/dashboard" className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
@@ -220,58 +220,47 @@ export default function RoomsPage() {
                     </div>
                 </header>
 
-                {/* Pairing Code Modal */}
-                {pairingCode && (
-                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                        <div className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md w-full">
-                            <h3 className="text-2xl font-bold mb-4">Device Pairing Code</h3>
-                            <div className="text-6xl font-mono font-bold text-blue-600 tracking-widest mb-6">
-                                {pairingCode}
-                            </div>
-                            <p className="text-slate-600 mb-6">
-                                Enter this code on the iPad at <strong>/display/setup</strong>
-                            </p>
-                            <button
-                                onClick={() => setPairingCode(null)}
-                                className="bg-slate-200 hover:bg-slate-300 px-6 py-2 rounded-lg font-semibold"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {/* Pairing URL Modal */}
+                {/* Pairing Modal - Consolidated */}
                 {pairingUrl && (
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                         <div className="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full">
-                            <h3 className="text-2xl font-bold mb-4">Auto-Pairing URL</h3>
-                            <p className="text-slate-600 mb-4">
-                                Navigate the iPad to this URL to automatically pair it with the room:
-                            </p>
-                            <div className="bg-slate-100 p-4 rounded-lg mb-4 font-mono text-sm break-all border-2 border-slate-300">
-                                {pairingUrl}
+                            <h3 className="text-2xl font-bold mb-4">Pair New Device</h3>
+
+                            <div className="mb-8 p-6 bg-slate-50 rounded-xl border-2 border-slate-200 text-center">
+                                <h4 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">iOS App Pairing Token</h4>
+                                <div className="text-5xl font-mono font-bold text-blue-600 tracking-widest mb-2 selection:bg-blue-100">
+                                    {pairingUrl.split('/').pop()}
+                                </div>
+                                <p className="text-sm text-slate-400">Enter this code in the iPad App</p>
                             </div>
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(pairingUrl);
-                                        setMessage('URL copied to clipboard!');
-                                        setTimeout(() => setMessage(''), 2000);
-                                    }}
-                                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold"
-                                >
-                                    📋 Copy URL
-                                </button>
+
+                            <div className="mb-6">
+                                <h4 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Web Browser Auto-Pairing</h4>
+                                <div className="bg-slate-100 p-3 rounded-lg font-mono text-sm break-all border border-slate-300 flex justify-between items-center gap-2">
+                                    <span className="truncate">{pairingUrl}</span>
+                                    <button
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(pairingUrl);
+                                            setMessage('URL copied!');
+                                            setTimeout(() => setMessage(''), 2000);
+                                        }}
+                                        className="text-blue-600 hover:text-blue-800 font-bold px-2"
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end">
                                 <button
                                     onClick={() => setPairingUrl(null)}
-                                    className="flex-1 bg-slate-200 hover:bg-slate-300 px-6 py-3 rounded-lg font-semibold"
+                                    className="bg-slate-200 hover:bg-slate-300 px-6 py-3 rounded-lg font-semibold"
                                 >
                                     Close
                                 </button>
                             </div>
-                            <p className="text-xs text-slate-500 mt-4">
-                                💡 Tip: This URL will automatically configure the iPad and redirect it to the display page. The token expires in 7 days and can only be used once.
+                            <p className="text-xs text-slate-400 mt-4 text-center">
+                                Token expires in 7 days. Single use only.
                             </p>
                         </div>
                     </div>
@@ -282,7 +271,7 @@ export default function RoomsPage() {
                     <section className="bg-white rounded-xl shadow p-5">
                         <h2 className="text-lg font-bold mb-3">Rooms & Devices</h2>
 
-                        <form onSubmit={handleCreateRoom} className={`grid grid-cols-1 md:grid-cols-4 gap-3 mb-8 p-4 rounded-lg ${editingRoomId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
+                        <form onSubmit={handleCreateRoom} className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 p-4 rounded-lg ${editingRoomId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
                             {editingRoomId && (
                                 <div className="col-span-full flex justify-between items-center mb-2">
                                     <h3 className="font-bold text-orange-800">Editing Room</h3>
@@ -310,7 +299,7 @@ export default function RoomsPage() {
                             </button>
                         </form>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {rooms?.map(room => (
                                 <div key={room.id} className="border border-slate-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                                     <div className="flex justify-between items-start mb-3">
@@ -323,11 +312,11 @@ export default function RoomsPage() {
                                         </div>
                                     </div>
 
-                                    <div className="flex gap-2 mt-3">
+                                    <div className="grid grid-cols-2 gap-2 mt-3">
                                         <button
                                             type="button"
                                             onClick={() => handleEditRoom(room)}
-                                            className="flex-1 bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700 text-sm"
+                                            className="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700 text-sm flex items-center justify-center gap-1"
                                             title="Edit Room"
                                         >
                                             ✏️ Edit
@@ -335,38 +324,47 @@ export default function RoomsPage() {
                                         <button
                                             type="button"
                                             onClick={() => handleDeleteRoom(room.id)}
-                                            className="flex-1 bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700 text-sm"
+                                            className="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700 text-sm flex items-center justify-center gap-1"
                                             title="Delete Room"
                                         >
                                             🗑️ Delete
                                         </button>
-                                    </div>
 
-                                    {room.device_id ? (
-                                        <div className="text-xs text-slate-500 mt-2">
-                                            Device ID: {room.device_id}
-                                        </div>
-                                    ) : (
-                                        <div className="flex gap-2 mt-2">
-                                            <button
-                                                onClick={() => handlePairDevice(room.id)}
-                                                className="flex-1 bg-slate-800 text-white py-2 rounded text-sm hover:bg-slate-700 flex items-center justify-center gap-2"
-                                            >
-                                                <span>📱</span> Pairing Code
-                                            </button>
+                                        {/* Bottom Row: Connect or Unpair (Full Width) */}
+                                        {room.device_id ? (
+                                            <div className="col-span-2 flex flex-col gap-2">
+                                                <div className="text-xs text-slate-500 text-center bg-slate-50 py-1 rounded border border-slate-100">
+                                                    Device ID: {room.device_id}
+                                                </div>
+                                                <button
+                                                    onClick={async () => {
+                                                        if (!confirm('Are you sure you want to unpair this device?')) return;
+                                                        try {
+                                                            const res = await fetch(`/api/device/pair?room_id=${room.id}`, { method: 'DELETE' });
+                                                            if (!res.ok) throw new Error('Failed to unpair');
+                                                            mutateRooms();
+                                                            setMessage('Device unpaired successfully');
+                                                        } catch (err) { setError('Error unpairing device'); }
+                                                    }}
+                                                    className="w-full bg-red-100 text-red-700 py-1 px-3 rounded text-sm hover:bg-red-200 flex items-center justify-center gap-1 font-semibold border border-red-200"
+                                                >
+                                                    <span>🚫</span> Unpair
+                                                </button>
+                                            </div>
+                                        ) : (
                                             <button
                                                 onClick={() => handleGeneratePairingUrl(room.id)}
                                                 disabled={generatingToken}
-                                                className="flex-1 bg-blue-700 text-white py-2 rounded text-sm hover:bg-blue-800 flex items-center justify-center gap-2 disabled:opacity-50"
+                                                className="col-span-2 bg-blue-700 text-white py-1 px-3 rounded text-sm hover:bg-blue-800 flex items-center justify-center gap-1 disabled:opacity-50 font-semibold"
                                             >
-                                                <span>🔗</span> Pairing URL
+                                                <span>📱</span> Connect Device
                                             </button>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
                             ))}
                             {rooms?.length === 0 && (
-                                <p className="text-slate-500 col-span-2 text-center py-8">No rooms found. Add a building and then create a room.</p>
+                                <p className="text-slate-500 col-span-full text-center py-8">No rooms found. Add a building and then create a room.</p>
                             )}
                         </div>
                     </section>
