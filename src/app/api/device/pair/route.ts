@@ -73,22 +73,11 @@ export async function DELETE(request: NextRequest) {
             params = [room_id];
         }
 
-        // Also nullify device_id in rooms table if it exists there
-        if (room_id) {
-            await pool.query('UPDATE rooms SET device_id = NULL WHERE id = ?', [room_id]);
-        } else if (device_id) {
-            // If we only have device_id, we should find the room first to clear it, or assume constraint handles it
-            // For safety/simplicity, let's just delete the device. 
-            // If the FK is ON DELETE SET NULL, it's automatic. If not, we might need manual update.
-            // Given the previous code didn't show the schema, I'll assume manual update is safer.
-            await pool.query('UPDATE rooms SET device_id = NULL WHERE device_id = ?', [device_id]);
-        }
-
         await pool.query(query, params);
 
         return NextResponse.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error unpairing device:', error);
-        return NextResponse.json({ error: 'Failed to unpair device' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to unpair device', details: error.message }, { status: 500 });
     }
 }

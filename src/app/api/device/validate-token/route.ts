@@ -60,12 +60,6 @@ export async function POST(request: NextRequest) {
 
         const newDeviceId = (result as any).insertId;
 
-        // Update room with device_id
-        await pool.query(
-            'UPDATE rooms SET device_id = ? WHERE id = ?',
-            [newDeviceId, tokenData.room_id]
-        );
-
         // Return room and tenant information
         return NextResponse.json({
             success: true,
@@ -73,10 +67,11 @@ export async function POST(request: NextRequest) {
             tenant_id: tokenData.tenant_id
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error validating pairing token:', error);
         return NextResponse.json({
-            error: 'Failed to validate pairing token'
+            error: 'Failed to validate pairing token',
+            details: error.message
         }, { status: 500 });
     }
 }
