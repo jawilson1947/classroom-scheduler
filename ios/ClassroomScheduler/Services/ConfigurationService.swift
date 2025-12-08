@@ -39,7 +39,12 @@ class ConfigurationService: ObservableObject {
     }
     
     private func sendHeartbeat(config: AppConfig) {
-        guard let deviceId = config.deviceId else { return }
+        guard let deviceId = config.deviceId else { 
+            print("❌ Heartbeat failed: deviceId is nil")
+            return 
+        }
+        
+        print("🔵 Sending heartbeat for device_id: \(deviceId) to \(config.apiBaseURL)")
         
         let urlString = "\(config.apiBaseURL)/api/device/heartbeat"
         guard let url = URL(string: urlString) else { return }

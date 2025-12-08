@@ -27,6 +27,7 @@ interface Room {
     building_name: string;
     device_id: number | null;
     pairing_code: string | null;
+    last_seen_at: string | null;
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -307,8 +308,24 @@ export default function RoomsPage() {
                                             <h3 className="font-bold text-lg">{room.name}</h3>
                                             <p className="text-sm text-slate-500">{room.building_name}</p>
                                         </div>
-                                        <div className={`px-2 py-1 rounded text-xs font-bold ${room.device_id ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-600'}`}>
-                                            {room.device_id ? 'PAIRED' : 'NO DEVICE'}
+                                        <div className="flex gap-2">
+                                            {room.device_id && (
+                                                <>
+                                                    {(() => {
+                                                        const isOnline = room.last_seen_at &&
+                                                            (new Date().getTime() - new Date(room.last_seen_at).getTime()) < 120000;
+                                                        return (
+                                                            <div className={`px-2 py-1 rounded text-xs font-bold ${isOnline ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                                                                }`}>
+                                                                {isOnline ? '● ONLINE' : '○ OFFLINE'}
+                                                            </div>
+                                                        );
+                                                    })()}
+                                                </>
+                                            )}
+                                            <div className={`px-2 py-1 rounded text-xs font-bold ${room.device_id ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-600'}`}>
+                                                {room.device_id ? 'PAIRED' : 'NO DEVICE'}
+                                            </div>
                                         </div>
                                     </div>
 
