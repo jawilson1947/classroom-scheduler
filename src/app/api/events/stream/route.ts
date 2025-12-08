@@ -8,30 +8,39 @@ export async function GET(request: NextRequest) {
     // Authenticate the request
     const session = await auth();
     const url = new URL(request.url);
-    const deviceId = url.searchParams.get('device_id');
+    const deviceIdRaw = url.searchParams.get('device_id');
+
+    console.log(`[SSE] Auth check. Session: ${!!session}, DeviceID: ${deviceIdRaw}`);
 
     let isAuthenticated = false;
 
     if (session) {
         isAuthenticated = true;
-    } else if (deviceId) {
+    } else if (deviceIdRaw) {
         // Verify device exists
         try {
             const { default: pool } = await import('@/lib/db');
             const [devices] = await pool.query(
                 'SELECT id FROM devices WHERE id = ?',
-                [deviceId]
+                [deviceIdRaw]
             );
-            if ((devices as any[]).length > 0) {
+
+            const count = (devices as any[]).length;
+            console.log(`[SSE] Device lookup result matches: ${count}`);
+
+            if (count > 0) {
                 isAuthenticated = true;
             }
         } catch (error) {
-            console.error('Error verifying device for SSE:', error);
+            console.error('[SSE] Error verifying device for SSE:', error);
         }
     }
 
     if (!isAuthenticated) {
-        return new Response('Unauthorized', { status: 401 });
+        return new Response('Unauthorized', {
+            status: 401,
+            headers: { 'X-SSE-Version': 'v2-debug' }
+        });
     }
 
     const clientId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
