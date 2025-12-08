@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
              d.id as device_id, d.pairing_code, d.last_seen_at
       FROM rooms r
       LEFT JOIN buildings b ON r.building_id = b.id
-      LEFT JOIN devices d ON r.id = d.room_id
+      LEFT JOIN devices d ON r.id = d.room_id AND d.tenant_id = r.tenant_id
       WHERE r.tenant_id = ?
     `;
         const params: any[] = [tenantId];
@@ -27,6 +27,9 @@ export async function GET(request: NextRequest) {
         query += ' ORDER BY b.name, r.name';
 
         const [rows] = await pool.query<RowDataPacket[]>(query, params);
+
+        console.log('Rooms query result for tenant', tenantId, ':', JSON.stringify(rows, null, 2));
+
         return NextResponse.json(rows);
     } catch (error) {
         console.error('Error fetching rooms:', error);
