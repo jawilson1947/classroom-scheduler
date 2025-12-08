@@ -7,7 +7,30 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
     // Authenticate the request
     const session = await auth();
-    if (!session) {
+    const url = new URL(request.url);
+    const deviceId = url.searchParams.get('device_id');
+
+    let isAuthenticated = false;
+
+    if (session) {
+        isAuthenticated = true;
+    } else if (deviceId) {
+        // Verify device exists
+        try {
+            const { default: pool } = await import('@/lib/db');
+            const [devices] = await pool.query(
+                'SELECT id FROM devices WHERE id = ?',
+                [deviceId]
+            );
+            if ((devices as any[]).length > 0) {
+                isAuthenticated = true;
+            }
+        } catch (error) {
+            console.error('Error verifying device for SSE:', error);
+        }
+    }
+
+    if (!isAuthenticated) {
         return new Response('Unauthorized', { status: 401 });
     }
 
