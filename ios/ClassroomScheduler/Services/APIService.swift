@@ -42,6 +42,7 @@ class APIService: ObservableObject {
     }
     
     func fetchEvents() {
+        print("[APIService] fetchEvents called")
         isLoading = true
         error = nil
         
@@ -61,18 +62,32 @@ class APIService: ObservableObject {
             return
         }
         
+        print("[APIService] Fetching events from: \(urlString)")
+        
         URLSession.shared.dataTaskPublisher(for: url)
-            .map(\.data)
+            .map { (data, response) -> Data in
+                if let httpResponse = response as? HTTPURLResponse {
+                    print("[APIService] Events API status: \(httpResponse.statusCode)")
+                }
+                // Debug print raw JSON
+                if let jsonStr = String(data: data, encoding: .utf8) {
+                    print("[APIService] Raw events JSON: \(jsonStr)")
+                }
+                return data
+            }
             .decode(type: [Event].self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
+                    print("[APIService] Failed to fetch/decode events: \(error)")
                     self?.error = "Failed to fetch events: \(error.localizedDescription)"
                 }
             } receiveValue: { [weak self] events in
+                print("[APIService] Successfully decoded \(events.count) events")
                 self?.events = events.filter { $0.occursToday() }
                     .sorted { ($0.displayStart ?? Date()) < ($1.displayStart ?? Date()) }
+                print("[APIService] Filtered to \(self?.events.count ?? 0) events for today")
             }
             .store(in: &cancellables)
     }

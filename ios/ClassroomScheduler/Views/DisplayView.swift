@@ -75,6 +75,7 @@ struct DisplayView: View {
             }
         }
         .onAppear {
+            print("[DisplayView] onAppear triggered. Config present: \(configService.config != nil)")
             if let config = configService.config {
                 // Initialize services with configuration
                 let service = APIService(config: config)
