@@ -60,6 +60,8 @@ export async function POST(request: NextRequest) {
 
         const newDeviceId = (result as any).insertId;
 
+        console.log(`✅ Device created: device_id=${newDeviceId}, room_id=${tokenData.room_id}, tenant_id=${tokenData.tenant_id}`);
+
         // Return room and tenant information
         return NextResponse.json({
             success: true,
