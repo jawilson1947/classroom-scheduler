@@ -25,7 +25,7 @@ interface Room {
     name: string;
     capacity: number;
     building_name: string;
-    device_id: number | null;
+    linked_device_id: number | null;
     pairing_code: string | null;
     last_seen_at: string | null;
 }
@@ -309,7 +309,7 @@ export default function RoomsPage() {
                                             <p className="text-sm text-slate-500">{room.building_name}</p>
                                         </div>
                                         <div className="flex gap-2">
-                                            {room.device_id && (
+                                            {room.linked_device_id && (
                                                 <>
                                                     {(() => {
                                                         const isOnline = room.last_seen_at &&
@@ -323,8 +323,8 @@ export default function RoomsPage() {
                                                     })()}
                                                 </>
                                             )}
-                                            <div className={`px-2 py-1 rounded text-xs font-bold ${room.device_id ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-600'}`}>
-                                                {room.device_id ? 'PAIRED' : 'NO DEVICE'}
+                                            <div className={`px-2 py-1 rounded text-xs font-bold ${room.linked_device_id ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-600'}`}>
+                                                {room.linked_device_id ? 'PAIRED' : 'NO DEVICE'}
                                             </div>
                                         </div>
                                     </div>
@@ -348,10 +348,10 @@ export default function RoomsPage() {
                                         </button>
 
                                         {/* Bottom Row: Connect or Unpair (Full Width) */}
-                                        {room.device_id ? (
+                                        {room.linked_device_id ? (
                                             <div className="col-span-2 flex flex-col gap-2">
                                                 <div className="text-xs text-slate-500 text-center bg-slate-50 py-1 rounded border border-slate-100">
-                                                    Device ID: {room.device_id}
+                                                    Device ID: {room.linked_device_id}
                                                 </div>
                                                 <button
                                                     onClick={async () => {
