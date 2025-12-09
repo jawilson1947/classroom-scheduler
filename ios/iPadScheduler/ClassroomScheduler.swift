@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct ClassroomSchedulerApp: App {
+struct iPadClassroomSchedulerApp: App {
     @StateObject private var configService = ConfigurationService()
     
     var body: some Scene {

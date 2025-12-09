@@ -1,5 +1,5 @@
 import Foundation
-
+//jaw 12/08/2025
 struct Event: Codable, Identifiable {
     let id: Int
     let title: String
@@ -29,7 +29,7 @@ struct Event: Codable, Identifiable {
            let dailyStart = dailyStartTime {
             return parseTimeForToday(dailyStart)
         }
-        return ISO8601DateFormatter().date(from: startTime)
+        return Event.date(from: startTime)
     }
     
     var displayEnd: Date? {
@@ -37,7 +37,7 @@ struct Event: Codable, Identifiable {
            let dailyEnd = dailyEndTime {
             return parseTimeForToday(dailyEnd)
         }
-        return ISO8601DateFormatter().date(from: endTime)
+        return Event.date(from: endTime)
     }
     
     var isRecurring: Bool {
@@ -51,10 +51,14 @@ struct Event: Codable, Identifiable {
         
         if let recurrenceDays = recurrenceDays {
             // Check date range first
-            guard let start = ISO8601DateFormatter().date(from: startTime),
-                  let end = ISO8601DateFormatter().date(from: endTime) else { return false }
+            guard let start = Event.date(from: startTime),
+                  let end = Event.date(from: endTime) else {
+                print("[Event] ❌ Failed to parse dates for recurring event: \(title)")
+                return false
+            }
             
             // Check if today is within the event's overall date range
+            
             if todayStart < calendar.startOfDay(for: start) || todayStart > calendar.startOfDay(for: end) {
                 return false
             }
@@ -87,6 +91,19 @@ struct Event: Codable, Identifiable {
                             minute: components.minute ?? 0,
                             second: components.second ?? 0,
                             of: now)
+    }
+    
+    // Helper for flexible date parsing
+    static func date(from string: String) -> Date? {
+        let formatter = ISO8601DateFormatter()
+        // Try standard format
+        if let date = formatter.date(from: string) {
+            return date
+        }
+        
+        // Try with fractional seconds
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter.date(from: string)
     }
 }
 

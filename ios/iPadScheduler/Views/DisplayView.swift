@@ -1,11 +1,13 @@
 import SwiftUI
 
+//jaw 12/08/2025 
+
 struct DisplayView: View {
     @EnvironmentObject var configService: ConfigurationService
     @State private var apiService: APIService?
     @State private var eventSource: EventSourceService?
     @State private var currentTime = Date()
-    
+  // jaw  
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
@@ -22,12 +24,23 @@ struct DisplayView: View {
             
             VStack(spacing: 0) {
                 // Header
-                HeaderView(
-                    roomName: apiService?.room?.name ?? "Loading...",
-                    buildingName: apiService?.room?.buildingName ?? "",
-                    currentTime: currentTime,
-                    isOnline: eventSource?.isConnected ?? false
-                )
+                // Header
+                VStack(spacing: 16) {
+                    Rectangle()
+                        .fill(Color.white)
+                        .frame(height: 2)
+                    
+                    HeaderView(
+                        roomName: apiService?.room?.name ?? "Loading...",
+                        buildingName: apiService?.room?.buildingName ?? "",
+                        currentTime: currentTime,
+                        isOnline: eventSource?.isConnected ?? false
+                    )
+                    
+                    Rectangle()
+                        .fill(Color.white)
+                        .frame(height: 2)
+                }
                 .padding(.horizontal, 32)
                 .padding(.top, 32)
                 .padding(.bottom, 24)

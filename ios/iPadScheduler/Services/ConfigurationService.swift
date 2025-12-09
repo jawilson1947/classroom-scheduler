@@ -1,6 +1,8 @@
 import Foundation
 import Combine
 
+// jaw 12/8/2025
+
 class ConfigurationService: ObservableObject {
     @Published var config: AppConfig?
     @Published var isConfigured: Bool = false

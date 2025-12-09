@@ -1,5 +1,5 @@
 import SwiftUI
-
+//jaw 12/08/2025 
 struct CurrentEventView: View {
     let event: Event
     

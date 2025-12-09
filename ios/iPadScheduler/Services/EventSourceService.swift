@@ -1,6 +1,8 @@
 import Foundation
 import Combine
 
+//jaw 12/8/2025
+
 class EventSourceService: NSObject, ObservableObject, URLSessionDataDelegate {
     private let config: AppConfig
     private var session: URLSession?
@@ -86,7 +88,12 @@ class EventSourceService: NSObject, ObservableObject, URLSessionDataDelegate {
         if let error = error {
             print("[SSE] Connection error: \(error.localizedDescription)")
         } else {
-            print("[SSE] Connection closed")
+            print("[SSE] Connection closed cleanly by server or client")
+        }
+        
+        // Log the reason we are disconnecting
+        if let response = task.response as? HTTPURLResponse {
+             print("[SSE] Last HTTP Status: \(response.statusCode)")
         }
         
         DispatchQueue.main.async {

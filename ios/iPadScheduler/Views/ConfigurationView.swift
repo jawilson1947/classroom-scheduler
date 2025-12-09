@@ -1,5 +1,5 @@
 import SwiftUI
-
+//jaw 12/08/2025
 struct ConfigurationView: View {
     @EnvironmentObject var configService: ConfigurationService
     @State private var pairingToken: String = ""

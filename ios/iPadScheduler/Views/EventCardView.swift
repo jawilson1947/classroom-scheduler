@@ -1,9 +1,9 @@
 import SwiftUI
-
+   // jaw 12/08/2025 
 struct EventCardView: View {
     let event: Event
     let isPast: Bool
-    
+
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
