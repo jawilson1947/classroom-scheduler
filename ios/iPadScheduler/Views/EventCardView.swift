@@ -40,7 +40,7 @@ struct EventCardView: View {
         }
         .padding(16)
         .background(
-            Color(white: isPast ? 0.15 : 0.12)
+            Color(red: 0.08, green: 0.12, blue: 0.28)
                 .opacity(isPast ? 0.5 : 1)
         )
         .cornerRadius(12)

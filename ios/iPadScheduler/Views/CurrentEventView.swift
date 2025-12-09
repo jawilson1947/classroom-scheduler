@@ -41,7 +41,7 @@ struct CurrentEventView: View {
         .padding(16)
         .background(
             LinearGradient(
-                colors: [Color.blue.opacity(0.8), Color.blue.opacity(0.7)],
+                colors: [Color(red: 0.1, green: 0.15, blue: 0.35), Color(red: 0.08, green: 0.12, blue: 0.28)],
                 startPoint: .leading,
                 endPoint: .trailing
             )
