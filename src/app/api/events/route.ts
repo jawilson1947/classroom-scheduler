@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
         const startDate = searchParams.get('start_date');
         const endDate = searchParams.get('end_date');
         const tenantId = searchParams.get('tenant_id') || '1'; // Default to tenant 1 for now
+        const deviceId = searchParams.get('device_id');
 
         let query = 'SELECT * FROM events WHERE tenant_id = ?';
         const params: any[] = [tenantId];
@@ -29,6 +30,15 @@ export async function GET(request: NextRequest) {
         query += ' ORDER BY start_time ASC';
 
         const [rows] = await pool.query<RowDataPacket[]>(query, params);
+
+        // Fire-and-forget heartbeat update if device_id is present
+        if (deviceId) {
+            pool.query(
+                'UPDATE devices SET last_seen_at = NOW() WHERE id = ?',
+                [deviceId]
+            ).catch(err => console.error('Error updating device heartbeat on fetch:', err));
+        }
+
         return NextResponse.json(rows);
     } catch (error) {
         console.error('Error fetching events:', error);

@@ -14,9 +14,9 @@ struct DisplayView: View {
         ZStack {
             // Background gradient
             LinearGradient(
-                colors: [Color(red: 0.07, green: 0.09, blue: 0.13),
-                        Color(red: 0.11, green: 0.13, blue: 0.16),
-                        Color(red: 0.07, green: 0.09, blue: 0.13)],
+                colors: [Color(red: 0.05, green: 0.06, blue: 0.20),
+                        Color(red: 0.08, green: 0.12, blue: 0.28),
+                        Color(red: 0.05, green: 0.06, blue: 0.20)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -34,7 +34,7 @@ struct DisplayView: View {
                         roomName: apiService?.room?.name ?? "Loading...",
                         buildingName: apiService?.room?.buildingName ?? "",
                         currentTime: currentTime,
-                        isOnline: eventSource?.isConnected ?? false
+                        isOnline: isDeviceOnline()
                     )
                     
                     Rectangle()
@@ -113,6 +113,7 @@ struct DisplayView: View {
         }
         .onReceive(timer) { _ in
             currentTime = Date()
+            checkConnectionAndPoll()
         }
     }
     
@@ -120,6 +121,29 @@ struct DisplayView: View {
         apiService?.events.first { event in
             guard let start = event.displayStart, let end = event.displayEnd else { return false }
             return currentTime >= start && currentTime <= end
+        }
+    }
+    
+    private func isDeviceOnline() -> Bool {
+        if eventSource?.isConnected == true { return true }
+        if let lastFetch = apiService?.lastSuccessfulFetch {
+            // Consider online if we successfully fetched in the last 60 seconds
+            return Date().timeIntervalSince(lastFetch) < 60
+        }
+        return false
+    }
+    
+    private func checkConnectionAndPoll() {
+        // If SSE is disconnected, poll manually every 30 seconds
+        guard let sse = eventSource, !sse.isConnected else { return }
+        
+        // Don't poll if we are already loading
+        if apiService?.isLoading == true { return }
+        
+        let lastFetch = apiService?.lastSuccessfulFetch ?? Date.distantPast
+        if Date().timeIntervalSince(lastFetch) > 30 {
+            print("[DisplayView] SSE Disconnected. Triggering fallback poll.")
+            apiService?.fetchEvents()
         }
     }
     

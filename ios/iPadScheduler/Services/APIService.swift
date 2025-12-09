@@ -11,6 +11,7 @@ class APIService: ObservableObject {
     @Published var events: [Event] = []
     @Published var isLoading: Bool = false
     @Published var error: String?
+    @Published var lastSuccessfulFetch: Date?
     
     init(config: AppConfig) {
         self.config = config
@@ -57,7 +58,10 @@ class APIService: ObservableObject {
         let startDate = dateFormatter.string(from: startOfMonth)
         let endDate = dateFormatter.string(from: endOfMonth)
         
-        let urlString = "\(config.apiBaseURL)/api/events?room_id=\(config.roomId)&start_date=\(startDate)&end_date=\(endDate)&tenant_id=\(config.tenantId)"
+        var urlString = "\(config.apiBaseURL)/api/events?room_id=\(config.roomId)&start_date=\(startDate)&end_date=\(endDate)&tenant_id=\(config.tenantId)"
+        if let deviceId = config.deviceId {
+            urlString += "&device_id=\(deviceId)"
+        }
         guard let url = URL(string: urlString) else {
             error = "Invalid URL"
             isLoading = false
@@ -87,6 +91,7 @@ class APIService: ObservableObject {
                 }
             } receiveValue: { [weak self] events in
                 print("[APIService] Successfully decoded \(events.count) events")
+                self?.lastSuccessfulFetch = Date()
                 self?.events = events.filter { $0.occursToday() }
                     .sorted { ($0.displayStart ?? Date()) < ($1.displayStart ?? Date()) }
                 print("[APIService] Filtered to \(self?.events.count ?? 0) events for today")
