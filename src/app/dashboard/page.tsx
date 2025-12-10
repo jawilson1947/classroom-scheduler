@@ -37,6 +37,29 @@ export default function DashboardPage() {
         await signOut({ redirect: true, callbackUrl: '/login' });
     };
 
+    if (!role) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+                <div className="text-center p-8 bg-slate-800 rounded-xl shadow-lg border border-slate-700 max-w-md mx-4">
+                    <div className="text-5xl mb-4">⚠️</div>
+                    <h1 className="text-2xl font-bold text-white mb-2">Account Not Configured</h1>
+                    <p className="text-slate-400 mb-6">
+                        Your account ({user.email}) has not been assigned a role or organization yet.
+                    </p>
+                    <p className="text-slate-400 mb-8 text-sm">
+                        Please contact your system administrator to have your account set up.
+                    </p>
+                    <button
+                        onClick={handleLogout}
+                        className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors font-medium"
+                    >
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
             {/* Header */}
