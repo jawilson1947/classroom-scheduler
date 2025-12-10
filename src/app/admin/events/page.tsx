@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { FilterSortCard, TimeFilter, TypeFilter, SortBy, SortOrder } from '@/components/FilterSortCard';
 
 interface Tenant {
     id: number;
@@ -58,6 +59,12 @@ export default function EventsPage() {
         daily_start_time: '',
         daily_end_time: ''
     });
+
+    // Filter & Sort State
+    const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
+    const [typeFilter, setTypeFilter] = useState<TypeFilter>('All');
+    const [sortBy, setSortBy] = useState<SortBy>('date');
+    const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
     const [editingEventId, setEditingEventId] = useState<number | null>(null);
     const [conflictModalOpen, setConflictModalOpen] = useState(false);
     const [conflictData, setConflictData] = useState<any[]>([]);
@@ -329,7 +336,7 @@ export default function EventsPage() {
 
                         {/* Only show form for users who can edit */}
                         {canEdit && (
-                            <form id="event-form" onSubmit={handleCreateEvent} noValidate className={`grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-6 rounded-lg ${editingEventId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
+                            <form id="event-form" onSubmit={handleCreateEvent} noValidate className={`grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-6 rounded-lg ${editingEventId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
                                 {editingEventId && (
                                     <div className="col-span-2 flex justify-between items-center mb-2">
                                         <h3 className="font-bold text-orange-800">Editing Event</h3>
@@ -445,52 +452,93 @@ export default function EventsPage() {
                             </form>
                         )}
 
+                        <FilterSortCard
+                            timeFilter={timeFilter}
+                            onTimeFilterChange={setTimeFilter}
+                            typeFilter={typeFilter}
+                            onTypeFilterChange={setTypeFilter}
+                            sortBy={sortBy}
+                            onSortByChange={setSortBy}
+                            sortOrder={sortOrder}
+                            onSortOrderChange={setSortOrder}
+                        />
+
                         <div className="space-y-4">
-                            <h3 className="font-semibold text-slate-700 border-b pb-2">Upcoming Events</h3>
+
                             {events?.length === 0 ? (
                                 <p className="text-slate-500 text-center py-8">No events scheduled.</p>
                             ) : (
                                 <div className="space-y-3">
-                                    {events?.map(event => (
-                                        <div key={event.id} className="flex items-center justify-between border p-4 rounded-lg bg-white hover:bg-slate-50">
-                                            <div>
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <span className="font-bold text-lg text-slate-900">{event.title}</span>
-                                                    <span className="text-xs px-2 py-1 bg-slate-100 rounded-full uppercase tracking-wide text-slate-600">{event.event_type}</span>
+                                    {events?.filter(event => {
+                                        // Time Filter
+                                        if (timeFilter === 'current') {
+                                            const now = new Date();
+                                            const start = new Date(event.start_time);
+                                            const end = new Date(event.end_time);
+                                            // Check if "now" is between start and end
+                                            if (now < start || now > end) return false;
+                                        }
+
+                                        // Type Filter
+                                        if (typeFilter !== 'All') {
+                                            // Case-insensitive check just in case
+                                            if (event.event_type.toLowerCase() !== typeFilter.toLowerCase()) return false;
+                                        }
+
+                                        return true;
+                                    })
+                                        .sort((a, b) => {
+                                            if (sortBy === 'name') {
+                                                return sortOrder === 'asc'
+                                                    ? a.title.localeCompare(b.title)
+                                                    : b.title.localeCompare(a.title);
+                                            } else {
+                                                // Sort by date
+                                                const dateA = new Date(a.start_time).getTime();
+                                                const dateB = new Date(b.start_time).getTime();
+                                                return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+                                            }
+                                        })
+                                        .map(event => (
+                                            <div key={event.id} className="flex items-center justify-between border p-3 rounded-lg bg-white hover:bg-slate-50">
+                                                <div>
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="font-bold text-base text-slate-900">{event.title}</span>
+                                                        <span className="text-[10px] px-2 py-0.5 bg-slate-100 rounded-full uppercase tracking-wide text-slate-600">{event.event_type}</span>
+                                                    </div>
+                                                    <div className="text-xs text-slate-600 space-y-0.5">
+                                                        <p>📍 {getRoomName(event.room_id)}</p>
+                                                        <p>👤 {event.facilitator_name || 'No facilitator'}</p>
+                                                        {event.recurrence_days ? (
+                                                            <>
+                                                                <p>📅 {event.recurrence_days.split(',').map(d => d.trim()).join(', ')}</p>
+                                                                <p>🕒 {event.daily_start_time} - {event.daily_end_time} ({new Date(event.start_time).toLocaleDateString()} - {new Date(event.end_time).toLocaleDateString()})</p>
+                                                            </>
+                                                        ) : (
+                                                            <p>🕒 {new Date(event.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} • {new Date(event.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {new Date(event.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <div className="text-sm text-slate-600 space-y-1">
-                                                    <p>📍 {getRoomName(event.room_id)}</p>
-                                                    <p>👤 {event.facilitator_name || 'No facilitator'}</p>
-                                                    {event.recurrence_days ? (
-                                                        <>
-                                                            <p>📅 {event.recurrence_days.split(',').map(d => d.trim()).join(', ')}</p>
-                                                            <p>🕒 {event.daily_start_time} - {event.daily_end_time} ({new Date(event.start_time).toLocaleDateString()} - {new Date(event.end_time).toLocaleDateString()})</p>
-                                                        </>
-                                                    ) : (
-                                                        <p>🕒 {new Date(event.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} • {new Date(event.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {new Date(event.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
-                                                    )}
-                                                </div>
+                                                {canEdit && (
+                                                    <div className="flex items-center scale-90 origin-right">
+                                                        <button
+                                                            onClick={() => handleEditEvent(event)}
+                                                            className="text-blue-600 hover:text-blue-800 p-2"
+                                                            title="Edit Event"
+                                                        >
+                                                            ✏️
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteEvent(event.id)}
+                                                            className="text-red-600 hover:text-red-800 p-2"
+                                                            title="Delete Event"
+                                                        >
+                                                            🗑️
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </div>
-                                            {canEdit && (
-                                                <div className="flex items-center">
-                                                    <button
-                                                        onClick={() => handleEditEvent(event)}
-                                                        className="text-blue-600 hover:text-blue-800 p-2"
-                                                        title="Edit Event"
-                                                    >
-                                                        ✏️
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDeleteEvent(event.id)}
-                                                        className="text-red-600 hover:text-red-800 p-2"
-                                                        title="Delete Event"
-                                                    >
-                                                        🗑️
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
+                                        ))}
                                 </div>
                             )}
                         </div>
