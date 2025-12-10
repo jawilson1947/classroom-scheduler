@@ -69,7 +69,9 @@ export default function EventsPage() {
     const [conflictModalOpen, setConflictModalOpen] = useState(false);
     const [conflictData, setConflictData] = useState<any[]>([]);
     const [message, setMessage] = useState('');
+
     const [error, setError] = useState('');
+    const [searchParams, setSearchParams] = useState<{ start_date: string, end_date: string } | null>(null);
 
     const user = session?.user as any;
     const isOrgAdmin = user?.role === 'ORG_ADMIN';
@@ -109,7 +111,14 @@ export default function EventsPage() {
     );
 
     const { data: events, mutate: mutateEvents } = useSWR<Event[]>(
-        selectedTenantId ? `/api/events?tenant_id=${selectedTenantId}` : null,
+        () => {
+            if (!selectedTenantId) return null;
+            let url = `/api/events?tenant_id=${selectedTenantId}`;
+            if (searchParams) {
+                url += `&start_date=${searchParams.start_date}&end_date=${searchParams.end_date}`;
+            }
+            return url;
+        },
         fetcher
     );
 
@@ -315,23 +324,29 @@ export default function EventsPage() {
                                         required
                                     />
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">End Date</label>
-                                    <input
-                                        type="date"
-                                        className="w-full border p-2 rounded"
-                                        value={dateRangeDefaults.end_date}
-                                        onChange={e => setDateRangeDefaults({ ...dateRangeDefaults, end_date: e.target.value })}
-                                        required
-                                    />
+                                <div className="flex items-end gap-2">
+                                    <div className="w-full">
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">End Date</label>
+                                        <input
+                                            type="date"
+                                            className="w-full border p-2 rounded"
+                                            value={dateRangeDefaults.end_date}
+                                            onChange={e => setDateRangeDefaults({ ...dateRangeDefaults, end_date: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSearchParams({
+                                            start_date: dateRangeDefaults.start_date,
+                                            end_date: dateRangeDefaults.end_date
+                                        })}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors mb-[1px]"
+                                    >
+                                        Search
+                                    </button>
                                 </div>
                             </div>
-                            {dateRangeDefaults.start_date && dateRangeDefaults.end_date && dateRangeDefaults.start_date !== dateRangeDefaults.end_date && (
-                                <p className="text-xs text-blue-700 mt-2">📌 Recurring event mode: Select days of week below</p>
-                            )}
-                            {dateRangeDefaults.start_date && dateRangeDefaults.end_date && dateRangeDefaults.start_date === dateRangeDefaults.end_date && (
-                                <p className="text-xs text-green-700 mt-2">✓ One-time event mode</p>
-                            )}
                         </div>
 
                         {/* Only show form for users who can edit */}
@@ -614,6 +629,6 @@ export default function EventsPage() {
                     <p className="text-xs text-slate-500">System developed by Digital Support Systems of Alabama, LLC</p>
                 </div>
             </footer>
-        </div>
+        </div >
     );
 }
