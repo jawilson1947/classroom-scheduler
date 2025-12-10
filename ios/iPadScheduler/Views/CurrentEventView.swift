@@ -2,50 +2,84 @@ import SwiftUI
 //jaw 12/08/2025 
 struct CurrentEventView: View {
     let event: Event
+    @State private var isAnimating = false
     
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("In Progress...")
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(.white.opacity(0.9))
-                    .italic()
+            VStack(alignment: .leading, spacing: 6) {
+                // "NOW" Badge
+                HStack(spacing: 4) {
+                    Circle()
+                        .fill(Color.white)
+                        .frame(width: 6, height: 6)
+                        .opacity(isAnimating ? 1 : 0.5)
+                    Text("NOW")
+                        .font(.system(size: 10, weight: .bold))
+                        .tracking(1)
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.white.opacity(0.2))
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                )
                 
                 Text(event.title)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(size: 18, weight: .bold))
                     .foregroundColor(.white)
+                    .padding(.top, 4)
                 
                 if let facilitator = event.facilitatorName {
                     Text(facilitator)
-                        .font(.system(size: 11))
-                        .foregroundColor(.white.opacity(0.8))
+                        .font(.system(size: 13))
+                        .foregroundColor(.white.opacity(0.9))
                 }
             }
             
             Spacer()
             
-            VStack(alignment: .trailing, spacing: 2) {
+            VStack(alignment: .trailing, spacing: 4) {
                 if let start = event.displayStart {
                     Text(start, style: .time)
-                        .font(.system(size: 13, weight: .medium))
+                        .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.white)
                 }
                 
                 if let end = event.displayEnd {
-                    Text(end, style: .time)
-                        .font(.system(size: 10))
+                    Text("ends " + end.formatted(date: .omitted, time: .shortened))
+                        .font(.system(size: 12))
                         .foregroundColor(.white.opacity(0.8))
                 }
             }
         }
-        .padding(16)
+        .padding(20)
         .background(
-            LinearGradient(
-                colors: [Color(red: 0.1, green: 0.15, blue: 0.35), Color(red: 0.08, green: 0.12, blue: 0.28)],
-                startPoint: .leading,
-                endPoint: .trailing
-            )
+            ZStack {
+                // Vibrant Gradient Background
+                LinearGradient(
+                    colors: [
+                        Color(red: 0.1, green: 0.2, blue: 0.8), // Royal Blue
+                        Color(red: 0.4, green: 0.2, blue: 0.9)  // Electric Purple
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                
+                // Subtle overlay pattern or sheen could go here
+            }
         )
-        .cornerRadius(12)
+        .cornerRadius(16)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white.opacity(0.3), lineWidth: 1)
+        )
+        .shadow(color: Color.blue.opacity(0.3), radius: isAnimating ? 10 : 5, x: 0, y: 4)
+        .scaleEffect(isAnimating ? 1.01 : 1.0)
+        .animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: isAnimating)
+        .onAppear {
+            isAnimating = true
+        }
     }
 }
