@@ -1,7 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
     try {
@@ -19,43 +18,30 @@ export async function POST(request: NextRequest) {
 
         const buffer = Buffer.from(await file.arrayBuffer());
 
-        // Determine file extension
-        let ext = '';
-        if (file.type === 'image/jpeg') ext = '.jpeg';
-        else if (file.type === 'image/png') ext = '.png';
+        // Determine mime type
+        let mimeType = '';
+        if (file.type === 'image/jpeg') mimeType = 'image/jpeg';
+        else if (file.type === 'image/png') mimeType = 'image/png';
         else {
             return NextResponse.json({ error: 'Only JPEG and PNG images are allowed' }, { status: 400 });
         }
 
-        // Create filename
-        const filename = `${tenantUuid}${ext}`;
+        // Convert to Base64 Data URI
+        const base64Image = buffer.toString('base64');
+        const logo_url = `data:${mimeType};base64,${base64Image}`;
 
-        // Ensure upload directory exists
-        const uploadDir = path.join(process.cwd(), 'public/uploads');
-        try {
-            await mkdir(uploadDir, { recursive: true });
-        } catch (e) {
-            // Ignore error if directory exists
-        }
-
-        // Write file
-        const filepath = path.join(uploadDir, filename);
-        await writeFile(filepath, buffer);
-
-        // Return public URL
-        const logo_url = `/uploads/${filename}`;
+        // Return the Data URI to be saved in the database
         return NextResponse.json({
             success: true,
             logo_url
         });
 
     } catch (error: any) {
-        console.error('Error uploading file:', error);
+        console.error('Error processing file:', error);
         // Return detailed error for debugging purposes
         return NextResponse.json({
             error: 'File upload failed',
-            details: error.message,
-            path: path.join(process.cwd(), 'public/uploads') // Helpful to verify path context
+            details: error.message
         }, { status: 500 });
     }
 }
