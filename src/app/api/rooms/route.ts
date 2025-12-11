@@ -5,23 +5,39 @@ import { RowDataPacket } from 'mysql2';
 export async function GET(request: NextRequest) {
     try {
         const searchParams = request.nextUrl.searchParams;
-        const tenantId = searchParams.get('tenant_id') || '1';
+        const tenantId = searchParams.get('tenant_id');
         const buildingId = searchParams.get('building_id');
+        const id = searchParams.get('id');
 
         let query = `
-      SELECT r.id, r.tenant_id, r.building_id, r.name, r.capacity,
+          SELECT r.id, r.tenant_id, r.building_id, r.name, r.capacity,
              b.name as building_name, 
+             t.name as tenant_name, t.full_address as tenant_address,
              d.id as linked_device_id, d.pairing_code, d.last_seen_at
       FROM rooms r
       LEFT JOIN buildings b ON r.building_id = b.id
+      LEFT JOIN tenants t ON r.tenant_id = t.id
       LEFT JOIN devices d ON r.id = d.room_id AND d.tenant_id = r.tenant_id
-      WHERE r.tenant_id = ?
     `;
-        const params: any[] = [tenantId];
+        const params: any[] = [];
 
-        if (buildingId) {
-            query += ' AND r.building_id = ?';
-            params.push(buildingId);
+        if (id) {
+            query += ' WHERE r.id = ?';
+            params.push(id);
+        } else if (tenantId) {
+            query += ' WHERE r.tenant_id = ?';
+            params.push(tenantId);
+
+            if (buildingId) {
+                query += ' AND r.building_id = ?';
+                params.push(buildingId);
+            }
+        } else {
+            // Fallback or Error? If no ID and no TenantID, maybe return empty or limit?
+            // For now, let's require at least one, or default to tenant 1 if implied?
+            // The original code fell back to '1'.
+            query += ' WHERE r.tenant_id = ?';
+            params.push('1');
         }
 
         query += ' ORDER BY b.name, r.name';

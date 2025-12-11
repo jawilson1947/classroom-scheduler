@@ -24,8 +24,24 @@ struct DisplayView: View {
             
             VStack(spacing: 0) {
                 // Header
-                // Header
                 VStack(spacing: 16) {
+                    if let room = apiService?.room {
+                        VStack(spacing: 4) {
+                            if let tenantName = room.tenantName {
+                                Text(tenantName)
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.white.opacity(0.9))
+                            }
+                            
+                            if let tenantAddress = room.tenantAddress {
+                                Text(tenantAddress)
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.white.opacity(0.9))
+                            }
+                        }
+                        .padding(.bottom, 4)
+                    }
+
                     Rectangle()
                         .fill(Color.white)
                         .frame(height: 2)

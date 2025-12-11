@@ -31,12 +31,23 @@ export async function GET(request: NextRequest) {
 
         const [rows] = await pool.query<RowDataPacket[]>(query, params);
 
+        // Debug logging
+        console.log(`[API] Events GET params: roomId=${roomId}, deviceId=${deviceId}, tenantId=${tenantId}`);
+
         // Fire-and-forget heartbeat update if device_id is present
         if (deviceId) {
             pool.query(
-                'UPDATE devices SET last_seen_at = NOW() WHERE id = ?',
+                'UPDATE devices SET last_seen_at = UTC_TIMESTAMP() WHERE id = ?',
                 [deviceId]
-            ).catch(err => console.error('Error updating device heartbeat on fetch:', err));
+            ).then((res: any) => console.log(`[API] Heartbeat by ID ${deviceId}: ${res[0].affectedRows} rows`))
+                .catch(err => console.error('Error updating device heartbeat on fetch:', err));
+        } else if (roomId) {
+            // Fallback: If device_id is missing (legacy clients), update device linked to this room
+            pool.query(
+                'UPDATE devices SET last_seen_at = UTC_TIMESTAMP() WHERE room_id = ? AND tenant_id = ?',
+                [roomId, tenantId]
+            ).then((res: any) => console.log(`[API] Heartbeat by Room ${roomId}: ${res[0].affectedRows} rows`))
+                .catch(err => console.error('Error updating room device heartbeat on fetch:', err));
         }
 
         return NextResponse.json(rows);
@@ -78,6 +89,12 @@ export async function POST(request: NextRequest) {
         for (const existing of existingEvents) {
             const isExistingRecurring = existing.recurrence_days && existing.daily_start_time && existing.daily_end_time;
 
+            // Normalize Dates for safe comparison
+            const existingStartObj = new Date(existing.start_time);
+            const existingEndObj = new Date(existing.end_time);
+            const newStartObj = new Date(start_time);
+            const newEndObj = new Date(end_time);
+
             if (isNewRecurring && isExistingRecurring) {
                 // Both are recurring - check if they share any days of the week
                 const newDays = body.recurrence_days.split(',');
@@ -105,14 +122,12 @@ export async function POST(request: NextRequest) {
                 }
             } else if (isNewRecurring && !isExistingRecurring) {
                 // New is recurring, existing is one-time
-                // Check if the one-time event falls on a day when the recurring event occurs
-                const existingDate = new Date(existing.start_time);
-                const dayOfWeek = existingDate.toLocaleDateString('en-US', { weekday: 'short' });
+                const dayOfWeek = existingStartObj.toLocaleDateString('en-US', { weekday: 'short' });
 
                 if (body.recurrence_days.includes(dayOfWeek)) {
-                    // Extract time from existing event
-                    const existingStartTime = existing.start_time.split('T')[1] || existing.start_time.substring(11, 19);
-                    const existingEndTime = existing.end_time.split('T')[1] || existing.end_time.substring(11, 19);
+                    // Extract time from existing event safely
+                    const existingStartTime = existingStartObj.toISOString().split('T')[1].substring(0, 8);
+                    const existingEndTime = existingEndObj.toISOString().split('T')[1].substring(0, 8);
 
                     // Check if times overlap
                     if (body.daily_start_time < existingEndTime && body.daily_end_time > existingStartTime) {
@@ -126,13 +141,12 @@ export async function POST(request: NextRequest) {
                 }
             } else if (!isNewRecurring && isExistingRecurring) {
                 // New is one-time, existing is recurring
-                const newDate = new Date(start_time);
-                const dayOfWeek = newDate.toLocaleDateString('en-US', { weekday: 'short' });
+                const dayOfWeek = newStartObj.toLocaleDateString('en-US', { weekday: 'short' });
 
                 if (existing.recurrence_days.includes(dayOfWeek)) {
-                    // Extract time from new event
-                    const newStartTime = start_time.split('T')[1] || start_time.substring(11, 19);
-                    const newEndTime = end_time.split('T')[1] || end_time.substring(11, 19);
+                    // Extract time from new event safely
+                    const newStartTime = newStartObj.toISOString().split('T')[1].substring(0, 8);
+                    const newEndTime = newEndObj.toISOString().split('T')[1].substring(0, 8);
 
                     // Check if times overlap
                     if (newStartTime < existing.daily_end_time && newEndTime > existing.daily_start_time) {
@@ -147,17 +161,12 @@ export async function POST(request: NextRequest) {
                 }
             } else {
                 // Both are one-time events
-                // Check if they occur on the same day
-                const newDate = new Date(start_time);
-                const existingDate = new Date(existing.start_time);
-
-                // Compare dates (ignore time)
-                const newDay = newDate.toISOString().split('T')[0];
-                const existingDay = existingDate.toISOString().split('T')[0];
+                const newDay = newStartObj.toISOString().split('T')[0];
+                const existingDay = existingStartObj.toISOString().split('T')[0];
 
                 if (newDay === existingDay) {
-                    // Same day, check if times overlap
-                    if (start_time < existing.end_time && end_time > existing.start_time) {
+                    // Same day, check if times overlap using Date objects for robust comparison
+                    if (newStartObj < existingEndObj && newEndObj > existingStartObj) {
                         conflicts.push({
                             id: existing.id,
                             title: existing.title,
@@ -230,6 +239,12 @@ export async function PUT(request: NextRequest) {
         for (const existing of existingEvents) {
             const isExistingRecurring = existing.recurrence_days && existing.daily_start_time && existing.daily_end_time;
 
+            // Normalize Dates for safe comparison
+            const existingStartObj = new Date(existing.start_time);
+            const existingEndObj = new Date(existing.end_time);
+            const newStartObj = new Date(start_time);
+            const newEndObj = new Date(end_time);
+
             if (isNewRecurring && isExistingRecurring) {
                 const newDays = body.recurrence_days.split(',');
                 const existingDays = existing.recurrence_days.split(',');
@@ -253,12 +268,11 @@ export async function PUT(request: NextRequest) {
                     }
                 }
             } else if (isNewRecurring && !isExistingRecurring) {
-                const existingDate = new Date(existing.start_time);
-                const dayOfWeek = existingDate.toLocaleDateString('en-US', { weekday: 'short' });
+                const dayOfWeek = existingStartObj.toLocaleDateString('en-US', { weekday: 'short' });
 
                 if (body.recurrence_days.includes(dayOfWeek)) {
-                    const existingStartTime = existing.start_time.split('T')[1] || existing.start_time.substring(11, 19);
-                    const existingEndTime = existing.end_time.split('T')[1] || existing.end_time.substring(11, 19);
+                    const existingStartTime = existingStartObj.toISOString().split('T')[1].substring(0, 8);
+                    const existingEndTime = existingEndObj.toISOString().split('T')[1].substring(0, 8);
 
                     if (body.daily_start_time < existingEndTime && body.daily_end_time > existingStartTime) {
                         conflicts.push({
@@ -270,12 +284,11 @@ export async function PUT(request: NextRequest) {
                     }
                 }
             } else if (!isNewRecurring && isExistingRecurring) {
-                const newDate = new Date(start_time);
-                const dayOfWeek = newDate.toLocaleDateString('en-US', { weekday: 'short' });
+                const dayOfWeek = newStartObj.toLocaleDateString('en-US', { weekday: 'short' });
 
                 if (existing.recurrence_days.includes(dayOfWeek)) {
-                    const newStartTime = start_time.split('T')[1] || start_time.substring(11, 19);
-                    const newEndTime = end_time.split('T')[1] || end_time.substring(11, 19);
+                    const newStartTime = newStartObj.toISOString().split('T')[1].substring(0, 8);
+                    const newEndTime = newEndObj.toISOString().split('T')[1].substring(0, 8);
 
                     if (newStartTime < existing.daily_end_time && newEndTime > existing.daily_start_time) {
                         conflicts.push({
@@ -288,14 +301,11 @@ export async function PUT(request: NextRequest) {
                     }
                 }
             } else {
-                const newDate = new Date(start_time);
-                const existingDate = new Date(existing.start_time);
-
-                const newDay = newDate.toISOString().split('T')[0];
-                const existingDay = existingDate.toISOString().split('T')[0];
+                const newDay = newStartObj.toISOString().split('T')[0];
+                const existingDay = existingStartObj.toISOString().split('T')[0];
 
                 if (newDay === existingDay) {
-                    if (start_time < existing.end_time && end_time > existing.start_time) {
+                    if (newStartObj < existingEndObj && newEndObj > existingStartObj) {
                         conflicts.push({
                             id: existing.id,
                             title: existing.title,

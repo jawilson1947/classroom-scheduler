@@ -21,7 +21,9 @@ class APIService: ObservableObject {
         isLoading = true
         error = nil
         
-        let urlString = "\(config.apiBaseURL)/api/rooms?tenant_id=\(config.tenantId)"
+        // Include both id and tenant_id for compatibility with both new and old API versions.
+        // Old API ignores 'id' and needs 'tenant_id'. New API uses 'id' for precision.
+        let urlString = "\(config.apiBaseURL)/api/rooms?id=\(config.roomId)&tenant_id=\(config.tenantId)"
         guard let url = URL(string: urlString) else {
             error = "Invalid URL"
             isLoading = false

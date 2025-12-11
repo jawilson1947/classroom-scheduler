@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
         }
 
         await pool.query(
-            'UPDATE devices SET last_seen_at = NOW() WHERE id = ?',
+            'UPDATE devices SET last_seen_at = UTC_TIMESTAMP() WHERE id = ?',
             [device_id]
         );
 

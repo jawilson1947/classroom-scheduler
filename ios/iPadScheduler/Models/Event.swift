@@ -111,10 +111,14 @@ struct Room: Codable, Identifiable {
     let id: Int
     let name: String
     let buildingName: String
+    let tenantName: String?
+    let tenantAddress: String?
     
     enum CodingKeys: String, CodingKey {
         case id
         case name
         case buildingName = "building_name"
+        case tenantName = "tenant_name"
+        case tenantAddress = "tenant_address"
     }
 }
