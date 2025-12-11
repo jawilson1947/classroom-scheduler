@@ -131,6 +131,9 @@ export default function LoginPage() {
 
                 <div className="mt-6 text-center text-sm text-slate-500">
                     <p>Contact your administrator for account access</p>
+                    <div className="mt-4 pt-4 border-t border-slate-100">
+                        <a href="/privacy" className="text-slate-400 hover:text-slate-600 transition-colors">Privacy Policy</a>
+                    </div>
                 </div>
             </div>
         </div>
