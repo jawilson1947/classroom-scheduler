@@ -8,7 +8,9 @@ import { useRouter } from 'next/navigation';
 
 interface Tenant {
     id: number;
-    uuid: string;
+interface Tenant {
+    id: number;
+    UUID: string;
     name: string;
     slug: string;
     time_zone: string;
