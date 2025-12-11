@@ -163,6 +163,13 @@ function OrgAdminDashboard({ user }: { user: any }) {
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <DashboardCard
+                    title="Manage Organization"
+                    description="Edit organization details and logo"
+                    href="/admin/organization"
+                    icon="⚙️"
+                    color="blue"
+                />
+                <DashboardCard
                     title="Manage Buildings"
                     description="Manage buildings for your organization"
                     href="/admin/buildings"

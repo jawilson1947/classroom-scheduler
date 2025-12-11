@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { uuid, name, slug, time_zone } = body;
+        const { uuid, name, slug, time_zone, website, full_address, logo_url } = body;
 
         if (!uuid || !name || !slug || !time_zone) {
             return NextResponse.json({
@@ -64,8 +64,8 @@ export async function POST(request: NextRequest) {
         }
 
         const [result] = await pool.query(
-            'INSERT INTO tenants (uuid, name, slug, time_zone) VALUES (?, ?, ?, ?)',
-            [uuid, name, slug, time_zone]
+            'INSERT INTO tenants (uuid, name, slug, time_zone, website, full_address, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [uuid, name, slug, time_zone, website || null, full_address || null, logo_url || null]
         );
 
         return NextResponse.json({
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
     try {
         const body = await request.json();
-        const { id, name, slug, time_zone } = body;
+        const { id, name, slug, time_zone, website, full_address, logo_url } = body;
 
         if (!id || !name || !slug || !time_zone) {
             return NextResponse.json({
@@ -101,8 +101,8 @@ export async function PUT(request: NextRequest) {
         }
 
         await pool.query(
-            'UPDATE tenants SET name = ?, slug = ?, time_zone = ? WHERE id = ?',
-            [name, slug, time_zone, id]
+            'UPDATE tenants SET name = ?, slug = ?, time_zone = ?, website = ?, full_address = ?, logo_url = ? WHERE id = ?',
+            [name, slug, time_zone, website || null, full_address || null, logo_url || null, id]
         );
 
         return NextResponse.json({ success: true });
