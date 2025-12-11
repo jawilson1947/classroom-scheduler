@@ -73,7 +73,7 @@ export default function OrganizationPage() {
         const file = e.target.files[0];
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('tenantUuid', tenant.uuid);
+        formData.append('tenantUuid', tenant.UUID);
 
         try {
             const res = await fetch('/api/upload', {
