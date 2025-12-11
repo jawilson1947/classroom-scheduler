@@ -130,41 +130,41 @@ export default function OrganizationPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 p-6">
-            <div className="max-w-3xl mx-auto space-y-6">
+        <div className="min-h-screen bg-slate-50 p-4">
+            <div className="max-w-xl mx-auto space-y-4">
                 <header className="flex justify-between items-center">
-                    <div className="flex items-center gap-4">
-                        <a href="/dashboard" className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                    <div className="flex items-center gap-3">
+                        <a href="/dashboard" className="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">
                             ← Back
                         </a>
-                        <h1 className="text-3xl font-bold text-slate-900">Manage Organization</h1>
+                        <h1 className="text-2xl font-bold text-slate-900">Manage Organization</h1>
                     </div>
                 </header>
 
-                {message && <div className="bg-green-100 text-green-800 px-4 py-3 rounded-lg">{message}</div>}
-                {error && <div className="bg-red-100 text-red-800 px-4 py-3 rounded-lg">{error}</div>}
+                {message && <div className="bg-green-100 text-green-800 px-3 py-2 rounded-lg text-sm">{message}</div>}
+                {error && <div className="bg-red-100 text-red-800 px-3 py-2 rounded-lg text-sm">{error}</div>}
 
-                <div className="bg-white rounded-xl shadow-lg p-8">
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         {/* Logo Upload Section */}
-                        <div className="flex flex-col items-center justify-center mb-8 bg-slate-50 p-6 rounded-xl border border-slate-200">
-                            <label className="block text-sm font-bold text-slate-700 mb-4">Organization Logo</label>
+                        <div className="flex flex-col items-center justify-center mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <label className="block text-xs font-bold text-slate-700 mb-2">Organization Logo</label>
 
                             <div
-                                className="w-48 h-48 border-4 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all relative overflow-hidden bg-white"
+                                className="w-32 h-32 border-4 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all relative overflow-hidden bg-white"
                                 onClick={() => fileInputRef.current?.click()}
-                                style={{ width: '2in', height: '2in' }} // Explicitly 2 inches as requested
+                                style={{ width: '1.4in', height: '1.4in' }} // approx 30% reduction from 2in
                             >
                                 {formData.logo_url ? (
                                     <img
                                         src={formData.logo_url}
                                         alt="Organization Logo"
-                                        className="w-full h-full object-contain p-2"
+                                        className="w-full h-full object-contain p-1.5"
                                     />
                                 ) : (
-                                    <div className="text-center p-4">
-                                        <div className="text-4xl mb-2">📷</div>
-                                        <span className="text-sm text-slate-400 font-medium">Click to upload</span>
+                                    <div className="text-center p-2">
+                                        <div className="text-2xl mb-1">📷</div>
+                                        <span className="text-xs text-slate-400 font-medium">Click to upload</span>
                                     </div>
                                 )}
                                 <input
@@ -175,29 +175,29 @@ export default function OrganizationPage() {
                                     onChange={handleImageUpload}
                                 />
                             </div>
-                            <p className="text-xs text-slate-400 mt-2">Recommended: Square JPEG or PNG</p>
+                            <p className="text-[10px] text-slate-400 mt-1">Recommended: Square JPEG or PNG</p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="col-span-1 md:col-span-2">
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Organization Name</label>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Organization Name</label>
                                 <input
                                     type="text"
                                     required
-                                    className="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                    className="w-full border border-slate-300 rounded-lg p-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                     value={formData.name}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-sans text-slate-600 mb-1">URL Slug</label>
+                                <label className="block text-xs font-sans text-slate-600 mb-1">URL Slug</label>
                                 <div className="flex">
-                                    <span className="bg-slate-100 border border-r-0 border-slate-300 rounded-l-lg px-3 py-2 text-slate-500 text-sm flex items-center">/</span>
+                                    <span className="bg-slate-100 border border-r-0 border-slate-300 rounded-l-lg px-2 py-1.5 text-slate-500 text-xs flex items-center">/</span>
                                     <input
                                         type="text"
                                         required
-                                        className="w-full border border-slate-300 rounded-r-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                        className="w-full border border-slate-300 rounded-r-lg p-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                         value={formData.slug}
                                         onChange={e => setFormData({ ...formData, slug: e.target.value })}
                                     />
@@ -205,9 +205,9 @@ export default function OrganizationPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-sans text-slate-600 mb-1">Time Zone</label>
+                                <label className="block text-xs font-sans text-slate-600 mb-1">Time Zone</label>
                                 <select
-                                    className="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
+                                    className="w-full border border-slate-300 rounded-lg p-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
                                     value={formData.time_zone}
                                     onChange={e => setFormData({ ...formData, time_zone: e.target.value })}
                                 >
@@ -220,20 +220,20 @@ export default function OrganizationPage() {
                             </div>
 
                             <div className="col-span-1 md:col-span-2">
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Website URL</label>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Website URL</label>
                                 <input
                                     type="url"
                                     placeholder="https://example.com"
-                                    className="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                    className="w-full border border-slate-300 rounded-lg p-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                     value={formData.website}
                                     onChange={e => setFormData({ ...formData, website: e.target.value })}
                                 />
                             </div>
 
                             <div className="col-span-1 md:col-span-2">
-                                <label className="block text-sm font-bold text-slate-700 mb-1 text-center">Full Address</label>
+                                <label className="block text-xs font-bold text-slate-700 mb-1 text-center">Full Address</label>
                                 <textarea
-                                    className="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all h-48 resize-none text-center text-lg"
+                                    className="w-full border border-slate-300 rounded-lg p-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all h-32 resize-none text-center"
                                     placeholder="123 Main St&#10;City, State, ZIP"
                                     value={formData.full_address}
                                     onChange={e => setFormData({ ...formData, full_address: e.target.value })}
@@ -241,11 +241,11 @@ export default function OrganizationPage() {
                             </div>
                         </div>
 
-                        <div className="flex justify-end pt-6 border-t border-slate-200">
+                        <div className="flex justify-end pt-4 border-t border-slate-200">
                             <button
                                 type="submit"
                                 disabled={isSaving}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isSaving ? 'Saving...' : 'Save Changes'}
                             </button>
