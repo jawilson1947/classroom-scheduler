@@ -219,7 +219,7 @@ export default function OrganizationPage() {
                                 </select>
                             </div>
 
-                            <div className="col-span-1 md:col-span-2">
+                            <div className="col-span-1">
                                 <label className="block text-xs font-bold text-slate-700 mb-1">Website URL</label>
                                 <input
                                     type="url"
@@ -230,7 +230,7 @@ export default function OrganizationPage() {
                                 />
                             </div>
 
-                            <div className="col-span-1 md:col-span-2">
+                            <div className="col-span-1">
                                 <label className="block text-xs font-bold text-slate-700 mb-1 text-center">Full Address</label>
                                 <textarea
                                     className="w-full border border-slate-300 rounded-lg p-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all h-32 resize-none text-center"
