@@ -8,8 +8,6 @@ import { useRouter } from 'next/navigation';
 
 interface Tenant {
     id: number;
-interface Tenant {
-    id: number;
     UUID: string;
     name: string;
     slug: string;
