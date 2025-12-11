@@ -75,11 +75,34 @@ struct DisplayView: View {
                         }
                         
                         // No events message
+                        // No events message or Logo
                         if (apiService?.events.isEmpty ?? true) && !(apiService?.isLoading ?? false) {
-                            Text("No events scheduled for today")
-                                .font(.system(size: 16))
-                                .foregroundColor(Color(white: 0.5))
-                                .padding(.top, 24)
+                            if let logoStats = apiService?.room?.tenantLogoUrl,
+                               let dataStart = logoStats.range(of: ";base64,"),
+                               let data = Data(base64Encoded: String(logoStats[dataStart.upperBound...])),
+                               let uiImage = UIImage(data: data) {
+                                
+                                VStack(spacing: 16) {
+                                    Spacer()
+                                        .frame(height: 60)
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(maxWidth: 400, maxHeight: 400)
+                                        .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 5)
+                                    
+                                    Text("No events scheduled")
+                                        .font(.system(size: 16))
+                                        .foregroundColor(Color(white: 0.5))
+                                }
+                                .frame(maxWidth: .infinity)
+                                
+                            } else {
+                                Text("No events scheduled for today")
+                                    .font(.system(size: 16))
+                                    .foregroundColor(Color(white: 0.5))
+                                    .padding(.top, 24)
+                            }
                         }
                     }
                     .padding(.bottom, 32)

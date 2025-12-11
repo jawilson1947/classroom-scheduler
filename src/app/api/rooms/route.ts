@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
         let query = `
           SELECT r.id, r.tenant_id, r.building_id, r.name, r.capacity,
              b.name as building_name, 
-             t.name as tenant_name, t.full_address as tenant_address,
+             t.name as tenant_name, t.full_address as tenant_address, t.logo_url as tenant_logo_url,
              d.id as linked_device_id, d.pairing_code, d.last_seen_at
       FROM rooms r
       LEFT JOIN buildings b ON r.building_id = b.id
