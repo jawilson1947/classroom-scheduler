@@ -27,7 +27,7 @@ struct DisplayView: View {
                 VStack(spacing: 16) {
                     Rectangle()
                         .fill(Color.white)
-                        .frame(height: 2)
+                        .frame(height: 1)
                     
                     HeaderView(
                         roomName: apiService?.room?.name ?? "Loading...",
@@ -38,7 +38,7 @@ struct DisplayView: View {
                     
                     Rectangle()
                         .fill(Color.white)
-                        .frame(height: 2)
+                        .frame(height: 1)
                 }
                 .padding(.horizontal, 32)
                 .padding(.top, 32)
