@@ -82,14 +82,23 @@ export default function OrganizationPage() {
             });
             const data = await res.json();
 
-            if (!res.ok) throw new Error(data.error || 'Upload failed');
+            if (!res.ok) {
+                console.error('Upload failed with data:', data);
+                // Construct a verbose error message for debugging
+                const errorMessage = data.details
+                    ? `Error: ${data.error} \nDetails: ${data.details} \nPath: ${data.path}`
+                    : (data.error || 'Upload failed');
+                throw new Error(errorMessage);
+            }
 
             setFormData(prev => ({ ...prev, logo_url: data.logo_url }));
             setMessage('Logo uploaded successfully');
             setTimeout(() => setMessage(''), 3000);
         } catch (err: any) {
+            console.error('Upload Error Caught:', err);
             setError(err.message);
-            setTimeout(() => setError(''), 3000);
+            // Do NOT clear error automatically so user can read it
+            // setTimeout(() => setError(''), 3000); 
         }
     };
 
