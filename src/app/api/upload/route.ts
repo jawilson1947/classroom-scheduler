@@ -49,8 +49,13 @@ export async function POST(request: NextRequest) {
             logo_url
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error uploading file:', error);
-        return NextResponse.json({ error: 'File upload failed' }, { status: 500 });
+        // Return detailed error for debugging purposes
+        return NextResponse.json({
+            error: 'File upload failed',
+            details: error.message,
+            path: path.join(process.cwd(), 'public/uploads') // Helpful to verify path context
+        }, { status: 500 });
     }
 }
