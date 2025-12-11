@@ -60,7 +60,7 @@ export default function PrivacyPolicyPage() {
                         <address className="not-italic text-slate-600">
                             Digital Support Systems of Alabama, LLC<br />
                             Support Team<br />
-                            Email: support@dssalabama.com
+                            Email: info@digitalsupportsystems.com
                         </address>
                     </section>
                 </div>
