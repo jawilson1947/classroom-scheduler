@@ -69,7 +69,10 @@ export default function DashboardPage() {
                         <h1 className="text-2xl font-bold text-white">Classroom Scheduler</h1>
                         <p className="text-slate-400 text-sm">Welcome, {user.email}</p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-6">
+                        <Link href="/about" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">
+                            About
+                        </Link>
                         <div className="text-right">
                             <p className="text-white font-semibold">{user.email}</p>
                             <p className="text-slate-400 text-sm">{role.replace('_', ' ')}</p>
