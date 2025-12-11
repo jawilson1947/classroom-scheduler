@@ -396,7 +396,10 @@ export default function RoomsPage() {
             {/* Footer */}
             <footer className="mt-12 border-t border-slate-200 pt-6 pb-4">
                 <div className="text-center text-sm text-slate-600">
-                    <p className="mb-1">© {new Date().getFullYear()} Digital Support Systems of Alabama, LLC. All rights reserved.</p>
+                    <p className="mb-2">© {new Date().getFullYear()} Digital Support Systems of Alabama, LLC. All rights reserved.</p>
+                    <div className="flex justify-center gap-4 mb-2">
+                        <a href="/privacy" className="text-slate-600 hover:text-slate-800 font-medium">Privacy Policy</a>
+                    </div>
                     <p className="text-xs text-slate-500">System developed by Digital Support Systems of Alabama, LLC</p>
                 </div>
             </footer>

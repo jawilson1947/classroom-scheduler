@@ -108,6 +108,15 @@ export default function DashboardPage() {
                     <ViewerDashboard />
                 )}
             </div>
+            {/* Footer */}
+            <footer className="mt-auto py-8 text-center text-slate-500 text-sm">
+                <p className="mb-2">© {new Date().getFullYear()} Digital Support Systems of Alabama, LLC. All rights reserved.</p>
+                <div className="flex justify-center gap-4">
+                    <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</Link>
+                    <span>•</span>
+                    <span className="opacity-70">System developed by Digital Support Systems of Alabama, LLC</span>
+                </div>
+            </footer>
         </div>
     );
 }
