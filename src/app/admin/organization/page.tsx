@@ -261,6 +261,13 @@ export default function OrganizationPage() {
                         </div>
                     </form>
                 </div>
+
+                {/* Footer */}
+                <footer className="mt-8 border-t border-slate-200 pt-6 pb-4">
+                    <div className="text-center text-sm text-slate-600">
+                        <p className="mb-1">© {new Date().getFullYear()} Digital Support Systems of Alabama, LLC. All rights reserved.</p>
+                    </div>
+                </footer>
             </div>
         </div>
     );
