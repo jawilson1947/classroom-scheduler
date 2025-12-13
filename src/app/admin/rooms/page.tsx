@@ -402,7 +402,7 @@ export default function RoomsPage() {
                         <span className="text-slate-400">•</span>
                         <a href="/about" className="text-slate-600 hover:text-slate-800 font-medium">About Us</a>
                     </div>
-                    <p className="text-xs text-slate-500">System developed by Digital Support Systems of Alabama, LLC</p>
+
                 </div>
             </footer>
         </div>

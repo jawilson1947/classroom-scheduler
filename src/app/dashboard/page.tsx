@@ -115,8 +115,7 @@ export default function DashboardPage() {
                     <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</Link>
                     <span>•</span>
                     <Link href="/about" className="hover:text-slate-300 transition-colors">About Us</Link>
-                    <span>•</span>
-                    <span className="opacity-70">System developed by Digital Support Systems of Alabama, LLC</span>
+
                 </div>
             </footer>
         </div>
