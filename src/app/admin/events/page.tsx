@@ -76,7 +76,7 @@ export default function EventsPage() {
     const [message, setMessage] = useState('');
 
     const [error, setError] = useState('');
-    const [searchParams, setSearchParams] = useState<{ start_date: string, end_date: string, building_id?: string } | null>(null);
+    const [searchParams, setSearchParams] = useState<{ start_date: string, end_date: string, building_id?: string, room_id?: string } | null>(null);
 
     const user = session?.user as any;
     const isOrgAdmin = user?.role === 'ORG_ADMIN';
@@ -130,6 +130,9 @@ export default function EventsPage() {
                 }
                 if (searchParams.building_id) {
                     url += `&building_id=${searchParams.building_id}`;
+                }
+                if (searchParams.room_id) {
+                    url += `&room_id=${searchParams.room_id}`;
                 }
             }
             return url;
@@ -328,17 +331,48 @@ export default function EventsPage() {
                         {/* Date Range Defaults Block */}
                         <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6">
                             <h3 className="text-sm font-bold text-blue-900 mb-3">📅 Event Period & Filtering</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Building (Optional)</label>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Building</label>
                                     <select
                                         className="w-full border p-2 rounded"
                                         id="search-building-select"
+                                        onChange={(e) => {
+                                            // Optional: Clear room selection if building changes?
+                                            // For now just let it update state
+                                            const roomSelect = document.getElementById('search-room-select') as HTMLSelectElement;
+                                            if (roomSelect) roomSelect.value = '';
+                                        }}
                                     >
                                         <option value="">All Buildings</option>
                                         {buildings?.map(b => (
                                             <option key={b.id} value={b.id}>{b.name}</option>
                                         ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Room</label>
+                                    <select
+                                        className="w-full border p-2 rounded"
+                                        id="search-room-select"
+                                    >
+                                        <option value="">All Rooms</option>
+                                        {rooms?.map(r => {
+                                            // Simple client-side filter if needed, but for now showing all or filtered by building if we want to get fancy.
+                                            // Let's filter by the selected building in the DOM if possible, or just show all and let the user pick.
+                                            // Better UX: Filter list based on selected building.
+                                            // Since we are using uncontrolled inputs for the search form (reading values on click), 
+                                            // we might need to change this component to use state for the search inputs if we want dynamic filtering.
+                                            // However, for simplicity, we can just list all rooms or use a simple logic.
+                                            // Let's try to grab the value from the building select if possible, but react state is cleaner.
+                                            // We'll stick to listing all rooms for now to keep it simple as requested, 
+                                            // but adding building name to the option text helps.
+                                            return (
+                                                <option key={r.id} value={r.id} data-building={r.building_id}>
+                                                    {r.name} ({r.building_name})
+                                                </option>
+                                            )
+                                        })}
                                     </select>
                                 </div>
                                 <div>
@@ -366,10 +400,12 @@ export default function EventsPage() {
                                         type="button"
                                         onClick={() => {
                                             const buildingSelect = document.getElementById('search-building-select') as HTMLSelectElement;
+                                            const roomSelect = document.getElementById('search-room-select') as HTMLSelectElement;
                                             setSearchParams({
                                                 start_date: dateRangeDefaults.start_date,
                                                 end_date: dateRangeDefaults.end_date,
-                                                building_id: buildingSelect?.value || undefined
+                                                building_id: buildingSelect?.value || undefined,
+                                                room_id: roomSelect?.value || undefined
                                             });
                                         }}
                                         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors mb-[1px]"
