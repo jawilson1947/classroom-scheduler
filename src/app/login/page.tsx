@@ -135,6 +135,8 @@ export default function LoginPage() {
                         <a href="/privacy" className="hover:text-slate-600 transition-colors">Privacy Policy</a>
                         <span>•</span>
                         <a href="/about" className="hover:text-slate-600 transition-colors">About Us</a>
+                        <span>•</span>
+                        <a href="/support" className="hover:text-slate-600 transition-colors">Support</a>
                     </div>
                 </div>
             </div>

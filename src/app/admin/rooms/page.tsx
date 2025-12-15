@@ -401,6 +401,8 @@ export default function RoomsPage() {
                         <a href="/privacy" className="text-slate-600 hover:text-slate-800 font-medium">Privacy Policy</a>
                         <span className="text-slate-400">•</span>
                         <a href="/about" className="text-slate-600 hover:text-slate-800 font-medium">About Us</a>
+                        <span className="text-slate-400">•</span>
+                        <a href="/support" className="text-slate-600 hover:text-slate-800 font-medium">Support</a>
                     </div>
 
                 </div>

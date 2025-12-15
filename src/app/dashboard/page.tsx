@@ -115,7 +115,8 @@ export default function DashboardPage() {
                     <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</Link>
                     <span>•</span>
                     <Link href="/about" className="hover:text-slate-300 transition-colors">About Us</Link>
-
+                    <span>•</span>
+                    <Link href="/support" className="hover:text-slate-300 transition-colors">Support</Link>
                 </div>
             </footer>
         </div>
