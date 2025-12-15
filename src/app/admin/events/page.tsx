@@ -59,9 +59,6 @@ export default function EventsPage() {
         title: '',
         facilitator_name: '',
         description: '',
-        event_type: 'class',
-        recurrence_days: [] as string[],
-        daily_start_time: '',
         recurrence_days: [] as string[],
         daily_start_time: '',
         daily_end_time: ''
@@ -323,7 +320,7 @@ export default function EventsPage() {
                             {currentTenant?.name || 'Events & Schedule Management'}
                         </h1>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 no-print">
                         {message && <div className="bg-green-100 text-green-800 px-3 py-2 rounded text-sm">{message}</div>}
                         {error && <div className="bg-red-100 text-red-800 px-3 py-2 rounded text-sm">{error}</div>}
                     </div>
@@ -332,10 +329,18 @@ export default function EventsPage() {
                 {/* Events Section */}
                 {selectedTenantId ? (
                     <section className="bg-white rounded-xl shadow p-5">
-                        <h2 className="text-lg font-bold mb-3">Events & Schedule</h2>
+                        <div className="flex justify-between items-center mb-3">
+                            <h2 className="text-lg font-bold">Events & Schedule</h2>
+                            <button
+                                onClick={() => window.print()}
+                                className="no-print bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
+                            >
+                                🖨️ Print List
+                            </button>
+                        </div>
 
                         {/* Date Range Defaults Block */}
-                        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6">
+                        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6 no-print">
                             <h3 className="text-sm font-bold text-blue-900 mb-3">📅 Event Period & Filtering</h3>
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
@@ -577,7 +582,7 @@ export default function EventsPage() {
                                             }
                                         })
                                         .map(event => (
-                                            <div key={event.id} className="flex items-center justify-between border p-3 rounded-lg bg-white hover:bg-slate-50">
+                                            <div key={event.id} className="event-card flex items-center justify-between border p-3 rounded-lg bg-white hover:bg-slate-50">
                                                 <div>
                                                     <div className="flex items-center gap-2 mb-1">
                                                         <span className="font-bold text-base text-slate-900">{event.title}</span>
@@ -597,7 +602,7 @@ export default function EventsPage() {
                                                     </div>
                                                 </div>
                                                 {canEdit && (
-                                                    <div className="flex items-center scale-90 origin-right">
+                                                    <div className="flex items-center scale-90 origin-right no-print">
                                                         <button
                                                             onClick={() => handleEditEvent(event)}
                                                             className="text-blue-600 hover:text-blue-800 p-2"
