@@ -14,6 +14,11 @@ interface Tenant {
     time_zone: string;
 }
 
+interface Building {
+    id: number;
+    name: string;
+}
+
 interface Room {
     id: number;
     building_id: number;
@@ -71,7 +76,7 @@ export default function EventsPage() {
     const [message, setMessage] = useState('');
 
     const [error, setError] = useState('');
-    const [searchParams, setSearchParams] = useState<{ start_date: string, end_date: string } | null>(null);
+    const [searchParams, setSearchParams] = useState<{ start_date: string, end_date: string, building_id?: string } | null>(null);
 
     const user = session?.user as any;
     const isOrgAdmin = user?.role === 'ORG_ADMIN';
@@ -105,6 +110,11 @@ export default function EventsPage() {
     }, [status, router]);
 
     // Data Fetching
+    const { data: buildings } = useSWR<Building[]>(
+        selectedTenantId ? `/api/buildings?tenant_id=${selectedTenantId}` : null,
+        fetcher
+    );
+
     const { data: rooms } = useSWR<Room[]>(
         selectedTenantId ? `/api/rooms?tenant_id=${selectedTenantId}` : null,
         fetcher
@@ -115,7 +125,12 @@ export default function EventsPage() {
             if (!selectedTenantId) return null;
             let url = `/api/events?tenant_id=${selectedTenantId}`;
             if (searchParams) {
-                url += `&start_date=${searchParams.start_date}&end_date=${searchParams.end_date}`;
+                if (searchParams.start_date && searchParams.end_date) {
+                    url += `&start_date=${searchParams.start_date}&end_date=${searchParams.end_date}`;
+                }
+                if (searchParams.building_id) {
+                    url += `&building_id=${searchParams.building_id}`;
+                }
             }
             return url;
         },
@@ -312,8 +327,20 @@ export default function EventsPage() {
 
                         {/* Date Range Defaults Block */}
                         <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6">
-                            <h3 className="text-sm font-bold text-blue-900 mb-3">📅 Event Period (Default for All Events)</h3>
-                            <div className="grid grid-cols-2 gap-4">
+                            <h3 className="text-sm font-bold text-blue-900 mb-3">📅 Event Period & Filtering</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Building (Optional)</label>
+                                    <select
+                                        className="w-full border p-2 rounded"
+                                        id="search-building-select"
+                                    >
+                                        <option value="">All Buildings</option>
+                                        {buildings?.map(b => (
+                                            <option key={b.id} value={b.id}>{b.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Start Date</label>
                                     <input
@@ -337,10 +364,14 @@ export default function EventsPage() {
                                     </div>
                                     <button
                                         type="button"
-                                        onClick={() => setSearchParams({
-                                            start_date: dateRangeDefaults.start_date,
-                                            end_date: dateRangeDefaults.end_date
-                                        })}
+                                        onClick={() => {
+                                            const buildingSelect = document.getElementById('search-building-select') as HTMLSelectElement;
+                                            setSearchParams({
+                                                start_date: dateRangeDefaults.start_date,
+                                                end_date: dateRangeDefaults.end_date,
+                                                building_id: buildingSelect?.value || undefined
+                                            });
+                                        }}
                                         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors mb-[1px]"
                                     >
                                         Search

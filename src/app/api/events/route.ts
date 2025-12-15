@@ -12,22 +12,28 @@ export async function GET(request: NextRequest) {
         const endDate = searchParams.get('end_date');
         const tenantId = searchParams.get('tenant_id') || '1'; // Default to tenant 1 for now
         const deviceId = searchParams.get('device_id');
+        const buildingId = searchParams.get('building_id');
 
-        let query = 'SELECT * FROM events WHERE tenant_id = ?';
+        let query = 'SELECT e.* FROM events e JOIN rooms r ON e.room_id = r.id WHERE e.tenant_id = ?';
         const params: any[] = [tenantId];
 
+        if (buildingId) {
+            query += ' AND r.building_id = ?';
+            params.push(buildingId);
+        }
+
         if (roomId) {
-            query += ' AND room_id = ?';
+            query += ' AND e.room_id = ?';
             params.push(roomId);
         }
 
         if (startDate && endDate) {
             // Check for overlap: event starts before query ends AND event ends after query starts
-            query += ' AND start_time < ? AND end_time > ?';
+            query += ' AND e.start_time < ? AND e.end_time > ?';
             params.push(endDate, startDate);
         }
 
-        query += ' ORDER BY start_time ASC';
+        query += ' ORDER BY e.start_time ASC';
 
         const [rows] = await pool.query<RowDataPacket[]>(query, params);
 
