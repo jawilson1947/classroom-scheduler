@@ -62,8 +62,14 @@ export default function EventsPage() {
         event_type: 'class',
         recurrence_days: [] as string[],
         daily_start_time: '',
+        recurrence_days: [] as string[],
+        daily_start_time: '',
         daily_end_time: ''
     });
+
+    // Search Filter State (Controlled)
+    const [searchBuildingId, setSearchBuildingId] = useState<string>('');
+    const [searchRoomId, setSearchRoomId] = useState<string>('');
 
     // Filter & Sort State
     const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
@@ -336,12 +342,10 @@ export default function EventsPage() {
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Building</label>
                                     <select
                                         className="w-full border p-2 rounded"
-                                        id="search-building-select"
+                                        value={searchBuildingId}
                                         onChange={(e) => {
-                                            // Optional: Clear room selection if building changes?
-                                            // For now just let it update state
-                                            const roomSelect = document.getElementById('search-room-select') as HTMLSelectElement;
-                                            if (roomSelect) roomSelect.value = '';
+                                            setSearchBuildingId(e.target.value);
+                                            setSearchRoomId(''); // Reset room when building changes
                                         }}
                                     >
                                         <option value="">All Buildings</option>
@@ -354,25 +358,18 @@ export default function EventsPage() {
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Room</label>
                                     <select
                                         className="w-full border p-2 rounded"
-                                        id="search-room-select"
+                                        value={searchRoomId}
+                                        onChange={(e) => setSearchRoomId(e.target.value)}
+                                        disabled={!rooms}
                                     >
                                         <option value="">All Rooms</option>
-                                        {rooms?.map(r => {
-                                            // Simple client-side filter if needed, but for now showing all or filtered by building if we want to get fancy.
-                                            // Let's filter by the selected building in the DOM if possible, or just show all and let the user pick.
-                                            // Better UX: Filter list based on selected building.
-                                            // Since we are using uncontrolled inputs for the search form (reading values on click), 
-                                            // we might need to change this component to use state for the search inputs if we want dynamic filtering.
-                                            // However, for simplicity, we can just list all rooms or use a simple logic.
-                                            // Let's try to grab the value from the building select if possible, but react state is cleaner.
-                                            // We'll stick to listing all rooms for now to keep it simple as requested, 
-                                            // but adding building name to the option text helps.
-                                            return (
-                                                <option key={r.id} value={r.id} data-building={r.building_id}>
-                                                    {r.name} ({r.building_name})
+                                        {rooms
+                                            ?.filter(r => !searchBuildingId || r.building_id.toString() === searchBuildingId)
+                                            .map(r => (
+                                                <option key={r.id} value={r.id}>
+                                                    {r.name} {(!searchBuildingId) ? `(${r.building_name})` : ''}
                                                 </option>
-                                            )
-                                        })}
+                                            ))}
                                     </select>
                                 </div>
                                 <div>
@@ -399,13 +396,11 @@ export default function EventsPage() {
                                     <button
                                         type="button"
                                         onClick={() => {
-                                            const buildingSelect = document.getElementById('search-building-select') as HTMLSelectElement;
-                                            const roomSelect = document.getElementById('search-room-select') as HTMLSelectElement;
                                             setSearchParams({
                                                 start_date: dateRangeDefaults.start_date,
                                                 end_date: dateRangeDefaults.end_date,
-                                                building_id: buildingSelect?.value || undefined,
-                                                room_id: roomSelect?.value || undefined
+                                                building_id: searchBuildingId || undefined,
+                                                room_id: searchRoomId || undefined
                                             });
                                         }}
                                         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors mb-[1px]"
