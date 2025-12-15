@@ -24,6 +24,16 @@ export default function SupportPage() {
                     </div>
 
                     <div className="flex items-start gap-3">
+                        <span className="text-xl">📞</span>
+                        <div>
+                            <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Phone Support</p>
+                            <a href="tel:+12566177295" className="text-blue-600 font-medium hover:underline">
+                                (256) 617-7295
+                            </a>
+                        </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
                         <span className="text-xl">🕒</span>
                         <div>
                             <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Support Hours</p>
