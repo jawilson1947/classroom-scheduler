@@ -416,6 +416,11 @@ export default function EventsPage() {
                                     </button>
                                 </div>
                             </div>
+                            {(dateRangeDefaults.start_date && dateRangeDefaults.end_date && dateRangeDefaults.end_date < dateRangeDefaults.start_date) && (
+                                <div className="mt-3 bg-red-50 text-red-700 px-3 py-2 rounded text-sm flex items-center gap-2 border border-red-200">
+                                    ⚠️ <strong>Warning:</strong> The End Date cannot be earlier than the Start Date.
+                                </div>
+                            )}
                         </div>
 
                         {/* Only show form for users who can edit */}
@@ -431,6 +436,11 @@ export default function EventsPage() {
                                         >
                                             Cancel
                                         </button>
+                                    </div>
+                                )}
+                                {(eventForm.daily_start_time && eventForm.daily_end_time && eventForm.daily_end_time < eventForm.daily_start_time) && (
+                                    <div className="col-span-2 bg-red-50 text-red-700 px-3 py-2 rounded text-sm flex items-center gap-2 border border-red-200 mb-2">
+                                        ⚠️ <strong>Warning:</strong> The End Time cannot be earlier than the Start Time.
                                     </div>
                                 )}
                                 <div className="col-span-2 md:col-span-1">
