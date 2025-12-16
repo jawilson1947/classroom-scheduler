@@ -60,6 +60,7 @@ export default function EventsPage() {
         title: '',
         facilitator_name: '',
         description: '',
+        event_type: 'class',
         recurrence_days: [] as string[],
         daily_start_time: '',
         daily_end_time: ''
