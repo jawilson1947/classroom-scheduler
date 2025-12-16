@@ -127,6 +127,29 @@ struct DisplayView: View {
                     .padding(.bottom, 40)
                 }
             }
+            
+            // Floating Refresh Button
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        let generator = UIImpactFeedbackGenerator(style: .medium)
+                        generator.impactOccurred()
+                        print("[DisplayView] Manual refresh triggered")
+                        apiService?.fetchEvents()
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 24))
+                            .foregroundColor(.white.opacity(0.8))
+                            .padding(12)
+                            .background(Color.black.opacity(0.3))
+                            .clipShape(Circle())
+                    }
+                    .padding(.trailing, 24)
+                    .padding(.bottom, 24)
+                }
+            }
         }
         .onAppear {
             print("[DisplayView] onAppear triggered. Config present: \(configService.config != nil)")
