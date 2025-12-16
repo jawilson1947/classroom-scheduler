@@ -43,7 +43,7 @@ export default function Footer() {
             {openModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4 animate-fade-in" onClick={closeModal}>
                     <div
-                        className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col animate-scale-in"
+                        className="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col animate-scale-in"
                         onClick={e => e.stopPropagation()}
                     >
                         {/* Header */}
