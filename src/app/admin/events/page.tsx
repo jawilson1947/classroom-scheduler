@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useRouter } from 'next/navigation';
 import { FilterSortCard, TimeFilter, TypeFilter, SortBy, SortOrder } from '@/components/FilterSortCard';
 import Footer from '@/components/Footer';
 
