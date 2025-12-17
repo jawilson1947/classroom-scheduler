@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Footer from '@/components/Footer';
 
 export default function SetupPage() {
     const [pairingCode, setPairingCode] = useState('');
@@ -85,7 +86,11 @@ export default function SetupPage() {
                         {loading ? 'Pairing...' : 'Pair Device'}
                     </button>
                 </form>
+                <div className="mt-8 text-center text-slate-500 text-sm">
+                    <Footer />
+                </div>
             </div>
         </div>
     );
 }
+```

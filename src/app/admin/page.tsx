@@ -2,7 +2,9 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import useSWR from 'swr';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import Footer from '@/components/Footer';
 import { useSession } from 'next-auth/react';
 
 interface Tenant {

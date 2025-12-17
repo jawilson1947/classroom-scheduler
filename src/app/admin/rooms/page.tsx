@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Footer from '@/components/Footer';
 
 interface Tenant {
     id: number;

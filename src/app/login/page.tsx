@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import Footer from '@/components/Footer';
 export default function LoginPage() {
     const router = useRouter();
     const [email, setEmail] = useState('');
@@ -129,15 +130,8 @@ export default function LoginPage() {
                     </button>
                 </div>
 
-                <div className="mt-6 text-center text-sm text-slate-500">
-                    <p>Contact your administrator for account access</p>
-                    <div className="mt-4 pt-4 border-t border-slate-100 flex justify-center gap-3 text-slate-400">
-                        <a href="/privacy" className="hover:text-slate-600 transition-colors">Privacy Policy</a>
-                        <span>•</span>
-                        <a href="/about" className="hover:text-slate-600 transition-colors">About Us</a>
-                        <span>•</span>
-                        <a href="/support" className="hover:text-slate-600 transition-colors">Support</a>
-                    </div>
+                <div className="mt-8 w-full">
+                    <Footer />
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Footer from '@/components/Footer';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -39,10 +40,8 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="mt-12 text-slate-500">
-          <p>Navigate to Admin Dashboard to manage events and devices</p>
-          <p>Or set up a new iPad display device</p>
-        </div>
+        {/* Footer */}
+        <Footer />
       </div>
     </div>
   );

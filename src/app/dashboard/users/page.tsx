@@ -1,6 +1,8 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import Footer from '@/components/Footer';
 import { useState } from 'react';
 import useSWR from 'swr';
 import Link from 'next/link';
@@ -367,19 +369,9 @@ export default function UsersPage() {
             </div>
 
             {/* Footer */}
-            <footer className="mt-12 border-t border-slate-600 pt-6 pb-4">
-                <div className="text-center text-sm text-slate-400">
-                    <p className="mb-2">© {new Date().getFullYear()} Digital Support Systems of Alabama, LLC. All rights reserved.</p>
-                    <div className="flex justify-center gap-4 mb-2">
-                        <a href="/privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</a>
-                        <span className="text-slate-400">•</span>
-                        <a href="/about" className="hover:text-slate-300 transition-colors">About Us</a>
-                        <span className="text-slate-400">•</span>
-                        <a href="/support" className="hover:text-slate-300 transition-colors">Support</a>
-                    </div>
 
-                </div>
-            </footer>
         </div>
+            </footer >
+        </div >
     );
 }
