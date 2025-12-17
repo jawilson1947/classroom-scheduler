@@ -247,10 +247,7 @@ export default function BuildingsPage() {
                 )}
             </div>
 
-            {/* Footer */}
-
+            <Footer />
         </div>
-            </footer >
-        </div >
     );
 }

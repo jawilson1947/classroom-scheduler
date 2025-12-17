@@ -263,10 +263,8 @@ export default function OrganizationPage() {
                     </form>
                 </div>
 
-                {/* Footer */}
+                <Footer />
             </div>
-        </footer>
-            </div >
-        </div >
+        </div>
     );
 }

@@ -368,10 +368,7 @@ export default function UsersPage() {
                 )}
             </div>
 
-            {/* Footer */}
-
+            <Footer />
         </div>
-            </footer >
-        </div >
     );
 }
