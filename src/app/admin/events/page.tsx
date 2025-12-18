@@ -68,7 +68,6 @@ export default function EventsPage() {
 
     // Search Filter State (Controlled)
     const [searchBuildingId, setSearchBuildingId] = useState<string>('');
-    const [searchRoomId, setSearchRoomId] = useState<string>('');
 
     // Filter & Sort State
     const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
@@ -344,7 +343,7 @@ export default function EventsPage() {
                         {/* Date Range Defaults Block */}
                         <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6 no-print">
                             <h3 className="text-sm font-bold text-blue-900 mb-3">📅 Event Period & Filtering</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Building</label>
                                     <select
@@ -352,7 +351,8 @@ export default function EventsPage() {
                                         value={searchBuildingId}
                                         onChange={(e) => {
                                             setSearchBuildingId(e.target.value);
-                                            setSearchRoomId(''); // Reset room when building changes
+                                            // Reset the data entry room selection when filter changes
+                                            setEventForm(prev => ({ ...prev, room_id: '' }));
                                         }}
                                     >
                                         <option value="">All Buildings</option>
@@ -361,24 +361,7 @@ export default function EventsPage() {
                                         ))}
                                     </select>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Room</label>
-                                    <select
-                                        className="w-full border p-2 rounded text-slate-900"
-                                        value={searchRoomId}
-                                        onChange={(e) => setSearchRoomId(e.target.value)}
-                                        disabled={!rooms}
-                                    >
-                                        <option value="">All Rooms</option>
-                                        {rooms
-                                            ?.filter(r => !searchBuildingId || r.building_id.toString() === searchBuildingId)
-                                            .map(r => (
-                                                <option key={r.id} value={r.id}>
-                                                    {r.name} {(!searchBuildingId) ? `(${r.building_name})` : ''}
-                                                </option>
-                                            ))}
-                                    </select>
-                                </div>
+
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Start Date</label>
                                     <input
@@ -407,7 +390,8 @@ export default function EventsPage() {
                                                 start_date: dateRangeDefaults.start_date,
                                                 end_date: dateRangeDefaults.end_date,
                                                 building_id: searchBuildingId || undefined,
-                                                room_id: searchRoomId || undefined
+                                                // Use the data entry form's room selection for searching
+                                                room_id: eventForm.room_id || undefined
                                             });
                                         }}
                                         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors mb-[1px]"
@@ -452,7 +436,9 @@ export default function EventsPage() {
                                         required
                                     >
                                         <option value="">Select Room...</option>
-                                        {rooms?.map(r => <option key={r.id} value={r.id}>{r.name} ({r.building_name})</option>)}
+                                        {rooms
+                                            ?.filter(r => !searchBuildingId || r.building_id.toString() === searchBuildingId)
+                                            .map(r => <option key={r.id} value={r.id}>{r.name} ({r.building_name})</option>)}
                                     </select>
                                 </div>
 

@@ -100,15 +100,18 @@ export default function RoomsPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
-            if (!res.ok) throw new Error(`Failed to ${editingRoomId ? 'update' : 'create'} room`);
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || `Failed to ${editingRoomId ? 'update' : 'create'} room`);
+            }
             mutateRooms();
             setRoomForm({ building_id: '', name: '', capacity: '' });
             setEditingRoomId(null);
             setMessage(`Room ${editingRoomId ? 'updated' : 'created'} successfully`);
             setTimeout(() => setMessage(''), 3000);
-        } catch (err) {
-            setError(`Error ${editingRoomId ? 'updating' : 'creating'} room`);
-            setTimeout(() => setError(''), 3000);
+        } catch (err: any) {
+            setError(err.message || `Error ${editingRoomId ? 'updating' : 'creating'} room`);
+            setTimeout(() => setError(''), 5000);
         }
     };
 

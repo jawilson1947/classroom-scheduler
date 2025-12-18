@@ -62,6 +62,16 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Tenant ID, Building ID and Name are required' }, { status: 400 });
         }
 
+        // Check for duplicates
+        const [existing] = await pool.query<RowDataPacket[]>(
+            'SELECT id FROM rooms WHERE building_id = ? AND name = ?',
+            [building_id, name]
+        );
+
+        if (existing.length > 0) {
+            return NextResponse.json({ error: 'A room with this name already exists in this building.' }, { status: 409 });
+        }
+
         const [result] = await pool.query(
             'INSERT INTO rooms (tenant_id, building_id, name, capacity) VALUES (?, ?, ?, ?)',
             [tenant_id, building_id, name, capacity || 0]
@@ -86,6 +96,16 @@ export async function PUT(request: NextRequest) {
             return NextResponse.json({
                 error: 'ID, Name, and Building ID are required'
             }, { status: 400 });
+        }
+
+        // Check for duplicates (excluding current room)
+        const [existing] = await pool.query<RowDataPacket[]>(
+            'SELECT id FROM rooms WHERE building_id = ? AND name = ? AND id != ?',
+            [building_id, name, id]
+        );
+
+        if (existing.length > 0) {
+            return NextResponse.json({ error: 'A room with this name already exists in this building.' }, { status: 409 });
         }
 
         await pool.query(
