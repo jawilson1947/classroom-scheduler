@@ -348,7 +348,7 @@ export default function EventsPage() {
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Building</label>
                                     <select
-                                        className="w-full border p-2 rounded"
+                                        className="w-full border p-2 rounded text-slate-900"
                                         value={searchBuildingId}
                                         onChange={(e) => {
                                             setSearchBuildingId(e.target.value);
@@ -364,7 +364,7 @@ export default function EventsPage() {
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Room</label>
                                     <select
-                                        className="w-full border p-2 rounded"
+                                        className="w-full border p-2 rounded text-slate-900"
                                         value={searchRoomId}
                                         onChange={(e) => setSearchRoomId(e.target.value)}
                                         disabled={!rooms}
@@ -383,7 +383,7 @@ export default function EventsPage() {
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Start Date</label>
                                     <input
                                         type="date"
-                                        className="w-full border p-2 rounded"
+                                        className="w-full border p-2 rounded text-slate-900 placeholder:text-slate-500"
                                         value={dateRangeDefaults.start_date}
                                         onChange={e => setDateRangeDefaults({ ...dateRangeDefaults, start_date: e.target.value })}
                                         required
@@ -394,7 +394,7 @@ export default function EventsPage() {
                                         <label className="block text-sm font-medium text-slate-700 mb-1">End Date</label>
                                         <input
                                             type="date"
-                                            className="w-full border p-2 rounded"
+                                            className="w-full border p-2 rounded text-slate-900 placeholder:text-slate-500"
                                             value={dateRangeDefaults.end_date}
                                             onChange={e => setDateRangeDefaults({ ...dateRangeDefaults, end_date: e.target.value })}
                                             required
@@ -446,7 +446,7 @@ export default function EventsPage() {
                                 <div className="col-span-2 md:col-span-1">
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Room</label>
                                     <select
-                                        className="w-full border p-2 rounded"
+                                        className="w-full border p-2 rounded text-slate-900"
                                         value={eventForm.room_id}
                                         onChange={e => setEventForm({ ...eventForm, room_id: e.target.value })}
                                         required
@@ -459,7 +459,7 @@ export default function EventsPage() {
                                 <div className="col-span-2 md:col-span-1">
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Event Type</label>
                                     <select
-                                        className="w-full border p-2 rounded"
+                                        className="w-full border p-2 rounded text-slate-900"
                                         value={eventForm.event_type}
                                         onChange={e => setEventForm({ ...eventForm, event_type: e.target.value })}
                                     >
@@ -473,7 +473,7 @@ export default function EventsPage() {
                                 <div className="col-span-2">
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
                                     <input
-                                        className="w-full border p-2 rounded"
+                                        className="w-full border p-2 rounded text-slate-900 placeholder:text-slate-500"
                                         placeholder="e.g., Intro to Computer Science"
                                         value={eventForm.title}
                                         onChange={e => setEventForm({ ...eventForm, title: e.target.value })}
@@ -510,7 +510,7 @@ export default function EventsPage() {
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Daily Start Time</label>
                                     <input
                                         type="time"
-                                        className="w-full border p-2 rounded"
+                                        className="w-full border p-2 rounded text-slate-900 placeholder:text-slate-500"
                                         value={eventForm.daily_start_time}
                                         onChange={e => setEventForm({ ...eventForm, daily_start_time: e.target.value })}
                                         required
@@ -521,7 +521,7 @@ export default function EventsPage() {
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Daily End Time</label>
                                     <input
                                         type="time"
-                                        className="w-full border p-2 rounded"
+                                        className="w-full border p-2 rounded text-slate-900 placeholder:text-slate-500"
                                         value={eventForm.daily_end_time}
                                         onChange={e => setEventForm({ ...eventForm, daily_end_time: e.target.value })}
                                         required
@@ -531,7 +531,7 @@ export default function EventsPage() {
                                 <div className="col-span-2">
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Facilitator (Optional)</label>
                                     <input
-                                        className="w-full border p-2 rounded"
+                                        className="w-full border p-2 rounded text-slate-900 placeholder:text-slate-500"
                                         placeholder="e.g., Dr. Smith"
                                         value={eventForm.facilitator_name}
                                         onChange={e => setEventForm({ ...eventForm, facilitator_name: e.target.value })}
