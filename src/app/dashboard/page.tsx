@@ -160,7 +160,7 @@ function OrgAdminDashboard({ user }: { user: any }) {
         <div className="space-y-6">
             {tenant && (
                 <div className="bg-white/10 border border-white/20 rounded-xl p-6 text-white">
-                    <h3 className="text-xl font-semibold opacity-80">Organization</h3>
+
                     <div className="text-3xl font-bold">{tenant.name}</div>
                 </div>
             )}
