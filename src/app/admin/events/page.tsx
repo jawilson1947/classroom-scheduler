@@ -4,8 +4,14 @@ import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { FilterSortCard, TimeFilter, TypeFilter, SortBy, SortOrder } from '@/components/FilterSortCard';
 import Footer from '@/components/Footer';
+import dynamic from 'next/dynamic';
+import Modal from '@/components/Modal';
+import 'quill/dist/quill.snow.css'; // Import styles for viewing content
+
+const QuillEditor = dynamic(() => import('@/components/QuillEditor'), { ssr: false });
 
 interface Tenant {
     id: number;
@@ -42,6 +48,7 @@ interface Event {
     recurrence_days?: string;
     daily_start_time?: string;
     daily_end_time?: string;
+    narrative?: string;
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -63,7 +70,8 @@ export default function EventsPage() {
         event_type: 'class',
         recurrence_days: [] as string[],
         daily_start_time: '',
-        daily_end_time: ''
+        daily_end_time: '',
+        narrative: ''
     });
 
     // Search Filter State (Controlled)
@@ -76,6 +84,8 @@ export default function EventsPage() {
     const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
     const [editingEventId, setEditingEventId] = useState<number | null>(null);
     const [conflictModalOpen, setConflictModalOpen] = useState(false);
+    const [narrativeModalOpen, setNarrativeModalOpen] = useState(false);
+    const [viewNarrative, setViewNarrative] = useState<{ title: string; content: string } | null>(null);
     const [conflictData, setConflictData] = useState<any[]>([]);
     const [message, setMessage] = useState('');
 
@@ -159,8 +169,17 @@ export default function EventsPage() {
         const isRecurring = dateRangeDefaults.start_date !== dateRangeDefaults.end_date;
 
         // Construct Date objects in Local Time
-        const startDateObj = new Date(`${dateRangeDefaults.start_date}T${eventForm.daily_start_time}`);
-        const endDateObj = new Date(`${dateRangeDefaults.end_date}T${eventForm.daily_end_time}`);
+        const startDateString = `${dateRangeDefaults.start_date}T${eventForm.daily_start_time}`;
+        const endDateString = `${dateRangeDefaults.end_date}T${eventForm.daily_end_time}`;
+
+        const startDateObj = new Date(startDateString);
+        const endDateObj = new Date(endDateString);
+
+        if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+            setError('Invalid date or time value. Please check your inputs.');
+            setTimeout(() => setError(''), 3000);
+            return;
+        }
 
         // Send as UTC ISO strings
         const start_time = startDateObj.toISOString();
@@ -218,7 +237,8 @@ export default function EventsPage() {
                 event_type: 'class',
                 recurrence_days: [],
                 daily_start_time: '',
-                daily_end_time: ''
+                daily_end_time: '',
+                narrative: ''
             });
             setEditingEventId(null);
             setMessage(`Event ${editingEventId ? 'updated' : 'created'} successfully`);
@@ -242,7 +262,10 @@ export default function EventsPage() {
         // Helper to get local time string HH:mm
         const toLocalHM = (dateStr: string) => {
             const date = new Date(dateStr);
-            return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            if (isNaN(date.getTime())) return '';
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
         };
 
         // Populate date range from event's start/end times using Local Time
@@ -262,7 +285,8 @@ export default function EventsPage() {
             event_type: event.event_type || 'class',
             recurrence_days: event.recurrence_days ? event.recurrence_days.split(',') : [],
             daily_start_time: event.daily_start_time || toLocalHM(event.start_time),
-            daily_end_time: event.daily_end_time || toLocalHM(event.end_time)
+            daily_end_time: event.daily_end_time || toLocalHM(event.end_time),
+            narrative: event.narrative || ''
         });
         // Scroll to form
         const form = document.getElementById('event-form');
@@ -279,7 +303,8 @@ export default function EventsPage() {
             event_type: 'class',
             recurrence_days: [],
             daily_start_time: '',
-            daily_end_time: ''
+            daily_end_time: '',
+            narrative: ''
         });
     };
 
@@ -444,16 +469,30 @@ export default function EventsPage() {
 
                                 <div className="col-span-2 md:col-span-1">
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Event Type</label>
-                                    <select
-                                        className="w-full border p-2 rounded text-slate-900"
-                                        value={eventForm.event_type}
-                                        onChange={e => setEventForm({ ...eventForm, event_type: e.target.value })}
-                                    >
-                                        <option value="class">Class</option>
-                                        <option value="meeting">Meeting</option>
-                                        <option value="event">Event</option>
-                                        <option value="other">Other</option>
-                                    </select>
+                                    <div className="flex gap-4 items-center">
+                                        <select
+                                            className="w-full border p-2 rounded text-slate-900"
+                                            value={eventForm.event_type}
+                                            onChange={e => setEventForm({ ...eventForm, event_type: e.target.value })}
+                                        >
+                                            <option value="class">Class</option>
+                                            <option value="meeting">Meeting</option>
+                                            <option value="event">Event</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <button
+                                            type="button"
+                                            onClick={() => setNarrativeModalOpen(true)}
+                                            disabled={!eventForm.room_id || !eventForm.event_type}
+                                            className={`font-semibold underline whitespace-nowrap transition-colors ${(!eventForm.room_id || !eventForm.event_type)
+                                                ? 'text-slate-400 cursor-not-allowed no-underline'
+                                                : 'text-blue-600 hover:text-blue-800'
+                                                }`}
+                                            title={(!eventForm.room_id || !eventForm.event_type) ? "Please select a Room and Event Type first" : ""}
+                                        >
+                                            {eventForm.narrative ? 'Edit Narrative (Content Exists)' : 'Add Narrative'}
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div className="col-span-2">
@@ -543,6 +582,50 @@ export default function EventsPage() {
                             onSortOrderChange={setSortOrder}
                         />
 
+                        {/* Narrative Modal */}
+                        <Modal
+                            isOpen={narrativeModalOpen}
+                            onClose={() => setNarrativeModalOpen(false)}
+                            title="Edit Event Narrative"
+                        >
+                            <div className="space-y-4">
+                                <QuillEditor
+                                    value={eventForm.narrative}
+                                    onChange={(value: string) => setEventForm({ ...eventForm, narrative: value })}
+                                />
+                                <div className="flex justify-end">
+                                    <button
+                                        onClick={() => setNarrativeModalOpen(false)}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition-colors"
+                                    >
+                                        Done
+                                    </button>
+                                </div>
+                            </div>
+                        </Modal>
+
+                        {/* View Narrative Modal */}
+                        <Modal
+                            isOpen={!!viewNarrative}
+                            onClose={() => setViewNarrative(null)}
+                            title={viewNarrative?.title || ''}
+                        >
+                            <div className="space-y-4">
+                                <div
+                                    className="ql-editor !p-0" // Reuse Quill editor styles for consistency
+                                    dangerouslySetInnerHTML={{ __html: viewNarrative?.content || '' }}
+                                />
+                                <div className="flex justify-end pt-4 border-t border-slate-100">
+                                    <button
+                                        onClick={() => setViewNarrative(null)}
+                                        className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded font-medium transition-colors"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </Modal>
+
                         <div className="space-y-4">
 
                             {events?.length === 0 ? (
@@ -583,7 +666,16 @@ export default function EventsPage() {
                                             <div key={event.id} className="event-card flex items-center justify-between border p-3 rounded-lg bg-white hover:bg-slate-50">
                                                 <div>
                                                     <div className="flex items-center gap-2 mb-1">
-                                                        <span className="font-bold text-base text-slate-900">{event.title}</span>
+                                                        {event.narrative ? (
+                                                            <button
+                                                                onClick={() => setViewNarrative({ title: event.title, content: event.narrative! })}
+                                                                className="font-bold text-base text-blue-600 hover:text-blue-800 underline text-left"
+                                                            >
+                                                                {event.title}
+                                                            </button>
+                                                        ) : (
+                                                            <span className="font-bold text-base text-slate-900">{event.title}</span>
+                                                        )}
                                                         <span className="text-[10px] px-2 py-0.5 bg-slate-100 rounded-full uppercase tracking-wide text-slate-600">{event.event_type}</span>
                                                     </div>
                                                     <div className="text-xs text-slate-600 space-y-0.5">

@@ -3,14 +3,28 @@ import SwiftUI
 struct EventCardView: View {
     let event: Event
     let isPast: Bool
+    @State private var showNarrative = false
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(event.title)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(isPast ? Color.green.opacity(0.9) : .white)
-                    .italic(isPast)
+                if let narrative = event.narrative, !narrative.isEmpty {
+                    Button(action: {
+                        showNarrative = true
+                    }) {
+                        Text(event.title)
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(isPast ? Color.green.opacity(0.9) : .white)
+                            .italic(isPast)
+                            .underline()
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Text(event.title)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(isPast ? Color.green.opacity(0.9) : .white)
+                        .italic(isPast)
+                }
                 
                 if let facilitator = event.facilitatorName {
                     Text(facilitator)
@@ -48,5 +62,14 @@ struct EventCardView: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(Color(white: 0.25), lineWidth: 1)
         )
+        .sheet(isPresented: $showNarrative) {
+            if let narrative = event.narrative {
+                NarrativeSheetView(
+                    title: event.title,
+                    htmlContent: narrative,
+                    isPresented: $showNarrative
+                )
+            }
+        }
     }
 }

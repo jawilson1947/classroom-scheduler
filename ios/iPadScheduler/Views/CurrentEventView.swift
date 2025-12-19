@@ -1,8 +1,10 @@
 import SwiftUI
-//jaw 12/08/2025 
+import WebKit
+//jaw 12/19/2025 
 struct CurrentEventView: View {
     let event: Event
     @State private var isAnimating = false
+    @State private var showNarrative = false
     
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
@@ -26,10 +28,23 @@ struct CurrentEventView: View {
                         .stroke(Color.white.opacity(0.3), lineWidth: 1)
                 )
                 
-                Text(event.title)
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.white)
+                if let narrative = event.narrative, !narrative.isEmpty {
+                    Button(action: {
+                        showNarrative = true
+                    }) {
+                        Text(event.title)
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.white)
+                            .underline()
+                    }
+                    .buttonStyle(.plain)
                     .padding(.top, 4)
+                } else {
+                    Text(event.title)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(.top, 4)
+                }
                 
                 if let facilitator = event.facilitatorName {
                     Text(facilitator)
@@ -81,5 +96,70 @@ struct CurrentEventView: View {
         .onAppear {
             isAnimating = true
         }
+        .sheet(isPresented: $showNarrative) {
+            if let narrative = event.narrative {
+                NarrativeSheetView(
+                    title: event.title,
+                    htmlContent: narrative,
+                    isPresented: $showNarrative
+                )
+            }
+        }
+    }
+}
+
+struct NarrativeSheetView: View {
+    let title: String
+    let htmlContent: String
+    @Binding var isPresented: Bool
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                WebView(html: htmlContent)
+                    .edgesIgnoringSafeArea(.bottom)
+            }
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        isPresented = false
+                    }) {
+                        Text("Close")
+                            .font(.headline)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// WKWebView Wrapper
+struct WebView: UIViewRepresentable {
+    let html: String
+    
+    func makeUIView(context: Context) -> WKWebView {
+        let webView = WKWebView()
+        webView.isOpaque = false
+        webView.backgroundColor = .clear
+        webView.scrollView.showsVerticalScrollIndicator = true
+        return webView
+    }
+    
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        let css = """
+        <style>
+            body { 
+                font-family: -apple-system, system-ui; 
+                font-size: 1.2rem; 
+                line-height: 1.5; 
+                color: #333; 
+                padding: 1rem; 
+            }
+            ul, ol { padding-left: 20px; }
+        </style>
+        """
+        uiView.loadHTMLString(css + html, baseURL: nil)
     }
 }

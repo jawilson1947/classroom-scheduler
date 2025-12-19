@@ -7,6 +7,7 @@ struct Event: Codable, Identifiable {
     let startTime: String
     let endTime: String
     let description: String?
+    let narrative: String?
     let recurrenceDays: String?
     let dailyStartTime: String?
     let dailyEndTime: String?
@@ -18,6 +19,7 @@ struct Event: Codable, Identifiable {
         case startTime = "start_time"
         case endTime = "end_time"
         case description
+        case narrative
         case recurrenceDays = "recurrence_days"
         case dailyStartTime = "daily_start_time"
         case dailyEndTime = "daily_end_time"
