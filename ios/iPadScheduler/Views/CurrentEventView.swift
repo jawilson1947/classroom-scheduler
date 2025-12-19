@@ -148,13 +148,27 @@ struct WebView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        // Check if the first line starts with "http"
-        let firstLine = html.components(separatedBy: .newlines).first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        // Robust check: Parse HTML to plain text to handle <p> tags and entities
+        var isURL = false
+        if let data = html.data(using: .utf8) {
+            if let attributedString = try? NSAttributedString(
+                data: data,
+                options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue],
+                documentAttributes: nil
+            ) {
+                let text = attributedString.string.trimmingCharacters(in: .whitespacesAndNewlines)
+                // Check just the first line of the text content
+                let firstLine = text.components(separatedBy: .newlines).first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                
+                if firstLine.lowercased().hasPrefix("http"), let url = URL(string: firstLine) {
+                    let request = URLRequest(url: url)
+                    uiView.load(request)
+                    isURL = true
+                }
+            }
+        }
         
-        if firstLine.lowercased().hasPrefix("http"), let url = URL(string: firstLine) {
-            let request = URLRequest(url: url)
-            uiView.load(request)
-        } else {
+        if !isURL {
             let css = """
             <style>
                 body { 
