@@ -13,7 +13,7 @@ const req = http.request(options, (res) => {
     res.on('end', () => {
         try {
             const rooms = JSON.parse(data);
-            console.log('Rooms:', rooms.map(r => ({ id: r.id, name: r.name })));
+            console.log('Rooms:', JSON.stringify(rooms, null, 2));
         } catch (e) {
             console.error(data);
         }

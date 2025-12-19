@@ -148,18 +148,26 @@ struct WebView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        let css = """
-        <style>
-            body { 
-                font-family: -apple-system, system-ui; 
-                font-size: 1.2rem; 
-                line-height: 1.5; 
-                color: #333; 
-                padding: 1rem; 
-            }
-            ul, ol { padding-left: 20px; }
-        </style>
-        """
-        uiView.loadHTMLString(css + html, baseURL: nil)
+        // Check if the first line starts with "http"
+        let firstLine = html.components(separatedBy: .newlines).first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        
+        if firstLine.lowercased().hasPrefix("http"), let url = URL(string: firstLine) {
+            let request = URLRequest(url: url)
+            uiView.load(request)
+        } else {
+            let css = """
+            <style>
+                body { 
+                    font-family: -apple-system, system-ui; 
+                    font-size: 1.2rem; 
+                    line-height: 1.5; 
+                    color: #333; 
+                    padding: 1rem; 
+                }
+                ul, ol { padding-left: 20px; }
+            </style>
+            """
+            uiView.loadHTMLString(css + html, baseURL: nil)
+        }
     }
 }

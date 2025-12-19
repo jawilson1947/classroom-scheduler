@@ -129,7 +129,7 @@ export default function EventsPage() {
         fetcher
     );
 
-    const { data: rooms } = useSWR<Room[]>(
+    const { data: rooms, error: roomsError, isLoading: roomsLoading } = useSWR<Room[]>(
         selectedTenantId ? `/api/rooms?tenant_id=${selectedTenantId}` : null,
         fetcher
     );
@@ -157,7 +157,15 @@ export default function EventsPage() {
     // Helper to get room name
     const getRoomName = (id: number) => {
         const room = rooms?.find(r => r.id === id);
-        return room ? `${room.building_name}: ${room.name}` : 'Unknown Room';
+        if (room) return `${room.building_name}: ${room.name}`;
+
+        let debug = `Unknown Room (ID: ${id}`;
+        debug += `, Tenant: ${selectedTenantId}`;
+        debug += `, Loaded: ${rooms?.length || 0}`;
+        if (roomsLoading) debug += ", Loading...";
+        if (roomsError) debug += `, Error: ${roomsError}`;
+        debug += ")";
+        return debug;
     };
 
     // Handlers
@@ -611,10 +619,33 @@ export default function EventsPage() {
                             title={viewNarrative?.title || ''}
                         >
                             <div className="space-y-4">
-                                <div
-                                    className="ql-editor !p-0" // Reuse Quill editor styles for consistency
-                                    dangerouslySetInnerHTML={{ __html: viewNarrative?.content || '' }}
-                                />
+                                {(() => {
+                                    // Extract text content from HTML to check for URL
+                                    const tempDiv = document.createElement('div');
+                                    tempDiv.innerHTML = viewNarrative?.content || '';
+                                    const textContent = tempDiv.textContent?.trim() || '';
+                                    const isUrl = textContent.toLowerCase().startsWith('http');
+
+                                    if (isUrl) {
+                                        return (
+                                            <div className="w-full h-[600px] bg-slate-100 rounded border border-slate-200 overflow-hidden">
+                                                <iframe
+                                                    src={textContent}
+                                                    className="w-full h-full border-0"
+                                                    title="Narrative Content"
+                                                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                                                />
+                                            </div>
+                                        );
+                                    }
+
+                                    return (
+                                        <div
+                                            className="ql-editor !p-0" // Reuse Quill editor styles for consistency
+                                            dangerouslySetInnerHTML={{ __html: viewNarrative?.content || '' }}
+                                        />
+                                    );
+                                })()}
                                 <div className="flex justify-end pt-4 border-t border-slate-100">
                                     <button
                                         onClick={() => setViewNarrative(null)}
