@@ -74,6 +74,9 @@ export default function EventsPage() {
         narrative: ''
     });
 
+    // Track initial form state for change detection
+    const [initialEventForm, setInitialEventForm] = useState<typeof eventForm | null>(null);
+
     // Search Filter State (Controlled)
     const [searchBuildingId, setSearchBuildingId] = useState<string>('');
 
@@ -299,7 +302,7 @@ export default function EventsPage() {
             end_date: endDate
         });
 
-        setEventForm({
+        const newFormState = {
             room_id: event.room_id.toString(),
             title: event.title,
             facilitator_name: event.facilitator_name || '',
@@ -309,14 +312,25 @@ export default function EventsPage() {
             daily_start_time: event.daily_start_time || toLocalHM(event.start_time),
             daily_end_time: event.daily_end_time || toLocalHM(event.end_time),
             narrative: event.narrative || ''
-        });
+        };
+        setEventForm(newFormState);
+        setInitialEventForm(newFormState);
+
         // Scroll to form
         const form = document.getElementById('event-form');
         form?.scrollIntoView({ behavior: 'smooth' });
     };
 
     const handleCancelEdit = () => {
+        // Check for unsaved changes
+        if (initialEventForm && JSON.stringify(eventForm) !== JSON.stringify(initialEventForm)) {
+            if (!confirm('You have unsaved changes. Are you sure you want to discard them?')) {
+                return;
+            }
+        }
+
         setEditingEventId(null);
+        setInitialEventForm(null);
         setEventForm({
             room_id: '',
             title: '',
