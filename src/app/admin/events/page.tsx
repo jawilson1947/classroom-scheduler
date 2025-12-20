@@ -176,6 +176,20 @@ export default function EventsPage() {
         // Build start_time and end_time from date range + daily times
         const isRecurring = dateRangeDefaults.start_date !== dateRangeDefaults.end_date;
 
+        // Validation
+        const newErrors: string[] = [];
+        if (!eventForm.room_id) newErrors.push('Room is required');
+        if (!eventForm.title.trim()) newErrors.push('Title is required');
+        if (!eventForm.daily_start_time) newErrors.push('Start time is required');
+        if (!eventForm.daily_end_time) newErrors.push('End time is required');
+        if (isRecurring && eventForm.recurrence_days.length === 0) newErrors.push('At least one recurrence day is required');
+
+        if (newErrors.length > 0) {
+            setError(newErrors.join(', '));
+            setTimeout(() => setError(''), 5000);
+            return;
+        }
+
         // Construct Date objects in Local Time
         const startDateString = `${dateRangeDefaults.start_date}T${eventForm.daily_start_time}`;
         const endDateString = `${dateRangeDefaults.end_date}T${eventForm.daily_end_time}`;
