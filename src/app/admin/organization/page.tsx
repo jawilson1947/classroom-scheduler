@@ -68,15 +68,71 @@ export default function OrganizationPage() {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // Helper to resize image
+    const resizeImage = (file: File): Promise<File> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new window.Image();
+                img.src = event.target?.result as string;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800;
+                    const MAX_HEIGHT = 800;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx?.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob((blob) => {
+                        if (!blob) {
+                            reject(new Error('Canvas is empty'));
+                            return;
+                        }
+                        const resizedFile = new File([blob], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now(),
+                        });
+                        resolve(resizedFile);
+                    }, 'image/jpeg', 0.8); // 0.8 quality JPEG
+                };
+                img.onerror = (error) => reject(error);
+            };
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || !e.target.files[0] || !tenant) return;
 
-        const file = e.target.files[0];
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('tenantUuid', tenant.UUID);
+        let file = e.target.files[0];
 
         try {
+            // Resize if > 500KB or simply always resize large images
+            if (file.size > 500 * 1024) {
+                file = await resizeImage(file);
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('tenantUuid', tenant.UUID);
+
             const res = await fetch('/api/upload', {
                 method: 'POST',
                 body: formData
@@ -85,7 +141,6 @@ export default function OrganizationPage() {
 
             if (!res.ok) {
                 console.error('Upload failed with data:', data);
-                // Construct a verbose error message for debugging
                 const errorMessage = data.details
                     ? `Error: ${data.error} \nDetails: ${data.details} \nPath: ${data.path}`
                     : (data.error || 'Upload failed');
@@ -98,8 +153,6 @@ export default function OrganizationPage() {
         } catch (err: any) {
             console.error('Upload Error Caught:', err);
             setError(err.message);
-            // Do NOT clear error automatically so user can read it
-            // setTimeout(() => setError(''), 3000); 
         }
     };
 
