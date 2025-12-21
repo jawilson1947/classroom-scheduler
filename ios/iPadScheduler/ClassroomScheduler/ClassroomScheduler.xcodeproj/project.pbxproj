@@ -1,0 +1,407 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5CD1CD192EE8078500C5DDE8 /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD142EE8078500C5DDE8 /* ConfigurationView.swift */; };
+		5CD1CD1A2EE8078500C5DDE8 /* ConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD112EE8078500C5DDE8 /* ConfigurationService.swift */; };
+		5CD1CD1B2EE8078500C5DDE8 /* CurrentEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD152EE8078500C5DDE8 /* CurrentEventView.swift */; };
+		5CD1CD1C2EE8078500C5DDE8 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD0E2EE8078500C5DDE8 /* Event.swift */; };
+		5CD1CD1D2EE8078500C5DDE8 /* EventSourceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD122EE8078500C5DDE8 /* EventSourceService.swift */; };
+		5CD1CD1E2EE8078500C5DDE8 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD0D2EE8078500C5DDE8 /* AppConfig.swift */; };
+		5CD1CD1F2EE8078500C5DDE8 /* EventCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD172EE8078500C5DDE8 /* EventCardView.swift */; };
+		5CD1CD202EE8078500C5DDE8 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD102EE8078500C5DDE8 /* APIService.swift */; };
+		5CD1CD212EE8078500C5DDE8 /* DisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD162EE8078500C5DDE8 /* DisplayView.swift */; };
+		5CD1CD232EE80A1000C5DDE8 /* ClassroomScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD222EE80A1000C5DDE8 /* ClassroomScheduler.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5CD1CCFF2EE8055B00C5DDE8 /* ClassroomScheduler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClassroomScheduler.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5CD1CD0D2EE8078500C5DDE8 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		5CD1CD0E2EE8078500C5DDE8 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		5CD1CD102EE8078500C5DDE8 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		5CD1CD112EE8078500C5DDE8 /* ConfigurationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationService.swift; sourceTree = "<group>"; };
+		5CD1CD122EE8078500C5DDE8 /* EventSourceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSourceService.swift; sourceTree = "<group>"; };
+		5CD1CD142EE8078500C5DDE8 /* ConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
+		5CD1CD152EE8078500C5DDE8 /* CurrentEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentEventView.swift; sourceTree = "<group>"; };
+		5CD1CD162EE8078500C5DDE8 /* DisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayView.swift; sourceTree = "<group>"; };
+		5CD1CD172EE8078500C5DDE8 /* EventCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCardView.swift; sourceTree = "<group>"; };
+		5CD1CD222EE80A1000C5DDE8 /* ClassroomScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClassroomScheduler.swift; path = ../ClassroomScheduler.swift; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		5CD1CD012EE8055B00C5DDE8 /* ClassroomScheduler */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ClassroomScheduler;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5CD1CCFC2EE8055B00C5DDE8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5CD1CCF62EE8055B00C5DDE8 = {
+			isa = PBXGroup;
+			children = (
+				5CD1CD222EE80A1000C5DDE8 /* ClassroomScheduler.swift */,
+				5CD1CD0F2EE8078500C5DDE8 /* Models */,
+				5CD1CD132EE8078500C5DDE8 /* Services */,
+				5CD1CD182EE8078500C5DDE8 /* Views */,
+				5CD1CD012EE8055B00C5DDE8 /* ClassroomScheduler */,
+				5CD1CD002EE8055B00C5DDE8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5CD1CD002EE8055B00C5DDE8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5CD1CCFF2EE8055B00C5DDE8 /* ClassroomScheduler.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5CD1CD0F2EE8078500C5DDE8 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5CD1CD0D2EE8078500C5DDE8 /* AppConfig.swift */,
+				5CD1CD0E2EE8078500C5DDE8 /* Event.swift */,
+			);
+			name = Models;
+			path = ../Models;
+			sourceTree = SOURCE_ROOT;
+		};
+		5CD1CD132EE8078500C5DDE8 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				5CD1CD102EE8078500C5DDE8 /* APIService.swift */,
+				5CD1CD112EE8078500C5DDE8 /* ConfigurationService.swift */,
+				5CD1CD122EE8078500C5DDE8 /* EventSourceService.swift */,
+			);
+			name = Services;
+			path = ../Services;
+			sourceTree = SOURCE_ROOT;
+		};
+		5CD1CD182EE8078500C5DDE8 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5CD1CD142EE8078500C5DDE8 /* ConfigurationView.swift */,
+				5CD1CD152EE8078500C5DDE8 /* CurrentEventView.swift */,
+				5CD1CD162EE8078500C5DDE8 /* DisplayView.swift */,
+				5CD1CD172EE8078500C5DDE8 /* EventCardView.swift */,
+			);
+			name = Views;
+			path = ../Views;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5CD1CCFE2EE8055B00C5DDE8 /* ClassroomScheduler */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5CD1CD0A2EE8055D00C5DDE8 /* Build configuration list for PBXNativeTarget "ClassroomScheduler" */;
+			buildPhases = (
+				5CD1CCFB2EE8055B00C5DDE8 /* Sources */,
+				5CD1CCFC2EE8055B00C5DDE8 /* Frameworks */,
+				5CD1CCFD2EE8055B00C5DDE8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				5CD1CD012EE8055B00C5DDE8 /* ClassroomScheduler */,
+			);
+			name = ClassroomScheduler;
+			packageProductDependencies = (
+			);
+			productName = ClassroomScheduler;
+			productReference = 5CD1CCFF2EE8055B00C5DDE8 /* ClassroomScheduler.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5CD1CCF72EE8055B00C5DDE8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					5CD1CCFE2EE8055B00C5DDE8 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+				};
+			};
+			buildConfigurationList = 5CD1CCFA2EE8055B00C5DDE8 /* Build configuration list for PBXProject "ClassroomScheduler" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5CD1CCF62EE8055B00C5DDE8;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 5CD1CD002EE8055B00C5DDE8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5CD1CCFE2EE8055B00C5DDE8 /* ClassroomScheduler */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5CD1CCFD2EE8055B00C5DDE8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5CD1CCFB2EE8055B00C5DDE8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5CD1CD192EE8078500C5DDE8 /* ConfigurationView.swift in Sources */,
+				5CD1CD1A2EE8078500C5DDE8 /* ConfigurationService.swift in Sources */,
+				5CD1CD1B2EE8078500C5DDE8 /* CurrentEventView.swift in Sources */,
+				5CD1CD232EE80A1000C5DDE8 /* ClassroomScheduler.swift in Sources */,
+				5CD1CD1C2EE8078500C5DDE8 /* Event.swift in Sources */,
+				5CD1CD1D2EE8078500C5DDE8 /* EventSourceService.swift in Sources */,
+				5CD1CD1E2EE8078500C5DDE8 /* AppConfig.swift in Sources */,
+				5CD1CD1F2EE8078500C5DDE8 /* EventCardView.swift in Sources */,
+				5CD1CD202EE8078500C5DDE8 /* APIService.swift in Sources */,
+				5CD1CD212EE8078500C5DDE8 /* DisplayView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5CD1CD082EE8055D00C5DDE8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = VPA64V23J9;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		5CD1CD092EE8055D00C5DDE8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = VPA64V23J9;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5CD1CD0B2EE8055D00C5DDE8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = VPA64V23J9;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Classroom Scheduler";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationLandscapeLeft;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.3;
+				PRODUCT_BUNDLE_IDENTIFIER = dssoa.ClassroomScheduler;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		5CD1CD0C2EE8055D00C5DDE8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = VPA64V23J9;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Classroom Scheduler";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationLandscapeLeft;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.3;
+				PRODUCT_BUNDLE_IDENTIFIER = dssoa.ClassroomScheduler;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5CD1CCFA2EE8055B00C5DDE8 /* Build configuration list for PBXProject "ClassroomScheduler" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5CD1CD082EE8055D00C5DDE8 /* Debug */,
+				5CD1CD092EE8055D00C5DDE8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5CD1CD0A2EE8055D00C5DDE8 /* Build configuration list for PBXNativeTarget "ClassroomScheduler" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5CD1CD0B2EE8055D00C5DDE8 /* Debug */,
+				5CD1CD0C2EE8055D00C5DDE8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5CD1CCF72EE8055B00C5DDE8 /* Project object */;
+}
