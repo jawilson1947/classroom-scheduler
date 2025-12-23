@@ -200,6 +200,13 @@ function OrgAdminDashboard({ user }: { user: any }) {
                     icon="📱"
                     color="orange"
                 />
+                <DashboardCard
+                    title="Manage Facilitators"
+                    description="Edit bios, photos, and contact info"
+                    href="/admin/facilitators"
+                    icon="🎓"
+                    color="purple"
+                />
             </div>
         </div>
     );

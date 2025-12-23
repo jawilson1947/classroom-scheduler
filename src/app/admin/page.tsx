@@ -648,6 +648,19 @@ function AdminPageContent() {
                                 </ul>
                             </section>
                         )}
+
+                        {/* Facilitator Management Link */}
+                        {selectedTenantId && (
+                            <section className="bg-white rounded-xl shadow p-5 hover:shadow-md transition-shadow">
+                                <Link href="/admin/facilitators" className="flex items-center justify-between group">
+                                    <div>
+                                        <h2 className="text-lg font-bold group-hover:text-blue-600 transition-colors">Manage Facilitators</h2>
+                                        <p className="text-sm text-slate-500">Edit bios, photos, and contact info</p>
+                                    </div>
+                                    <span className="text-2xl group-hover:translate-x-1 transition-transform">→</span>
+                                </Link>
+                            </section>
+                        )}
                     </div>
 
                     {/* Right Column: Rooms & Devices & Events */}
