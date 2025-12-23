@@ -66,10 +66,13 @@ struct Event: Codable, Identifiable {
             }
             
             // Check if today is one of the recurrence days
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEE"
-            formatter.locale = Locale(identifier: "en_US") // Ensure consistent day names
-            let todayDay = formatter.string(from: today)
+            // Check if today is one of the recurrence days
+            // Robust check: Map numeric weekday to 3-letter code manually
+            // 1 = Sun, 2 = Mon, etc.
+            let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+            let weekday = Calendar.current.component(.weekday, from: today)
+            let todayDay = days[weekday - 1]
+            
             return recurrenceDays.contains(todayDay)
         }
         

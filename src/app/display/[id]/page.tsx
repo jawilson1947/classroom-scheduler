@@ -110,7 +110,7 @@ export default function DisplayPage() {
         if (!tenantId) return;
 
         console.log('[SSE] Connecting to event stream...');
-        const eventSource = new EventSource('/api/events/stream');
+        const eventSource = new EventSource(`/api/events/stream?tenant_id=${tenantId}&room_id=${roomId}`);
 
         eventSource.onopen = () => {
             console.log('[SSE] Connected to event stream');
@@ -170,9 +170,15 @@ export default function DisplayPage() {
 
     // Get all events for today
     const todaysEvents = Array.isArray(events) ? events.filter((event) => {
+        // Debug
+        const todayDay = format(currentTime, 'EEE');
+        // console.log(`[Filter] Checking event ${event.id} (${event.title}) for ${todayDay}`);
         // Handle recurring events
         if (event.recurrence_days && event.daily_start_time && event.daily_end_time) {
-            const todayDay = format(currentTime, 'EEE'); // Mon, Tue, etc.
+            // Robust day checking: Map numeric day to 3-letter code
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const todayDay = days[currentTime.getDay()];
+
             if (!event.recurrence_days.includes(todayDay)) return false;
 
             // Check if today is within the event's date range
@@ -259,6 +265,15 @@ export default function DisplayPage() {
                     </div>
                 </div>
             </div>
+
+            {/* ERROR DEBUG OVERLAY */}
+            {/* <div className="fixed bottom-0 left-0 bg-black/80 text-white p-2 text-xs z-50">
+                Time: {currentTime.toString()} <br/>
+                Day: {format(currentTime, 'EEE')} <br/>
+                Events: {events?.length || 0} <br/>
+                RoomId: {roomId} <br/>
+                TenantId: {tenantId}
+            </div> */}
 
             {/* Current Event */}
             {currentEvent && (

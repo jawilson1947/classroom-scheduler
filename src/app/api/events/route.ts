@@ -14,10 +14,8 @@ export async function GET(request: NextRequest) {
         const deviceId = searchParams.get('device_id');
         const buildingId = searchParams.get('building_id');
 
-        // Pagination params
-        const page = parseInt(searchParams.get('page') || '1', 10);
-        const limit = parseInt(searchParams.get('limit') || '1000', 10); // Default high for backward campatibility if not specified, but UI will send 8
-        const offset = (page - 1) * limit;
+        // Check if pagination is requested
+        const hasPagination = searchParams.has('page') || searchParams.has('limit');
 
         // Base query
         let baseQuery = 'FROM events e JOIN rooms r ON e.room_id = r.id WHERE e.tenant_id = ?';
@@ -39,20 +37,8 @@ export async function GET(request: NextRequest) {
             params.push(endDate, startDate);
         }
 
-        // Count Query
-        const countQuery = `SELECT COUNT(*) as total ${baseQuery}`;
-        const [countRows] = await pool.query<RowDataPacket[]>(countQuery, params);
-        const total = countRows[0].total;
-
-        // Data Query
-        const dataQuery = `SELECT e.* ${baseQuery} ORDER BY e.start_time ASC LIMIT ? OFFSET ?`;
-        // LIMIT and OFFSET parameters must be integers
-        const dataParams = [...params, limit, offset];
-
-        const [rows] = await pool.query<RowDataPacket[]>(dataQuery, dataParams);
-
         // Debug logging
-        console.log(`[API] Events GET params: roomId=${roomId}, deviceId=${deviceId}, tenantId=${tenantId}, page=${page}`);
+        console.log(`[API] Events GET params: roomId=${roomId}, deviceId=${deviceId}, tenantId=${tenantId}, hasPagination=${hasPagination}`);
 
         // Fire-and-forget heartbeat update if device_id is present
         if (deviceId) {
@@ -69,6 +55,30 @@ export async function GET(request: NextRequest) {
             ).then((res: any) => console.log(`[API] Heartbeat by Room ${roomId}: ${res[0].affectedRows} rows`))
                 .catch(err => console.error('Error updating room device heartbeat on fetch:', err));
         }
+
+        if (!hasPagination) {
+            // Backward compatibility: Return flat array if no pagination params
+            const query = `SELECT e.* ${baseQuery} ORDER BY e.start_time ASC`;
+            const [rows] = await pool.query<RowDataPacket[]>(query, params);
+            return NextResponse.json(rows);
+        }
+
+        // Pagination params
+        const page = parseInt(searchParams.get('page') || '1', 10);
+        const limit = parseInt(searchParams.get('limit') || '1000', 10);
+        const offset = (page - 1) * limit;
+
+        // Count Query
+        const countQuery = `SELECT COUNT(*) as total ${baseQuery}`;
+        const [countRows] = await pool.query<RowDataPacket[]>(countQuery, params);
+        const total = countRows[0].total;
+
+        // Data Query
+        const dataQuery = `SELECT e.* ${baseQuery} ORDER BY e.start_time ASC LIMIT ? OFFSET ?`;
+        // LIMIT and OFFSET parameters must be integers
+        const dataParams = [...params, limit, offset];
+
+        const [rows] = await pool.query<RowDataPacket[]>(dataQuery, dataParams);
 
         return NextResponse.json({
             data: rows,

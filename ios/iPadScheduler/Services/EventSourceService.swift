@@ -20,9 +20,9 @@ class EventSourceService: NSObject, ObservableObject, URLSessionDataDelegate {
     func connect(onEventReceived: @escaping (String) -> Void) {
         self.onEventReceived = onEventReceived
         
-        var urlString = "\(config.apiBaseURL)/api/events/stream"
+        var urlString = "\(config.apiBaseURL)/api/events/stream?room_id=\(config.roomId)&tenant_id=\(config.tenantId)"
         if let deviceId = config.deviceId {
-            urlString += "?device_id=\(deviceId)"
+            urlString += "&device_id=\(deviceId)"
         }
         guard let url = URL(string: urlString) else {
             print("[SSE] Invalid URL: \(urlString)")

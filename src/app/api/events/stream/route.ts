@@ -9,8 +9,10 @@ export async function GET(request: NextRequest) {
     const session = await auth();
     const url = new URL(request.url);
     const deviceIdRaw = url.searchParams.get('device_id');
+    const roomId = url.searchParams.get('room_id');
+    const tenantId = url.searchParams.get('tenant_id');
 
-    console.log(`[SSE] Auth check. Session: ${!!session}, DeviceID: ${deviceIdRaw}`);
+    console.log(`[SSE] Auth check. Session: ${!!session}, DeviceID: ${deviceIdRaw}, RoomID: ${roomId}`);
 
     let isAuthenticated = false;
 
@@ -33,6 +35,24 @@ export async function GET(request: NextRequest) {
             }
         } catch (error) {
             console.error('[SSE] Error verifying device for SSE:', error);
+        }
+    } else if (roomId && tenantId) {
+        // Verify room exists in tenant
+        try {
+            const { default: pool } = await import('@/lib/db');
+            const [rooms] = await pool.query(
+                'SELECT id FROM rooms WHERE id = ? AND tenant_id = ?',
+                [roomId, tenantId]
+            );
+
+            const count = (rooms as any[]).length;
+            console.log(`[SSE] Room lookup result matches: ${count}`);
+
+            if (count > 0) {
+                isAuthenticated = true;
+            }
+        } catch (error) {
+            console.error('[SSE] Error verifying room for SSE:', error);
         }
     }
 
