@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { tenant_id, room_id, title, facilitator_name, start_time, end_time, description, event_type, narrative, force } = body;
+        const { tenant_id, room_id, title, facilitator_name, facilitator_id, start_time, end_time, description, event_type, narrative, force } = body;
 
         // Helper to formatting ISO string to MySQL DATETIME
         const formatToMySQL = (iso: string) => iso.slice(0, 19).replace('T', ' ');
@@ -109,6 +109,7 @@ export async function POST(request: NextRequest) {
         const recurrence_days = body.recurrence_days || null;
         const daily_start_time = body.daily_start_time || null;
         const daily_end_time = body.daily_end_time || null;
+        const fac_id = facilitator_id || null;
 
         // Check for conflicts - need to handle both recurring and non-recurring events
         // For recurring events, check if they occur on the same days of the week with overlapping times
@@ -225,9 +226,9 @@ export async function POST(request: NextRequest) {
         }
 
         const [result] = await pool.query(
-            `INSERT INTO events (tenant_id, room_id, title, facilitator_name, start_time, end_time, description, event_type, narrative, recurrence_days, daily_start_time, daily_end_time) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [tenant_id, room_id, title, facilitator_name, start_time_db, end_time_db, description, event_type, narrative || null, recurrence_days, daily_start_time, daily_end_time]
+            `INSERT INTO events (tenant_id, room_id, title, facilitator_name, facilitator_id, start_time, end_time, description, event_type, narrative, recurrence_days, daily_start_time, daily_end_time) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [tenant_id, room_id, title, facilitator_name, fac_id, start_time_db, end_time_db, description, event_type, narrative || null, recurrence_days, daily_start_time, daily_end_time]
         );
 
         // Broadcast the event creation to all connected clients
@@ -247,7 +248,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
     try {
         const body = await request.json();
-        const { id, tenant_id, room_id, title, facilitator_name, start_time, end_time, description, event_type, narrative, force } = body;
+        const { id, tenant_id, room_id, title, facilitator_name, facilitator_id, start_time, end_time, description, event_type, narrative, force } = body;
 
         // Helper to formatting ISO string to MySQL DATETIME
         const formatToMySQL = (iso: string) => iso.slice(0, 19).replace('T', ' ');
@@ -258,6 +259,7 @@ export async function PUT(request: NextRequest) {
         const recurrence_days = body.recurrence_days || null;
         const daily_start_time = body.daily_start_time || null;
         const daily_end_time = body.daily_end_time || null;
+        const fac_id = facilitator_id || null;
 
         if (!id) {
             return NextResponse.json({ error: 'Event ID is required' }, { status: 400 });
@@ -365,9 +367,9 @@ export async function PUT(request: NextRequest) {
 
         await pool.query(
             `UPDATE events 
-       SET title = ?, facilitator_name = ?, start_time = ?, end_time = ?, description = ?, event_type = ?, narrative = ?, room_id = ?, recurrence_days = ?, daily_start_time = ?, daily_end_time = ?
+       SET title = ?, facilitator_name = ?, facilitator_id = ?, start_time = ?, end_time = ?, description = ?, event_type = ?, narrative = ?, room_id = ?, recurrence_days = ?, daily_start_time = ?, daily_end_time = ?
        WHERE id = ? AND tenant_id = ?`,
-            [title, facilitator_name, start_time_db, end_time_db, description, event_type, narrative || null, room_id, recurrence_days, daily_start_time, daily_end_time, id, tenant_id]
+            [title, facilitator_name, fac_id, start_time_db, end_time_db, description, event_type, narrative || null, room_id, recurrence_days, daily_start_time, daily_end_time, id, tenant_id]
         );
 
         // Broadcast the event update to all connected clients

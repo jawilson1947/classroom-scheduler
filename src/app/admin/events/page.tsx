@@ -49,6 +49,14 @@ interface Event {
     daily_start_time?: string;
     daily_end_time?: string;
     narrative?: string;
+    facilitator_id?: number | null;
+}
+
+interface Facilitator {
+    id: number;
+    name_on_door: string;
+    first_name: string;
+    last_name: string;
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -66,6 +74,7 @@ export default function EventsPage() {
         room_id: '',
         title: '',
         facilitator_name: '',
+        facilitator_id: null as number | null,
         description: '',
         event_type: 'class',
         recurrence_days: [] as string[],
@@ -136,6 +145,11 @@ export default function EventsPage() {
 
     const { data: rooms, error: roomsError, isLoading: roomsLoading } = useSWR<Room[]>(
         selectedTenantId ? `/api/rooms?tenant_id=${selectedTenantId}` : null,
+        fetcher
+    );
+
+    const { data: facilitators } = useSWR<Facilitator[]>(
+        selectedTenantId ? `/api/facilitators?tenant_id=${selectedTenantId}` : null,
         fetcher
     );
 
@@ -279,7 +293,8 @@ export default function EventsPage() {
                 recurrence_days: [],
                 daily_start_time: '',
                 daily_end_time: '',
-                narrative: ''
+                narrative: '',
+                facilitator_id: null
             });
             setEditingEventId(null);
             setMessage(`Event ${editingEventId ? 'updated' : 'created'} successfully`);
@@ -327,7 +342,8 @@ export default function EventsPage() {
             recurrence_days: event.recurrence_days ? event.recurrence_days.split(',') : [],
             daily_start_time: event.daily_start_time || toLocalHM(event.start_time),
             daily_end_time: event.daily_end_time || toLocalHM(event.end_time),
-            narrative: event.narrative || ''
+            narrative: event.narrative || '',
+            facilitator_id: event.facilitator_id ? Number(event.facilitator_id) : null
         };
         setEventForm(newFormState);
         setInitialEventForm(newFormState);
@@ -356,7 +372,8 @@ export default function EventsPage() {
             recurrence_days: [],
             daily_start_time: '',
             daily_end_time: '',
-            narrative: ''
+            narrative: '',
+            facilitator_id: null
         });
     };
 
@@ -607,12 +624,59 @@ export default function EventsPage() {
 
                                 <div className="col-span-2">
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Facilitator (Optional)</label>
-                                    <input
-                                        className="w-full border p-2 rounded text-slate-900 placeholder:text-slate-500"
-                                        placeholder="e.g., Dr. Smith"
-                                        value={eventForm.facilitator_name}
-                                        onChange={e => setEventForm({ ...eventForm, facilitator_name: e.target.value })}
-                                    />
+                                    <div className="flex gap-4 items-start">
+                                        <div className="flex-1">
+                                            <input
+                                                className="w-full border p-2 rounded text-slate-900 placeholder:text-slate-500"
+                                                placeholder="e.g., Dr. Smith"
+                                                value={eventForm.facilitator_name}
+                                                onChange={e => {
+                                                    // When user types manually, clear the facilitator_id (or keep it if they are just correcting a typo? 
+                                                    // Requirement says: if listbox is non-select mode, update should nullify.
+                                                    // Let's assume typing manually decouples from the ID unless they pick from list again.
+                                                    // OR we can keep the ID if they just edit the name. 
+                                                    // But to be safe and avoid stale IDs for wrong names, let's clear ID on manual edit.
+                                                    setEventForm({ ...eventForm, facilitator_name: e.target.value, facilitator_id: null });
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="w-1/3">
+                                            <select
+                                                className="w-full border p-2 rounded text-slate-900"
+                                                value={eventForm.facilitator_id || ''}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    if (val) {
+                                                        const id = parseInt(val);
+                                                        const facilitator = facilitators?.find(f => f.id === id);
+                                                        if (facilitator) {
+                                                            setEventForm({
+                                                                ...eventForm,
+                                                                facilitator_id: id,
+                                                                facilitator_name: facilitator.name_on_door
+                                                            });
+                                                        }
+                                                    } else {
+                                                        // "None" selected
+                                                        setEventForm({
+                                                            ...eventForm,
+                                                            facilitator_id: null,
+                                                            // Optional: clear name if they select None? 
+                                                            // Requirement: "if an event is updated, and the facilitator listbox is in non-select mode, nullify the facilitator_id"
+                                                            // It implies we just nullify ID, maybe keep name or clear it. 
+                                                            // Let's clear name to be consistent with "None".
+                                                            facilitator_name: ''
+                                                        });
+                                                    }
+                                                }}
+                                            >
+                                                <option value="">Select Facilitator...</option>
+                                                {facilitators?.map(f => (
+                                                    <option key={f.id} value={f.id}>{f.name_on_door}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="col-span-2">
