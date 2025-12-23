@@ -209,7 +209,7 @@ export default function RoomsPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 p-6">
-            <div className="max-w-5xl mx-auto space-y-6">
+            <div className="w-full px-6 space-y-6">
                 <header className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
                         <a href="/dashboard" className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
@@ -304,7 +304,7 @@ export default function RoomsPage() {
                             </button>
                         </form>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {rooms?.map(room => (
                                 <div key={room.id} className="border border-slate-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                                     <div className="flex justify-between items-start mb-3">

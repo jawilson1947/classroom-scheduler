@@ -94,6 +94,8 @@ export default function EventsPage() {
 
     const [error, setError] = useState('');
     const [searchParams, setSearchParams] = useState<{ start_date: string, end_date: string, building_id?: string, room_id?: string } | null>(null);
+    const [page, setPage] = useState(1);
+    const LIMIT = 6;
 
     const user = session?.user as any;
     const isOrgAdmin = user?.role === 'ORG_ADMIN';
@@ -137,10 +139,20 @@ export default function EventsPage() {
         fetcher
     );
 
-    const { data: events, mutate: mutateEvents } = useSWR<Event[]>(
+    interface PaginatedEvents {
+        data: Event[];
+        pagination: {
+            total: number;
+            page: number;
+            limit: number;
+            totalPages: number;
+        };
+    }
+
+    const { data: eventsData, mutate: mutateEvents } = useSWR<PaginatedEvents>(
         () => {
             if (!selectedTenantId) return null;
-            let url = `/api/events?tenant_id=${selectedTenantId}`;
+            let url = `/api/events?tenant_id=${selectedTenantId}&page=${page}&limit=${LIMIT}`;
             if (searchParams) {
                 if (searchParams.start_date && searchParams.end_date) {
                     url += `&start_date=${searchParams.start_date}&end_date=${searchParams.end_date}`;
@@ -156,6 +168,10 @@ export default function EventsPage() {
         },
         fetcher
     );
+
+    // For backward compatibility while deploying API, handle array response if any (though we updated API)
+    const events = Array.isArray(eventsData) ? eventsData : (eventsData?.data || []);
+    const pagination = Array.isArray(eventsData) ? null : eventsData?.pagination;
 
     // Helper to get room name
     const getRoomName = (id: number) => {
@@ -742,7 +758,7 @@ export default function EventsPage() {
                                                         <p>👤 {event.facilitator_name || 'No facilitator'}</p>
                                                         {event.recurrence_days ? (
                                                             <>
-                                                                <p>📅 {event.recurrence_days.split(',').map(d => d.trim()).join(', ')}</p>
+                                                                <p>📅 {event.recurrence_days.split(',').map((d: string) => d.trim()).join(', ')}</p>
                                                                 <p>🕒 {event.daily_start_time} - {event.daily_end_time} ({new Date(event.start_time).toLocaleDateString()} - {new Date(event.end_time).toLocaleDateString()})</p>
                                                             </>
                                                         ) : (
@@ -770,6 +786,46 @@ export default function EventsPage() {
                                                 )}
                                             </div>
                                         ))}
+                                </div>
+                            )}
+
+                            {/* Pagination Controls */}
+                            {pagination && pagination.totalPages > 1 && (
+                                <div className="flex justify-between items-center bg-white p-3 rounded-lg border border-slate-200 mt-4 no-print">
+                                    <div className="text-sm text-slate-500">
+                                        Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} events
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => setPage(page - 1)}
+                                            disabled={page <= 1}
+                                            className="px-3 py-1 bg-white border border-slate-300 rounded text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            Previous
+                                        </button>
+                                        <div className="flex items-center gap-1">
+                                            {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+                                                .filter(p => p === 1 || p === pagination.totalPages || (p >= page - 1 && p <= page + 1))
+                                                .map((p, i, arr) => (
+                                                    <div key={p} className="flex">
+                                                        {i > 0 && arr[i - 1] !== p - 1 && <span className="px-1 text-slate-400">...</span>}
+                                                        <button
+                                                            onClick={() => setPage(p)}
+                                                            className={`px-3 py-1 rounded text-sm ${page === p ? 'bg-blue-600 text-white' : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-50'}`}
+                                                        >
+                                                            {p}
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                        </div>
+                                        <button
+                                            onClick={() => setPage(page + 1)}
+                                            disabled={page >= pagination.totalPages}
+                                            className="px-3 py-1 bg-white border border-slate-300 rounded text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
                                 </div>
                             )}
                         </div>

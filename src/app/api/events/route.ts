@@ -14,31 +14,45 @@ export async function GET(request: NextRequest) {
         const deviceId = searchParams.get('device_id');
         const buildingId = searchParams.get('building_id');
 
-        let query = 'SELECT e.* FROM events e JOIN rooms r ON e.room_id = r.id WHERE e.tenant_id = ?';
+        // Pagination params
+        const page = parseInt(searchParams.get('page') || '1', 10);
+        const limit = parseInt(searchParams.get('limit') || '1000', 10); // Default high for backward campatibility if not specified, but UI will send 8
+        const offset = (page - 1) * limit;
+
+        // Base query
+        let baseQuery = 'FROM events e JOIN rooms r ON e.room_id = r.id WHERE e.tenant_id = ?';
         const params: any[] = [tenantId];
 
         if (buildingId) {
-            query += ' AND r.building_id = ?';
+            baseQuery += ' AND r.building_id = ?';
             params.push(buildingId);
         }
 
         if (roomId) {
-            query += ' AND e.room_id = ?';
+            baseQuery += ' AND e.room_id = ?';
             params.push(roomId);
         }
 
         if (startDate && endDate) {
             // Check for overlap: event starts before query ends AND event ends after query starts
-            query += ' AND e.start_time < ? AND e.end_time > ?';
+            baseQuery += ' AND e.start_time < ? AND e.end_time > ?';
             params.push(endDate, startDate);
         }
 
-        query += ' ORDER BY e.start_time ASC';
+        // Count Query
+        const countQuery = `SELECT COUNT(*) as total ${baseQuery}`;
+        const [countRows] = await pool.query<RowDataPacket[]>(countQuery, params);
+        const total = countRows[0].total;
 
-        const [rows] = await pool.query<RowDataPacket[]>(query, params);
+        // Data Query
+        const dataQuery = `SELECT e.* ${baseQuery} ORDER BY e.start_time ASC LIMIT ? OFFSET ?`;
+        // LIMIT and OFFSET parameters must be integers
+        const dataParams = [...params, limit, offset];
+
+        const [rows] = await pool.query<RowDataPacket[]>(dataQuery, dataParams);
 
         // Debug logging
-        console.log(`[API] Events GET params: roomId=${roomId}, deviceId=${deviceId}, tenantId=${tenantId}`);
+        console.log(`[API] Events GET params: roomId=${roomId}, deviceId=${deviceId}, tenantId=${tenantId}, page=${page}`);
 
         // Fire-and-forget heartbeat update if device_id is present
         if (deviceId) {
@@ -56,7 +70,15 @@ export async function GET(request: NextRequest) {
                 .catch(err => console.error('Error updating room device heartbeat on fetch:', err));
         }
 
-        return NextResponse.json(rows);
+        return NextResponse.json({
+            data: rows,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
     } catch (error) {
         console.error('Error fetching events:', error);
         return NextResponse.json({ error: 'Failed to fetch events' }, { status: 500 });
