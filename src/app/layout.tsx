@@ -1,33 +1,38 @@
-import type { Metadata } from 'next';
-import { Inter, Outfit } from 'next/font/google';
-import './globals.css';
-import { NextAuthProvider } from '@/components/providers/NextAuthProvider';
-import { SidebarProvider } from '@/context/SidebarContext';
-import { ThemeProvider } from '@/context/ThemeContext';
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { AuthProvider } from "@/components/AuthProvider";
+import { MTThemeProvider } from "@/components/MTThemeProvider";
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: 'iPad Classroom Scheduler',
-  description: 'Manage classroom schedules and display on iPad kiosks',
+  title: "Classroom Scheduler",
+  description: "iPad Classroom Display Management System",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${outfit.variable} font-sans bg-gray-50 dark:bg-gray-900 text-slate-900 dark:text-white`}>
-        <NextAuthProvider>
-          <ThemeProvider>
-            <SidebarProvider>
-              {children}
-            </SidebarProvider>
-          </ThemeProvider>
-        </NextAuthProvider>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <AuthProvider>
+          <MTThemeProvider>{children}</MTThemeProvider>
+        </AuthProvider>
+        <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js" async></script>
       </body>
     </html>
   );
