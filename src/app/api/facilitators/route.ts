@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         const { tenant_id, first_name, last_name, name_on_door, bio, picture_url, icon_url } = body;
 
         // Basic validation
-        if (!tenant_id || !first_name || !last_name || !name_on_door) {
+        if (!tenant_id || !first_name?.trim() || !last_name?.trim() || !name_on_door?.trim()) {
             return NextResponse.json({ error: 'Missing mandatory fields' }, { status: 400 });
         }
 
@@ -58,6 +58,11 @@ export async function PUT(request: NextRequest) {
 
         if (!id) {
             return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+        }
+
+        // Strict validation for update to prevent clearing data
+        if (!first_name?.trim() || !last_name?.trim() || !name_on_door?.trim()) {
+            return NextResponse.json({ error: 'Missing mandatory fields' }, { status: 400 });
         }
 
         await pool.query(

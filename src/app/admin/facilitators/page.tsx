@@ -283,14 +283,14 @@ export default function FacilitatorsPage() {
                     <div className="lg:col-span-2">
                         <section className={`rounded-xl shadow-sm p-6 sticky top-6 transition-colors duration-500 ${editingId ? 'bg-orange-50 border border-orange-100' : 'bg-white'}`}>
                             <h2 className="text-lg font-bold mb-4 pb-2 border-b">{editingId ? 'Edit Facilitator' : 'Add New Facilitator'}</h2>
-                            <form onSubmit={handleSubmit} className="space-y-4">
+                            <form key={editingId || 'new'} onSubmit={handleSubmit} className="space-y-4">
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
                                         <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">First Name *</label>
                                         <input
                                             className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
                                             value={form.first_name}
-                                            onChange={e => setForm({ ...form, first_name: e.target.value })}
+                                            onChange={e => setForm(prev => ({ ...prev, first_name: e.target.value }))}
                                             required
                                         />
                                     </div>
@@ -299,7 +299,7 @@ export default function FacilitatorsPage() {
                                         <input
                                             className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
                                             value={form.last_name}
-                                            onChange={e => setForm({ ...form, last_name: e.target.value })}
+                                            onChange={e => setForm(prev => ({ ...prev, last_name: e.target.value }))}
                                             required
                                         />
                                     </div>
@@ -310,7 +310,7 @@ export default function FacilitatorsPage() {
                                     <input
                                         className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
                                         value={form.name_on_door}
-                                        onChange={e => setForm({ ...form, name_on_door: e.target.value })}
+                                        onChange={e => setForm(prev => ({ ...prev, name_on_door: e.target.value }))}
                                         required
                                         placeholder="e.g. Dr. Wilson"
                                     />
@@ -322,7 +322,7 @@ export default function FacilitatorsPage() {
                                         <ReactQuill
                                             theme="snow"
                                             value={form.bio}
-                                            onChange={(val: string) => setForm({ ...form, bio: val })}
+                                            onChange={(val: string) => setForm(prev => ({ ...prev, bio: val }))}
                                             style={{ height: '200px' }}
                                         />
                                     </div>
@@ -414,9 +414,22 @@ export default function FacilitatorsPage() {
                                 <div className="flex gap-2 pt-4">
                                     <button
                                         type="submit"
-                                        className={`flex-1 text-white py-2.5 rounded-lg font-semibold shadow-sm transition-all ${editingId ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700'}`}
+                                        disabled={Object.values(uploading).some(Boolean)}
+                                        className={`flex-1 text-white py-2.5 rounded-lg font-semibold shadow-sm transition-all flex justify-center items-center gap-2 ${Object.values(uploading).some(Boolean)
+                                            ? 'bg-slate-400 cursor-not-allowed'
+                                            : editingId
+                                                ? 'bg-orange-600 hover:bg-orange-700'
+                                                : 'bg-blue-600 hover:bg-blue-700'
+                                            }`}
                                     >
-                                        {editingId ? 'Update Facilitator' : 'Add Facilitator'}
+                                        {Object.values(uploading).some(Boolean) ? (
+                                            <>
+                                                <span className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
+                                                Uploading...
+                                            </>
+                                        ) : (
+                                            editingId ? 'Update Facilitator' : 'Add Facilitator'
+                                        )}
                                     </button>
                                     {editingId && (
                                         <button
