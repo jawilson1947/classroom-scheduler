@@ -1,5 +1,6 @@
 'use client';
 
+import Modal from "@/components/Modal";
 import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
@@ -195,6 +196,28 @@ export default function RoomsPage() {
         }
     };
 
+    // Event Viewing
+    const [viewingEventsRoom, setViewingEventsRoom] = useState<Room | null>(null);
+    const [roomEvents, setRoomEvents] = useState<any[]>([]);
+    const [loadingEvents, setLoadingEvents] = useState(false);
+
+    const handleViewEvents = async (room: Room) => {
+        setViewingEventsRoom(room);
+        setLoadingEvents(true);
+        setRoomEvents([]);
+        try {
+            const res = await fetch(`/api/events?room_id=${room.id}&tenant_id=${selectedTenantId}`);
+            if (res.ok) {
+                const data = await res.json();
+                setRoomEvents(Array.isArray(data) ? data : data.data || []);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoadingEvents(false);
+        }
+    };
+
     if (status === 'loading') {
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -224,6 +247,44 @@ export default function RoomsPage() {
                         {error && <div className="bg-red-100 text-red-800 px-3 py-2 rounded text-sm">{error}</div>}
                     </div>
                 </header>
+
+                {/* Events Modal */}
+                <Modal
+                    isOpen={!!viewingEventsRoom}
+                    onClose={() => setViewingEventsRoom(null)}
+                    title={`Events for ${viewingEventsRoom?.name}`}
+                >
+                    <div className="space-y-4">
+                        {loadingEvents ? (
+                            <div className="text-center py-8 text-slate-500">Loading events...</div>
+                        ) : roomEvents.length === 0 ? (
+                            <div className="text-center py-8 text-slate-500">No events found for this room.</div>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm text-left text-slate-500">
+                                    <thead className="text-xs text-slate-700 uppercase bg-slate-50">
+                                        <tr>
+                                            <th className="px-4 py-3">Title</th>
+                                            <th className="px-4 py-3">Start Time</th>
+                                            <th className="px-4 py-3">End Time</th>
+                                            <th className="px-4 py-3">Facilitator</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {roomEvents.map((event) => (
+                                            <tr key={event.id} className="bg-white border-b hover:bg-slate-50">
+                                                <td className="px-4 py-3 font-medium text-slate-900">{event.title}</td>
+                                                <td className="px-4 py-3">{new Date(event.start_time).toLocaleString(undefined, { weekday: 'short', month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</td>
+                                                <td className="px-4 py-3">{new Date(event.end_time).toLocaleString(undefined, { weekday: 'short', month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</td>
+                                                <td className="px-4 py-3">{event.facilitator_name || '-'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                </Modal>
 
                 {/* Pairing Modal - Consolidated */}
                 {pairingUrl && (
@@ -334,11 +395,19 @@ export default function RoomsPage() {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-2 mt-3">
+                                    <div className="grid grid-cols-3 gap-2 mt-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleViewEvents(room)}
+                                            className="bg-indigo-600 text-white py-1 px-3 rounded hover:bg-indigo-700 text-sm flex items-center justify-center gap-1"
+                                            title="View Events"
+                                        >
+                                            📅 Events
+                                        </button>
                                         <button
                                             type="button"
                                             onClick={() => handleEditRoom(room)}
-                                            className="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700 text-sm flex items-center justify-center gap-1"
+                                            className="bg-slate-600 text-white py-1 px-3 rounded hover:bg-slate-700 text-sm flex items-center justify-center gap-1"
                                             title="Edit Room"
                                         >
                                             ✏️ Edit
@@ -354,7 +423,7 @@ export default function RoomsPage() {
 
                                         {/* Bottom Row: Connect or Unpair (Full Width) */}
                                         {room.linked_device_id ? (
-                                            <div className="col-span-2 flex flex-col gap-2">
+                                            <div className="col-span-3 flex flex-col gap-2">
                                                 <div className="text-xs text-slate-500 text-center bg-slate-50 py-1 rounded border border-slate-100">
                                                     Device ID: {room.linked_device_id}
                                                 </div>
@@ -377,7 +446,7 @@ export default function RoomsPage() {
                                             <button
                                                 onClick={() => handleGeneratePairingUrl(room.id)}
                                                 disabled={generatingToken}
-                                                className="col-span-2 bg-blue-700 text-white py-1 px-3 rounded text-sm hover:bg-blue-800 flex items-center justify-center gap-1 disabled:opacity-50 font-semibold"
+                                                className="col-span-3 bg-blue-700 text-white py-1 px-3 rounded text-sm hover:bg-blue-800 flex items-center justify-center gap-1 disabled:opacity-50 font-semibold"
                                             >
                                                 <span>📱</span> Connect iPad
                                             </button>
