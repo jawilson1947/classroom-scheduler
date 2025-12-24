@@ -1,0 +1,192 @@
+<!-- Reusable Popover Component
+Usage:
+1. Add a hidden template with your popover content
+2. Add data-popover attribute to trigger element pointing to the template
+
+<template id="my-popover">
+  <div>Your content here</div>
+</template>
+
+<button data-popover="#my-popover" data-popover-placement="right">
+  Click me
+</button>
+
+Attributes:
+- data-popover: CSS selector for the popover content template (required)
+- data-popover-placement: top, right, bottom, left (optional, default: right)
+-->
+
+<!-- Popover Content Templates (Hidden) -->
+<template id="popover-02-right">
+  <div class="max-w-[390px]">
+    <div
+      class="relative z-20 w-full rounded-t-xl border-b border-gray-200 px-5 py-3 dark:border-white/[0.03]"
+    >
+      <h4 class="text-base font-semibold text-gray-800 dark:text-white/90">
+        Popover Title
+      </h4>
+    </div>
+    <div class="p-5">
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Lorem ipsum dolor sit amet, consect adipiscing elit. Mauris facilisis
+        congue exclamate justo nec facilisis.
+      </p>
+      <div class="mt-5 flex items-center gap-3">
+        <button
+          type="button"
+          class="bg-brand-500 shadow-theme-xs hover:bg-brand-600 flex justify-center rounded-lg px-4 py-2 text-sm font-medium text-white"
+        >
+          Yes! got it
+        </button>
+
+        <button
+          type="button"
+          class="shadow-theme-xs flex justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+        >
+          Learn more
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="popover-02-top">
+  <div class="max-w-[390px]">
+    <div
+      class="relative z-20 rounded-t-xl border-b border-gray-200 px-5 py-3 dark:border-white/[0.03]"
+    >
+      <h4 class="text-base font-semibold text-gray-800 dark:text-white/90">
+        Popover Title
+      </h4>
+    </div>
+    <div class="p-5">
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Lorem ipsum dolor sit amet, consect adipiscing elit. Mauris facilisis
+        congue exclamate justo nec facilisis.
+      </p>
+      <div class="mt-5 flex items-center gap-3">
+        <button
+          type="button"
+          class="bg-brand-500 shadow-theme-xs hover:bg-brand-600 flex justify-center rounded-lg px-4 py-2 text-sm font-medium text-white"
+        >
+          Yes! got it
+        </button>
+
+        <button
+          type="button"
+          class="shadow-theme-xs flex justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+        >
+          Learn more
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="popover-02-bottom">
+  <div class="max-w-[390px]">
+    <div
+      class="relative z-20 rounded-t-xl border-b border-gray-200 px-5 py-3 dark:border-white/[0.03]"
+    >
+      <h4 class="text-base font-semibold text-gray-800 dark:text-white/90">
+        Popover Title
+      </h4>
+    </div>
+    <div class="p-5">
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Lorem ipsum dolor sit amet, consect adipiscing elit. Mauris facilisis
+        congue exclamate justo nec facilisis.
+      </p>
+      <div class="mt-5 flex items-center gap-3">
+        <button
+          type="button"
+          class="bg-brand-500 shadow-theme-xs hover:bg-brand-600 flex justify-center rounded-lg px-4 py-2 text-sm font-medium text-white"
+        >
+          Yes! got it
+        </button>
+
+        <button
+          type="button"
+          class="shadow-theme-xs flex justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+        >
+          Learn more
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="popover-02-left">
+  <div class="max-w-[390px]">
+    <div
+      class="relative z-20 rounded-t-xl border-b border-gray-200 px-5 py-3 dark:border-white/[0.03]"
+    >
+      <h4 class="text-base font-semibold text-gray-800 dark:text-white/90">
+        Popover Title
+      </h4>
+    </div>
+    <div class="p-5">
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Lorem ipsum dolor sit amet, consect adipiscing elit. Mauris facilisis
+        congue exclamate justo nec facilisis.
+      </p>
+      <div class="mt-5 flex items-center gap-3">
+        <button
+          type="button"
+          class="bg-brand-500 shadow-theme-xs hover:bg-brand-600 flex justify-center rounded-lg px-4 py-2 text-sm font-medium text-white"
+        >
+          Yes! got it
+        </button>
+
+        <button
+          type="button"
+          class="shadow-theme-xs flex justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+        >
+          Learn more
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- Example Usage -->
+<div class="flex flex-wrap gap-4 p-8">
+  <!-- Popover Right -->
+  <button
+    data-popover="#popover-02-right"
+    data-popover-placement="right"
+    class="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex rounded-lg px-4 py-3 text-sm font-medium text-white"
+  >
+    Popover on Right
+  </button>
+
+  <!-- Popover Top -->
+  <button
+    data-popover="#popover-02-top"
+    data-popover-placement="top"
+    class="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex rounded-lg px-4 py-3 text-sm font-medium text-white"
+  >
+    Popover on Top
+  </button>
+
+  <!-- Popover Bottom -->
+  <button
+    data-popover="#popover-02-bottom"
+    data-popover-placement="bottom"
+    class="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex rounded-lg px-4 py-3 text-sm font-medium text-white"
+  >
+    Popover on Bottom
+  </button>
+
+  <!-- Popover Left -->
+  <button
+    data-popover="#popover-02-left"
+    data-popover-placement="left"
+    class="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex rounded-lg px-4 py-3 text-sm font-medium text-white"
+  >
+    Popover on Left
+  </button>
+</div>
+
+<!-- Popover functionality is now automatically initialized via index.js -->
+<!-- To reinitialize popovers after adding new elements dynamically, call: window.initPopovers() -->
