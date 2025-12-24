@@ -214,7 +214,7 @@ export default function OrganizationPage() {
                             <label className="block text-xs font-bold text-slate-700 mb-2">Organization Logo</label>
 
                             <div
-                                className="w-32 h-32 border-4 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all relative overflow-hidden bg-white"
+                                className="w-32 h-32 border-2 border-solid border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all relative overflow-hidden bg-white"
                                 onClick={() => fileInputRef.current?.click()}
                                 style={{ width: '1.4in', height: '1.4in' }} // approx 30% reduction from 2in
                             >
