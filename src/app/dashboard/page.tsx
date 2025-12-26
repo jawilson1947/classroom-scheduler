@@ -87,10 +87,7 @@ export default function DashboardPage() {
 
             {/* Main Content */}
             <div className="max-w-7xl mx-auto px-8 py-12">
-                <div className="mb-8">
-                    <h2 className="text-4xl font-bold text-white mb-2">Dashboard</h2>
-                    <p className="text-slate-400 text-lg">Your role: {role.replace('_', ' ')}</p>
-                </div>
+
 
                 {/* Role-specific content */}
                 {role === 'SYSTEM_ADMIN' && (
