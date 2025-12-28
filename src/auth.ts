@@ -21,7 +21,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 try {
                     const [rows] = await pool.query<RowDataPacket[]>(
-                        'SELECT id, tenant_id, email, password_hash, role FROM users WHERE email = ?',
+                        'SELECT id, tenant_id, email, firstname, lastname, telephone, password_hash, role FROM users WHERE email = ?',
                         [credentials.email]
                     );
 
@@ -43,6 +43,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         id: user.id.toString(),
                         email: user.email,
                         tenant_id: user.tenant_id,
+                        firstname: user.firstname,
+                        lastname: user.lastname,
+                        telephone: user.telephone,
                         role: user.role
                     };
                 } catch (error) {
@@ -65,18 +68,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 if ((user as any).role && (user as any).tenant_id) {
                     token.tenant_id = (user as any).tenant_id;
                     token.role = (user as any).role;
+                    token.firstname = (user as any).firstname;
+                    token.lastname = (user as any).lastname;
+                    token.telephone = (user as any).telephone;
                 }
                 // If they came from Google (or another provider sans DB lookup), look them up
                 else if (account?.provider === 'google' && user.email) {
                     try {
                         const [rows] = await pool.query<RowDataPacket[]>(
-                            'SELECT id, tenant_id, role FROM users WHERE email = ?',
+                            'SELECT id, tenant_id, firstname, lastname, telephone, role FROM users WHERE email = ?',
                             [user.email]
                         );
                         if (rows.length > 0) {
                             const dbUser = rows[0];
                             token.tenant_id = dbUser.tenant_id;
                             token.role = dbUser.role;
+                            token.firstname = dbUser.firstname;
+                            token.lastname = dbUser.lastname;
+                            token.telephone = dbUser.telephone;
                             token.sub = dbUser.id.toString(); // Ensure ID matches DB ID
                         } else {
                             // User not found in DB - potentially deny access or set as guest?

@@ -15,6 +15,16 @@ interface Tenant {
     time_zone: string;
 }
 
+interface User {
+    id: number;
+    tenant_id: number;
+    email: string;
+    firstname: string;
+    lastname: string;
+    telephone: string;
+    role: string;
+}
+
 interface Building {
     id: number;
     name: string;
@@ -96,6 +106,15 @@ function AdminPageContent() {
 
     // Forms State
     const [tenantForm, setTenantForm] = useState({ uuid: '', name: '', slug: '', time_zone: 'America/Chicago' });
+    const [userForm, setUserForm] = useState({
+        email: '',
+        firstname: '',
+        lastname: '',
+        telephone: '',
+        password: '',
+        role: 'ORG_ADMIN'
+    });
+    const [editingUserId, setEditingUserId] = useState<number | null>(null);
     const [buildingForm, setBuildingForm] = useState({ name: '', time_zone: 'America/Chicago' });
     const [roomForm, setRoomForm] = useState({ building_id: '', name: '', capacity: '' });
     // Date range defaults (persist across event entries)
@@ -129,6 +148,11 @@ function AdminPageContent() {
 
     const { data: buildings, mutate: mutateBuildings } = useSWR<Building[]>(
         selectedTenantId ? `/api/buildings?tenant_id=${selectedTenantId}` : null,
+        fetcher
+    );
+
+    const { data: users, mutate: mutateUsers } = useSWR<User[]>(
+        selectedTenantId ? `/api/users?tenant_id=${selectedTenantId}` : null,
         fetcher
     );
 
@@ -191,6 +215,77 @@ function AdminPageContent() {
             if (selectedTenantId === id) setSelectedTenantId(null);
             setMessage('Tenant deleted successfully');
         } catch (err) { setError('Error deleting tenant'); }
+    };
+
+    const handleCreateUser = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedTenantId) return;
+
+        const method = editingUserId ? 'PUT' : 'POST';
+        const body = editingUserId
+            ? { ...userForm, id: editingUserId, tenant_id: selectedTenantId }
+            : { ...userForm, tenant_id: selectedTenantId };
+
+        try {
+            const res = await fetch('/api/users', {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || `Failed to ${editingUserId ? 'update' : 'create'} user`);
+            }
+
+            mutateUsers();
+            setUserForm({
+                email: '',
+                firstname: '',
+                lastname: '',
+                telephone: '',
+                password: '',
+                role: 'ORG_ADMIN'
+            });
+            setEditingUserId(null);
+            setMessage(`User ${editingUserId ? 'updated' : 'created'} successfully`);
+        } catch (err: any) {
+            setError(err.message || `Error ${editingUserId ? 'updating' : 'creating'} user`);
+        }
+    };
+
+    const handleEditUser = (user: User) => {
+        setEditingUserId(user.id);
+        setUserForm({
+            email: user.email,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            telephone: user.telephone,
+            password: '', // Don't populate password
+            role: user.role
+        });
+    };
+
+    const handleCancelEditUser = () => {
+        setEditingUserId(null);
+        setUserForm({
+            email: '',
+            firstname: '',
+            lastname: '',
+            telephone: '',
+            password: '',
+            role: 'ORG_ADMIN'
+        });
+    };
+
+    const handleDeleteUser = async (id: number) => {
+        if (!confirm('Are you sure you want to delete this user?')) return;
+        try {
+            const res = await fetch(`/api/users?id=${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Failed to delete user');
+            mutateUsers();
+            setMessage('User deleted successfully');
+        } catch (err) { setError('Error deleting user'); }
     };
 
     const handleCreateBuilding = async (e: React.FormEvent) => {
@@ -599,10 +694,109 @@ function AdminPageContent() {
                             </section>
                         )}
 
+                        {/* User Management */}
+                        {selectedTenantId && (
+                            <section className="bg-white rounded-xl shadow p-5">
+                                <h2 className="text-lg font-bold mb-3">2. Users</h2>
+                                <form onSubmit={handleCreateUser} className={`space-y-3 mb-6 p-4 rounded ${editingUserId ? 'bg-orange-50 border-2 border-orange-200' : ''}`}>
+                                    {editingUserId && (
+                                        <div className="flex justify-between items-center mb-2">
+                                            <h3 className="font-bold text-orange-800">Editing User</h3>
+                                            <button type="button" onClick={handleCancelEditUser} className="text-sm text-slate-500 hover:text-slate-800">Cancel</button>
+                                        </div>
+                                    )}
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <input
+                                            className="w-full border p-2 rounded"
+                                            placeholder="First Name"
+                                            value={userForm.firstname}
+                                            onChange={e => setUserForm({ ...userForm, firstname: e.target.value })}
+                                            required
+                                        />
+                                        <input
+                                            className="w-full border p-2 rounded"
+                                            placeholder="Last Name"
+                                            value={userForm.lastname}
+                                            onChange={e => setUserForm({ ...userForm, lastname: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <input
+                                        type="tel"
+                                        className="w-full border p-2 rounded"
+                                        placeholder="Telephone"
+                                        value={userForm.telephone}
+                                        onChange={e => setUserForm({ ...userForm, telephone: e.target.value })}
+                                        required
+                                    />
+                                    <input
+                                        type="email"
+                                        className="w-full border p-2 rounded"
+                                        placeholder="Email"
+                                        value={userForm.email}
+                                        onChange={e => setUserForm({ ...userForm, email: e.target.value })}
+                                        required
+                                    />
+                                    <input
+                                        type="password"
+                                        className="w-full border p-2 rounded"
+                                        placeholder={editingUserId ? "Password (leave blank to keep)" : "Password"}
+                                        value={userForm.password}
+                                        onChange={e => setUserForm({ ...userForm, password: e.target.value })}
+                                        required={!editingUserId}
+                                    />
+                                    <select
+                                        className="w-full border p-2 rounded bg-white"
+                                        value={userForm.role}
+                                        onChange={e => setUserForm({ ...userForm, role: e.target.value })}
+                                    >
+                                        <option value="ORG_ADMIN">Org Admin</option>
+                                        <option value="SCHEDULER">Scheduler</option>
+                                        <option value="VIEWER">Viewer</option>
+                                    </select>
+                                    <button className={`w-full text-white py-2 rounded ${editingUserId ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700'}`}>
+                                        {editingUserId ? 'Update User' : 'Add User'}
+                                    </button>
+                                </form>
+
+                                <ul className="space-y-2 max-h-60 overflow-y-auto">
+                                    {users?.map(u => (
+                                        <li key={u.id} className="p-2 border rounded bg-slate-50 flex justify-between items-center">
+                                            <div>
+                                                <div className="font-semibold">{u.firstname} {u.lastname}</div>
+                                                <div className="text-xs text-slate-500">{u.email} ({u.role})</div>
+                                            </div>
+                                            <div className="flex gap-1">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleEditUser(u)}
+                                                    className="text-blue-600 hover:text-blue-800 p-1"
+                                                    title="Edit"
+                                                >
+                                                    ✏️
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDeleteUser(u.id)}
+                                                    className="text-red-600 hover:text-red-800 p-1"
+                                                    title="Delete"
+                                                >
+                                                    🗑️
+                                                </button>
+                                            </div>
+                                        </li>
+                                    ))}
+                                    {(!users || users.length === 0) && (
+                                        <li className="text-center text-slate-500 text-sm py-2">No users found</li>
+                                    )}
+                                </ul>
+                            </section>
+                        )}
+
                         {/* Building Management */}
                         {selectedTenantId && (
                             <section id="buildings" className="bg-white rounded-xl shadow p-5">
-                                <h2 className="text-lg font-bold mb-3">2. Buildings</h2>
+                                <h2 className="text-lg font-bold mb-3">3. Buildings</h2>
                                 <form onSubmit={handleCreateBuilding} className={`space-y-3 mb-6 p-4 rounded ${editingBuildingId ? 'bg-orange-50 border-2 border-orange-200' : ''}`}>
                                     {editingBuildingId && (
                                         <div className="flex justify-between items-center mb-2">
@@ -669,7 +863,7 @@ function AdminPageContent() {
                             <>
                                 {/* Rooms Section */}
                                 <section id="rooms" className="bg-white rounded-xl shadow p-5">
-                                    <h2 className="text-lg font-bold mb-3">3. Rooms & Devices</h2>
+                                    <h2 className="text-lg font-bold mb-3">4. Rooms & Devices</h2>
 
                                     <form onSubmit={handleCreateRoom} className={`grid grid-cols-1 md:grid-cols-4 gap-3 mb-8 p-4 rounded-lg ${editingRoomId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
                                         {editingRoomId && (
@@ -772,7 +966,7 @@ function AdminPageContent() {
 
                                 {/* Events Section */}
                                 <section id="events" className="bg-white rounded-xl shadow p-5">
-                                    <h2 className="text-lg font-bold mb-3">4. Events & Schedule</h2>
+                                    <h2 className="text-lg font-bold mb-3">5. Events & Schedule</h2>
 
                                     {/* Date Range Defaults Block */}
                                     <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6">

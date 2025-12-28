@@ -15,6 +15,9 @@ CREATE TABLE users (
   email          VARCHAR(255) NOT NULL,
   password_hash  VARCHAR(255) NOT NULL,
   role           ENUM('SYSTEM_ADMIN','ORG_ADMIN','SCHEDULER','VIEWER') NOT NULL,
+  firstname      VARCHAR(255) NOT NULL,
+  lastname       VARCHAR(255) NOT NULL,
+  telephone      VARCHAR(50) NOT NULL,
   created_at     DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
   CONSTRAINT fk_users_tenant

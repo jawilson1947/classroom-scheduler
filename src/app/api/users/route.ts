@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
         }
 
         const [rows] = await pool.query<RowDataPacket[]>(
-            'SELECT id, tenant_id, email, role, created_at FROM users WHERE tenant_id = ? ORDER BY created_at DESC',
+            'SELECT id, tenant_id, email, firstname, lastname, telephone, role, created_at FROM users WHERE tenant_id = ? ORDER BY created_at DESC',
             [tenantId]
         );
 
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
-        let { tenant_id, email, password, role } = body;
+        let { tenant_id, email, firstname, lastname, telephone, password, role } = body;
 
         // Non-SYSTEM_ADMIN users can only create users in their own tenant
         if (userRole !== 'SYSTEM_ADMIN') {
@@ -69,9 +69,9 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        if (!tenant_id || !email || !password || !role) {
+        if (!tenant_id || !email || !password || !role || !firstname || !lastname || !telephone) {
             return NextResponse.json({
-                error: 'All fields are required (tenant_id, email, password, role)'
+                error: 'All fields are required (tenant_id, email, password, role, firstname, lastname, telephone)'
             }, { status: 400 });
         }
 
@@ -92,8 +92,8 @@ export async function POST(request: NextRequest) {
         const password_hash = await bcrypt.hash(password, 10);
 
         const [result] = await pool.query(
-            'INSERT INTO users (tenant_id, email, password_hash, role) VALUES (?, ?, ?, ?)',
-            [tenant_id, email, password_hash, role]
+            'INSERT INTO users (tenant_id, email, firstname, lastname, telephone, password_hash, role) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [tenant_id, email, firstname, lastname, telephone, password_hash, role]
         );
 
         return NextResponse.json({
@@ -128,7 +128,7 @@ export async function PUT(request: NextRequest) {
         }
 
         const body = await request.json();
-        const { id, email, password, role, tenant_id } = body;
+        const { id, email, firstname, lastname, telephone, password, role, tenant_id } = body;
 
         if (!id) {
             return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
@@ -152,6 +152,24 @@ export async function PUT(request: NextRequest) {
         if (email) {
             updates.push('email = ?');
             values.push(email);
+        }
+
+        if (firstname !== undefined) {
+            if (!firstname) return NextResponse.json({ error: 'First name cannot be empty' }, { status: 400 });
+            updates.push('firstname = ?');
+            values.push(firstname);
+        }
+
+        if (lastname !== undefined) {
+            if (!lastname) return NextResponse.json({ error: 'Last name cannot be empty' }, { status: 400 });
+            updates.push('lastname = ?');
+            values.push(lastname);
+        }
+
+        if (telephone !== undefined) {
+            if (!telephone) return NextResponse.json({ error: 'Telephone cannot be empty' }, { status: 400 });
+            updates.push('telephone = ?');
+            values.push(telephone);
         }
 
         if (role) {

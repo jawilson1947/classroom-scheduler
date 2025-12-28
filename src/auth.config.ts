@@ -37,6 +37,9 @@ export const authConfig = {
             if (user) {
                 token.tenant_id = (user as any).tenant_id;
                 token.role = (user as any).role;
+                token.firstname = (user as any).firstname;
+                token.lastname = (user as any).lastname;
+                token.telephone = (user as any).telephone;
             }
             return token;
         },
@@ -45,6 +48,9 @@ export const authConfig = {
                 (session.user as any).tenant_id = token.tenant_id;
                 (session.user as any).role = token.role;
                 (session.user as any).id = token.sub;
+                (session.user as any).firstname = token.firstname;
+                (session.user as any).lastname = token.lastname;
+                (session.user as any).telephone = token.telephone;
             }
             return session;
         }

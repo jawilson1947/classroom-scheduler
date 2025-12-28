@@ -12,6 +12,9 @@ interface User {
     id: number;
     tenant_id: number;
     email: string;
+    firstname?: string;
+    lastname?: string;
+    telephone?: string;
     role: string;
     created_at: string;
     tenant_name?: string;
@@ -60,6 +63,9 @@ export default function UsersPage() {
     const [userForm, setUserForm] = useState({
         tenant_id: '',
         email: '',
+        firstname: '',
+        lastname: '',
+        telephone: '',
         password: '',
         confirmPassword: '',
         role: 'VIEWER'
@@ -72,6 +78,9 @@ export default function UsersPage() {
             setUserForm({
                 tenant_id: user.tenant_id.toString(),
                 email: user.email,
+                firstname: user.firstname || '',
+                lastname: user.lastname || '',
+                telephone: user.telephone || '',
                 password: '',
                 confirmPassword: '',
                 role: user.role
@@ -81,6 +90,9 @@ export default function UsersPage() {
             setUserForm({
                 tenant_id: isSystemAdmin ? '' : displayTenantId?.toString() || '',
                 email: '',
+                firstname: '',
+                lastname: '',
+                telephone: '',
                 password: '',
                 confirmPassword: '',
                 role: 'VIEWER'
@@ -325,6 +337,46 @@ export default function UsersPage() {
                                     />
                                 </div>
 
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                                            First Name <span className="text-red-600">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={userForm.firstname}
+                                            onChange={(e) => setUserForm({ ...userForm, firstname: e.target.value })}
+                                            required
+                                            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                                            Last Name <span className="text-red-600">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={userForm.lastname}
+                                            onChange={(e) => setUserForm({ ...userForm, lastname: e.target.value })}
+                                            required
+                                            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                        Telephone <span className="text-red-600">*</span>
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        value={userForm.telephone}
+                                        onChange={(e) => setUserForm({ ...userForm, telephone: e.target.value })}
+                                        required
+                                        className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">
                                         Password {editingUser && '(leave blank to keep current)'}
@@ -412,10 +464,11 @@ export default function UsersPage() {
                             </form>
                         </div>
                     </div>
-                )}
-            </div>
+                )
+                }
+            </div >
 
             <Footer />
-        </div>
+        </div >
     );
 }
