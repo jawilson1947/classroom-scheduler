@@ -18,7 +18,11 @@ export async function GET(request: NextRequest) {
         const hasPagination = searchParams.has('page') || searchParams.has('limit');
 
         // Base query
-        let baseQuery = 'FROM events e JOIN rooms r ON e.room_id = r.id WHERE e.tenant_id = ?';
+        let baseQuery = `
+            FROM events e 
+            JOIN rooms r ON e.room_id = r.id 
+            LEFT JOIN facilitators f ON e.facilitator_id = f.id
+            WHERE e.tenant_id = ?`;
         const params: any[] = [tenantId];
 
         if (buildingId) {
@@ -58,7 +62,13 @@ export async function GET(request: NextRequest) {
 
         if (!hasPagination) {
             // Backward compatibility: Return flat array if no pagination params
-            const query = `SELECT e.* ${baseQuery} ORDER BY e.start_time ASC`;
+            const query = `
+                SELECT e.*, 
+                       f.icon_url as facilitator_icon_url, 
+                       f.picture_url as facilitator_picture_url, 
+                       f.bio as facilitator_bio 
+                ${baseQuery} 
+                ORDER BY e.start_time ASC`;
             const [rows] = await pool.query<RowDataPacket[]>(query, params);
             return NextResponse.json(rows);
         }
@@ -74,11 +84,18 @@ export async function GET(request: NextRequest) {
         const total = countRows[0].total;
 
         // Data Query
-        const dataQuery = `SELECT e.* ${baseQuery} ORDER BY e.start_time ASC LIMIT ? OFFSET ?`;
+        const dataQuery = `
+            SELECT e.*, 
+                   f.icon_url as facilitator_icon_url, 
+                   f.picture_url as facilitator_picture_url, 
+                   f.bio as facilitator_bio 
+            ${baseQuery} 
+            ORDER BY e.start_time ASC LIMIT ? OFFSET ?`;
         // LIMIT and OFFSET parameters must be integers
         const dataParams = [...params, limit, offset];
 
         const [rows] = await pool.query<RowDataPacket[]>(dataQuery, dataParams);
+
 
         return NextResponse.json({
             data: rows,

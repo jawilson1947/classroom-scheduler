@@ -4,7 +4,16 @@ import WebKit
 struct CurrentEventView: View {
     let event: Event
     @State private var isAnimating = false
-    @State private var showNarrative = false
+    @State private var activeSheet: ActiveSheet?
+    
+    enum ActiveSheet: Identifiable {
+        case narrative
+        case facilitator
+        
+        var id: Int {
+            hashValue
+        }
+    }
     
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
@@ -30,7 +39,7 @@ struct CurrentEventView: View {
                 
                 if let narrative = event.narrative, !narrative.isEmpty {
                     Button(action: {
-                        showNarrative = true
+                        activeSheet = .narrative
                     }) {
                         Text(event.title)
                             .font(.system(size: 18, weight: .bold))
@@ -47,9 +56,59 @@ struct CurrentEventView: View {
                 }
                 
                 if let facilitator = event.facilitatorName {
-                    Text(facilitator)
-                        .font(.system(size: 13))
-                        .foregroundColor(.white.opacity(0.9))
+                    HStack(alignment: .center, spacing: 8) {
+                        Text(facilitator)
+                            .font(.system(size: 13))
+                            .foregroundColor(.white.opacity(0.9))
+                        
+                        // Facilitator Icon
+                        if event.facilitatorId != nil, 
+                           let iconString = event.facilitatorIconUrl {
+                            
+                            Button(action: {
+                                print("[CurrentEventView] Facilitator icon tapped")
+                                activeSheet = .facilitator
+                            }) {
+                                Group {
+                                    if let url = URL(string: iconString), 
+                                       (iconString.hasPrefix("http") || iconString.hasPrefix("https")) {
+                                        AsyncImage(url: url) { phase in
+                                            switch phase {
+                                            case .empty:
+                                                Color.white.opacity(0.3)
+                                            case .success(let image):
+                                                image
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                            case .failure:
+                                                Color.gray.opacity(0.5)
+                                            @unknown default:
+                                                Color.gray
+                                            }
+                                        }
+                                    } else {
+                                        // Try Base64
+                                        // Remove data:image/...;base64, prefix if present
+                                        let cleanString = iconString.components(separatedBy: ",").last ?? iconString
+                                        if let data = Data(base64Encoded: cleanString, options: .ignoreUnknownCharacters),
+                                           let uiImage = UIImage(data: data) {
+                                            Image(uiImage: uiImage)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                        } else {
+                                            Color.gray.opacity(0.5)
+                                        }
+                                    }
+                                }
+                                .frame(width: 8, height: 8)
+                                .clipShape(Rectangle())
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .frame(width: 44, height: 44) // Minimum hit area
+                            .offset(x: -12) 
+                        }
+                    }
                 }
             }
             
@@ -96,15 +155,102 @@ struct CurrentEventView: View {
         .onAppear {
             isAnimating = true
         }
-        .sheet(isPresented: $showNarrative) {
-            if let narrative = event.narrative {
-                NarrativeSheetView(
-                    title: event.title,
-                    htmlContent: narrative,
-                    isPresented: $showNarrative
+        .sheet(item: $activeSheet) { item in
+            switch item {
+            case .narrative:
+                if let narrative = event.narrative {
+                    NarrativeSheetView(
+                        title: event.title,
+                        htmlContent: narrative,
+                        isPresented: Binding(
+                            get: { activeSheet == .narrative },
+                            set: { if !$0 { activeSheet = nil } }
+                        )
+                    )
+                }
+            case .facilitator:
+                FacilitatorBioView(
+                    name: event.facilitatorName ?? "Facilitator",
+                    pictureUrl: event.facilitatorPictureUrl,
+                    bio: event.facilitatorBio,
+                    isPresented: Binding(
+                        get: { activeSheet == .facilitator },
+                        set: { if !$0 { activeSheet = nil } }
+                    )
                 )
             }
         }
+    }
+}
+
+struct FacilitatorBioView: View {
+    let name: String
+    let pictureUrl: String?
+    let bio: String?
+    @Binding var isPresented: Bool
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                // Construct HTML content
+                let htmlContent = generateHtml()
+                WebView(html: htmlContent)
+                    .edgesIgnoringSafeArea(.bottom)
+            }
+            .navigationTitle(name)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        isPresented = false
+                    }) {
+                        Text("Close")
+                            .font(.headline)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func generateHtml() -> String {
+        var html = ""
+        
+        // Add styles for flowing text around image
+        html += """
+        <style>
+            .container {
+                font-family: -apple-system, system-ui;
+                font-size: 1.2rem;
+                line-height: 1.6;
+                color: #333;
+                padding: 1rem;
+            }
+            .facilitator-img {
+                float: left;
+                margin-right: 20px;
+                margin-bottom: 20px;
+                width: 150px;
+                height: auto;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+            p { margin-bottom: 1rem; }
+        </style>
+        <div class="container">
+        """
+        
+        if let picUrl = pictureUrl, !picUrl.isEmpty {
+            html += "<img src=\"\(picUrl)\" class=\"facilitator-img\" alt=\"\(name)\" />"
+        }
+        
+        if let bioContent = bio, !bioContent.isEmpty {
+            html += bioContent
+        } else {
+            html += "<p>No biography available.</p>"
+        }
+        
+        html += "</div>"
+        return html
     }
 }
 
@@ -148,40 +294,40 @@ struct WebView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        // Robust check: Parse HTML to plain text to handle <p> tags and entities
+        // Simple robust check to determine if the string is a URL or HTML content
+        // interacting with NSAttributedString(data: ... .html) can cause main thread issues and crashes
+        // when used inside updateUIView due to internal WebKit usage.
+        
+        let trimmed = html.trimmingCharacters(in: .whitespacesAndNewlines)
         var isURL = false
-        if let data = html.data(using: .utf8) {
-            if let attributedString = try? NSAttributedString(
-                data: data,
-                options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue],
-                documentAttributes: nil
-            ) {
-                let text = attributedString.string.trimmingCharacters(in: .whitespacesAndNewlines)
-                // Check just the first line of the text content
-                let firstLine = text.components(separatedBy: .newlines).first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-                
-                if firstLine.lowercased().hasPrefix("http"), let url = URL(string: firstLine) {
-                    let request = URLRequest(url: url)
-                    uiView.load(request)
-                    isURL = true
-                }
+        
+        // If it looks like a URL and doesn't contain HTML tags
+        if (trimmed.lowercased().hasPrefix("http://") || trimmed.lowercased().hasPrefix("https://")) && !trimmed.contains("<") {
+            if let url = URL(string: trimmed) {
+                let request = URLRequest(url: url)
+                uiView.load(request)
+                isURL = true
             }
         }
         
         if !isURL {
-            let css = """
-            <style>
-                body { 
-                    font-family: -apple-system, system-ui; 
-                    font-size: 1.2rem; 
-                    line-height: 1.5; 
-                    color: #333; 
-                    padding: 1rem; 
-                }
-                ul, ol { padding-left: 20px; }
-            </style>
-            """
-            uiView.loadHTMLString(css + html, baseURL: nil)
+            if html.contains("<style>") {
+                 uiView.loadHTMLString(html, baseURL: nil)
+            } else {
+                 let css = """
+                 <style>
+                     body { 
+                         font-family: -apple-system, system-ui; 
+                         font-size: 1.2rem; 
+                         line-height: 1.5; 
+                         color: #333; 
+                         padding: 1rem; 
+                     }
+                     ul, ol { padding-left: 20px; }
+                 </style>
+                 """
+                 uiView.loadHTMLString(css + html, baseURL: nil)
+            }
         }
     }
 }

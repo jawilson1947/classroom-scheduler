@@ -251,7 +251,7 @@ struct HeaderView: View {
                     .font(.system(size: 24, weight: .bold))
                     .foregroundColor(.white)
                 
-                Text(currentTime, format: .dateTime.weekday(.wide).month(.wide).day())
+                Text(currentTime, format: .dateTime.weekday(.wide).month(.wide).day().year())
                     .font(.system(size: 13))
                     .foregroundColor(Color(white: 0.6))
                 

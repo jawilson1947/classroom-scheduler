@@ -4,6 +4,10 @@ struct Event: Codable, Identifiable {
     let id: Int
     let title: String
     let facilitatorName: String?
+    let facilitatorId: Int?
+    let facilitatorIconUrl: String?
+    let facilitatorPictureUrl: String?
+    let facilitatorBio: String?
     let startTime: String
     let endTime: String
     let description: String?
@@ -16,6 +20,10 @@ struct Event: Codable, Identifiable {
         case id
         case title
         case facilitatorName = "facilitator_name"
+        case facilitatorId = "facilitator_id"
+        case facilitatorIconUrl = "facilitator_icon_url"
+        case facilitatorPictureUrl = "facilitator_picture_url"
+        case facilitatorBio = "facilitator_bio"
         case startTime = "start_time"
         case endTime = "end_time"
         case description
