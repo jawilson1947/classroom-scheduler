@@ -102,10 +102,11 @@ struct CurrentEventView: View {
                                 }
                                 .frame(width: 8, height: 8)
                                 .clipShape(Rectangle())
-                                .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
                             .frame(width: 44, height: 44) // Minimum hit area
+                            .background(Color.white.opacity(0.001)) // Essential for hit testing transparent/empty areas
+                            .contentShape(Rectangle()) // Ensures the entire 44x44 frame is tappable
                             .offset(x: -12) 
                         }
                     }
