@@ -12,7 +12,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         Credentials({
             credentials: {
                 email: { label: 'Email', type: 'email' },
-                password: { label: 'Password', type: 'password' }
+                password: { label: 'Password', type: 'password' },
+                tenant_id: { label: 'Tenant ID', type: 'text' }
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) {
@@ -20,10 +21,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
 
                 try {
-                    const [rows] = await pool.query<RowDataPacket[]>(
-                        'SELECT id, tenant_id, email, firstname, lastname, telephone, password_hash, role FROM users WHERE email = ?',
-                        [credentials.email]
-                    );
+                    let query = 'SELECT id, tenant_id, email, firstname, lastname, telephone, password_hash, role FROM users WHERE email = ?';
+                    const params: any[] = [credentials.email];
+
+                    if (credentials.tenant_id) {
+                        query += ' AND tenant_id = ?';
+                        params.push(credentials.tenant_id);
+                    }
+
+                    const [rows] = await pool.query<RowDataPacket[]>(query, params);
 
                     if (rows.length === 0) {
                         return null;

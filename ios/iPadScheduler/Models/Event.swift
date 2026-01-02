@@ -20,7 +20,7 @@ struct Event: Codable, Identifiable {
         case id
         case title
         case facilitatorName = "facilitator_name"
-        case facilitatorId = "facilitator_id"
+        case facilitatorId = "Facilitator_id"
         case facilitatorIconUrl = "facilitator_icon_url"
         case facilitatorPictureUrl = "facilitator_picture_url"
         case facilitatorBio = "facilitator_bio"

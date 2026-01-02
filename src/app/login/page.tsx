@@ -5,12 +5,63 @@ import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+
+interface TenantOption {
+    tenant_id: number;
+    tenant_name: string;
+}
+
 export default function LoginPage() {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const [tenants, setTenants] = useState<TenantOption[]>([]);
+    const [selectedTenantId, setSelectedTenantId] = useState<number | string>('');
+    const [checkingTenants, setCheckingTenants] = useState(false);
+
+    const checkTenants = async (emailValue: string) => {
+        if (!emailValue || !emailValue.includes('@')) {
+            setTenants([]);
+            return;
+        }
+
+        setCheckingTenants(true);
+        try {
+            const res = await fetch('/api/check-tenants', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: emailValue })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                if (data.tenants && Array.isArray(data.tenants)) {
+                    setTenants(data.tenants);
+                    // If only one tenant, auto-select it? Or leave it (backend handles it if tenant_id missing)
+                    // But if we want to be explicit:
+                    if (data.tenants.length === 1) {
+                        setSelectedTenantId(data.tenants[0].tenant_id);
+                    } else if (data.tenants.length > 1) {
+                        // Default to first or prompt? Prompt is better.
+                        setSelectedTenantId(data.tenants[0].tenant_id);
+                    } else {
+                        setSelectedTenantId('');
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('Failed to check tenants', err);
+        } finally {
+            setCheckingTenants(false);
+        }
+    };
+
+    const handleEmailBlur = () => {
+        checkTenants(email);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,6 +72,7 @@ export default function LoginPage() {
             const result = await signIn('credentials', {
                 email,
                 password,
+                tenant_id: selectedTenantId,
                 redirect: false
             });
 
@@ -61,12 +113,44 @@ export default function LoginPage() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            onBlur={handleEmailBlur}
                             required
                             className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder="you@example.com"
                             disabled={loading}
                         />
                     </div>
+
+                    {/* Tenant Selection logic */}
+                    {tenants.length > 1 && (
+                        <div>
+                            <label htmlFor="tenant" className="block text-sm font-medium text-slate-700 mb-1">
+                                Select Organization
+                            </label>
+                            <div className="relative">
+                                <select
+                                    id="tenant"
+                                    value={selectedTenantId}
+                                    onChange={(e) => setSelectedTenantId(e.target.value)}
+                                    required
+                                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
+                                    disabled={loading}
+                                >
+                                    {tenants.map((t) => (
+                                        <option key={t.tenant_id} value={t.tenant_id}>
+                                            {t.tenant_name} (ID: {t.tenant_id})
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
+                                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                                </div>
+                            </div>
+                            <p className="text-xs text-slate-500 mt-1">
+                                This email is associated with multiple organizations. Please select one.
+                            </p>
+                        </div>
+                    )}
 
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
@@ -91,7 +175,7 @@ export default function LoginPage() {
 
                     <button
                         type="submit"
-                        disabled={loading}
+                        disabled={loading || (tenants.length > 1 && !selectedTenantId)}
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
                     >
                         {loading ? 'Signing in...' : 'Sign In'}
