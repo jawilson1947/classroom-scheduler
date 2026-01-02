@@ -11,15 +11,29 @@ export const authConfig = {
             const isOnDisplayPage = nextUrl.pathname.startsWith('/display');
             const isOnApiAuthRoute = nextUrl.pathname.startsWith('/api/auth');
             const isOnDevicePairApi = nextUrl.pathname.startsWith('/api/device/pair');
+            const isOnTenantSelectPage = nextUrl.pathname.startsWith('/select-tenant');
 
             // Allow display pages and device pairing (for iPads)
             if (isOnDisplayPage || isOnDevicePairApi) {
                 return true;
             }
 
-            // Allow API auth routes
-            if (isOnApiAuthRoute) {
+            // Allow API auth routes and tenant check
+            if (isOnApiAuthRoute || nextUrl.pathname.startsWith('/api/check-tenants')) {
                 return true;
+            }
+
+            // Check for pending tenant selection
+            const isPendingSelection = (auth?.user as any)?.is_pending_selection;
+
+            if (isPendingSelection) {
+                if (!isOnTenantSelectPage) {
+                    return Response.redirect(new URL('/select-tenant', nextUrl));
+                }
+                return true;
+            } else if (isOnTenantSelectPage) {
+                // If not pending selection, shouldn't be on this page
+                return Response.redirect(new URL('/dashboard', nextUrl));
             }
 
             if (isOnLoginPage) {
@@ -40,6 +54,7 @@ export const authConfig = {
                 token.firstname = (user as any).firstname;
                 token.lastname = (user as any).lastname;
                 token.telephone = (user as any).telephone;
+                token.is_pending_selection = (user as any).is_pending_selection;
             }
             return token;
         },
@@ -51,6 +66,7 @@ export const authConfig = {
                 (session.user as any).firstname = token.firstname;
                 (session.user as any).lastname = token.lastname;
                 (session.user as any).telephone = token.telephone;
+                (session.user as any).is_pending_selection = token.is_pending_selection;
             }
             return session;
         }

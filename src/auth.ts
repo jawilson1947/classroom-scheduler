@@ -67,7 +67,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     ],
     callbacks: {
         ...authConfig.callbacks,
-        async jwt({ token, user, account }) {
+        async jwt({ token, user, account, trigger, session }) {
+            // Handle session update (e.g., separating user selection)
+            if (trigger === "update" && session?.tenant_id) {
+                // Verify the user belongs to this tenant
+                try {
+                    const [rows] = await pool.query<RowDataPacket[]>(
+                        'SELECT id, tenant_id, firstname, lastname, telephone, role FROM users WHERE email = ? AND tenant_id = ?',
+                        [token.email, session.tenant_id]
+                    );
+
+                    if (rows.length > 0) {
+                        const dbUser = rows[0];
+                        token.tenant_id = dbUser.tenant_id;
+                        token.role = dbUser.role;
+                        token.firstname = dbUser.firstname;
+                        token.lastname = dbUser.lastname;
+                        token.telephone = dbUser.telephone;
+                        token.sub = dbUser.id.toString();
+                        token.is_pending_selection = false;
+                    }
+                } catch (err) {
+                    console.error('Error updating session tenant:', err);
+                }
+                return token;
+            }
+
             // Initial sign in
             if (user) {
                 // If the user came from Credentials, they already have role/tenant_id
@@ -85,7 +110,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             'SELECT id, tenant_id, firstname, lastname, telephone, role FROM users WHERE email = ?',
                             [user.email]
                         );
-                        if (rows.length > 0) {
+                        if (rows.length > 1) {
+                            // Multiple tenants found - mark for selection
+                            token.is_pending_selection = true;
+                            // Optionally store available tenants in token? Or just fetch on selection page.
+                            // We don't set tenant_id/role yet.
+                        } else if (rows.length === 1) {
                             const dbUser = rows[0];
                             token.tenant_id = dbUser.tenant_id;
                             token.role = dbUser.role;
@@ -94,8 +124,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                             token.telephone = dbUser.telephone;
                             token.sub = dbUser.id.toString(); // Ensure ID matches DB ID
                         } else {
-                            // User not found in DB - potentially deny access or set as guest?
-                            // For now, let's leave them without role/tenant (logic in config/middleware handles this)
                             console.warn(`Google user ${user.email} not found in database.`);
                         }
                     } catch (err) {
@@ -104,6 +132,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
             }
             return token;
+        },
+        async session({ session, token }) {
+            if (token) {
+                (session.user as any).tenant_id = token.tenant_id;
+                (session.user as any).role = token.role;
+                (session.user as any).firstname = token.firstname;
+                (session.user as any).lastname = token.lastname;
+                (session.user as any).is_pending_selection = token.is_pending_selection;
+                session.user.id = token.sub as string;
+            }
+            return session;
         }
     }
 });
