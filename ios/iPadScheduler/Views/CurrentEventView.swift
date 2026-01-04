@@ -61,12 +61,11 @@ struct CurrentEventView: View {
                             .font(.system(size: 13))
                             .foregroundColor(.white.opacity(0.9))
                         
-                        // Facilitator Icon
+                        // Facilitator Icon - Clickable to show Bio
                         if event.facilitatorId != nil, 
                            let iconString = event.facilitatorIconUrl {
                             
                             Button(action: {
-                                print("[CurrentEventView] Facilitator icon tapped")
                                 activeSheet = .facilitator
                             }) {
                                 Group {
@@ -74,40 +73,31 @@ struct CurrentEventView: View {
                                        (iconString.hasPrefix("http") || iconString.hasPrefix("https")) {
                                         AsyncImage(url: url) { phase in
                                             switch phase {
-                                            case .empty:
-                                                Color.white.opacity(0.3)
                                             case .success(let image):
                                                 image
                                                     .resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                            case .failure:
-                                                Color.gray.opacity(0.5)
-                                            @unknown default:
-                                                Color.gray
+                                                    .aspectRatio(contentMode: .fit)
+                                            default:
+                                                Color.gray.opacity(0.3)
                                             }
                                         }
                                     } else {
                                         // Try Base64
-                                        // Remove data:image/...;base64, prefix if present
                                         let cleanString = iconString.components(separatedBy: ",").last ?? iconString
                                         if let data = Data(base64Encoded: cleanString, options: .ignoreUnknownCharacters),
                                            let uiImage = UIImage(data: data) {
                                             Image(uiImage: uiImage)
                                                 .resizable()
-                                                .aspectRatio(contentMode: .fill)
+                                                .aspectRatio(contentMode: .fit)
                                         } else {
-                                            Color.gray.opacity(0.5)
+                                            Color.gray.opacity(0.3)
                                         }
                                     }
                                 }
-                                .frame(width: 8, height: 8)
-                                .clipShape(Rectangle())
+                                .frame(width: 20, height: 20) // Increased to 20px per request
+                                .clipShape(Circle()) // Optional: Circle looks better for icons, or use Rectangle if preferred
                             }
                             .buttonStyle(.plain)
-                            .frame(width: 44, height: 44) // Minimum hit area
-                            .background(Color.white.opacity(0.001)) // Essential for hit testing transparent/empty areas
-                            .contentShape(Rectangle()) // Ensures the entire 44x44 frame is tappable
-                            .offset(x: -12) 
                         }
                     }
                 }
