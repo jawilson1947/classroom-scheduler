@@ -67,18 +67,9 @@ export default function DashboardPage() {
             {/* Header */}
             <header className="bg-slate-800 border-b border-slate-700 shadow-lg">
                 <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
-                    <div className="flex items-center gap-4">
-                        <Image
-                            src="/images/ClassroomScheduler_logo_cropped.png"
-                            alt="Classroom Scheduler Logo"
-                            width={50}
-                            height={50}
-                            className="w-12 h-12 object-contain"
-                        />
-                        <div>
-                            <h1 className="text-2xl font-bold text-white">Classroom Scheduler</h1>
-                            <p className="text-slate-400 text-sm">{user.email}</p>
-                        </div>
+                    <div>
+                        <h1 className="text-2xl font-bold text-white">Classroom Scheduler</h1>
+                        <p className="text-slate-400 text-sm">{user.email}</p>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="text-right">
