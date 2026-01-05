@@ -118,10 +118,21 @@ struct DisplayView: View {
                             .frame(height: 1)
                             .opacity(0.5) 
                         
-                        Text("\(tenantName) | \(tenantAddress)")
-                            .font(.system(size: 13))
-                            .foregroundColor(.white.opacity(0.9))
-                            .multilineTextAlignment(.center)
+                        ZStack {
+                            // Version - Left Aligned
+                            HStack {
+                                Text("Ver 2.5.3")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.white.opacity(0.9))
+                                Spacer()
+                            }
+                            
+                            // Tenant Info - Centered
+                            Text("\(tenantName) | \(tenantAddress)")
+                                .font(.system(size: 13))
+                                .foregroundColor(.white.opacity(0.9))
+                                .multilineTextAlignment(.center)
+                        }
                     }
                     .padding(.horizontal, 32)
                     .padding(.bottom, 40)
