@@ -50,6 +50,7 @@ interface Event {
     daily_end_time?: string;
     narrative?: string;
     facilitator_id?: number | null;
+    Facilitator_id?: number | null; // API returns uppercase F sometimes
 }
 
 interface Facilitator {
@@ -343,7 +344,7 @@ export default function EventsPage() {
             daily_start_time: event.daily_start_time || toLocalHM(event.start_time),
             daily_end_time: event.daily_end_time || toLocalHM(event.end_time),
             narrative: event.narrative || '',
-            facilitator_id: event.facilitator_id ? Number(event.facilitator_id) : null
+            facilitator_id: (event.facilitator_id || event.Facilitator_id) ? Number(event.facilitator_id || event.Facilitator_id) : null
         };
         setEventForm(newFormState);
         setInitialEventForm(newFormState);
