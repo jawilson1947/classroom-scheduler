@@ -335,7 +335,12 @@ export default function RoomsPage() {
                 {/* Rooms Section */}
                 {selectedTenantId ? (
                     <section className="bg-white rounded-xl shadow p-5">
-                        <h2 className="text-lg font-bold mb-3">Rooms & Devices</h2>
+                        <div className="flex justify-between items-center mb-3">
+                            <h2 className="text-lg font-bold">Rooms & Devices</h2>
+                            <a href="https://apps.apple.com/us/app/classroomscheduler/id6756311937" target="_blank" rel="noopener noreferrer" title="Download iPad Display App">
+                                <img src="/images/thumb4.png" alt="Download on App Store" className="h-10" />
+                            </a>
+                        </div>
 
                         <form onSubmit={handleCreateRoom} className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 p-4 rounded-lg ${editingRoomId ? 'bg-orange-50 border-2 border-orange-200' : 'bg-slate-50'}`}>
                             {editingRoomId && (
