@@ -9,6 +9,7 @@ import { FilterSortCard, TimeFilter, TypeFilter, SortBy, SortOrder } from '@/com
 import Footer from '@/components/Footer';
 import dynamic from 'next/dynamic';
 import Modal from '@/components/Modal';
+import ConfirmModal from '@/components/ConfirmModal';
 import 'quill/dist/quill.snow.css'; // Import styles for viewing content
 
 const QuillEditor = dynamic(() => import('@/components/QuillEditor'), { ssr: false });
@@ -101,6 +102,9 @@ export default function EventsPage() {
     const [viewNarrative, setViewNarrative] = useState<{ title: string; content: string } | null>(null);
     const [conflictData, setConflictData] = useState<any[]>([]);
     const [message, setMessage] = useState('');
+    const [cancelEditModalOpen, setCancelEditModalOpen] = useState(false);
+    const [deleteEventModalOpen, setDeleteEventModalOpen] = useState(false);
+    const [eventToDelete, setEventToDelete] = useState<number | null>(null);
 
     const [error, setError] = useState('');
     const [searchParams, setSearchParams] = useState<{ start_date: string, end_date: string, building_id?: string, room_id?: string } | null>(null);
@@ -357,11 +361,15 @@ export default function EventsPage() {
     const handleCancelEdit = () => {
         // Check for unsaved changes
         if (initialEventForm && JSON.stringify(eventForm) !== JSON.stringify(initialEventForm)) {
-            if (!confirm('You have unsaved changes. Are you sure you want to discard them?')) {
-                return;
-            }
+            setCancelEditModalOpen(true);
+            return;
         }
 
+        // No changes, just cancel
+        performCancelEdit();
+    };
+
+    const performCancelEdit = () => {
         setEditingEventId(null);
         setInitialEventForm(null);
         setEventForm({
@@ -379,9 +387,15 @@ export default function EventsPage() {
     };
 
     const handleDeleteEvent = async (id: number) => {
-        if (!confirm('Are you sure you want to delete this event?')) return;
+        setEventToDelete(id);
+        setDeleteEventModalOpen(true);
+    };
+
+    const performDeleteEvent = async () => {
+        if (!eventToDelete) return;
+
         try {
-            const res = await fetch(`/api/events?id=${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/events?id=${eventToDelete}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Failed to delete event');
             mutateEvents();
             setMessage('Event deleted successfully');
@@ -389,6 +403,8 @@ export default function EventsPage() {
         } catch (err) {
             setError('Error deleting event');
             setTimeout(() => setError(''), 3000);
+        } finally {
+            setEventToDelete(null);
         }
     };
 
@@ -958,6 +974,39 @@ export default function EventsPage() {
                     </div>
                 )
             }
+
+            {/* Cancel Edit Confirmation Modal */}
+            <ConfirmModal
+                isOpen={cancelEditModalOpen}
+                onClose={() => setCancelEditModalOpen(false)}
+                onConfirm={() => {
+                    performCancelEdit();
+                    setCancelEditModalOpen(false);
+                }}
+                title="Discard Changes?"
+                message="You have unsaved changes. Are you sure you want to discard them?"
+                confirmLabel="Discard"
+                cancelLabel="Keep Editing"
+                confirmButtonClass="bg-orange-600 hover:bg-orange-700"
+            />
+
+            {/* Delete Event Confirmation Modal */}
+            <ConfirmModal
+                isOpen={deleteEventModalOpen}
+                onClose={() => {
+                    setDeleteEventModalOpen(false);
+                    setEventToDelete(null);
+                }}
+                onConfirm={() => {
+                    performDeleteEvent();
+                    setDeleteEventModalOpen(false);
+                }}
+                title="Delete Event?"
+                message="Are you sure you want to delete this event? This action cannot be undone."
+                confirmLabel="Delete"
+                cancelLabel="Cancel"
+                confirmButtonClass="bg-red-600 hover:bg-red-700"
+            />
 
             {/* Footer */}
             <Footer />
