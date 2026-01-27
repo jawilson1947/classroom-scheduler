@@ -453,7 +453,7 @@ export default function RoomsPage() {
                                                 disabled={generatingToken}
                                                 className="col-span-3 bg-blue-700 text-white py-1 px-3 rounded text-sm hover:bg-blue-800 flex items-center justify-center gap-1 disabled:opacity-50 font-semibold"
                                             >
-                                                <span>📱</span> Connect iPad
+                                                <span>📱</span> Connect Tablet
                                             </button>
                                         )}
                                     </div>
