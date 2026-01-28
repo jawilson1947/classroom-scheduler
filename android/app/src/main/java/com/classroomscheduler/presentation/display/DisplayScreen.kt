@@ -135,10 +135,13 @@ fun DisplayScreen(
             }
             
             // Footer
-            if (uiState.room?.tenantName != null && uiState.room.tenantAddress != null) {
+            val room = uiState.room
+            val tenantName = room?.tenantName
+            val tenantAddress = room?.tenantAddress
+            if (tenantName != null && tenantAddress != null) {
                 FooterView(
-                    tenantName = uiState.room.tenantName,
-                    tenantAddress = uiState.room.tenantAddress
+                    tenantName = tenantName,
+                    tenantAddress = tenantAddress
                 )
             }
         }

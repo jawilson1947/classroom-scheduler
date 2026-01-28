@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Classroom Scheduler</string>
+    <string name="restriction_room_id_desc">The ID of the room this device will display</string>
+    <string name="restriction_tenant_id_desc">The ID of the tenant/organization</string>
+    <string name="restriction_api_url_desc">The base URL for the API server</string>
+    <string name="restriction_device_id_desc">Optional device ID for tracking</string>
 </resources>

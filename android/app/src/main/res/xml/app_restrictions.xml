@@ -5,28 +5,28 @@
         android:key="roomId"
         android:title="Room ID"
         android:restrictionType="integer"
-        android:description="The ID of the room this device will display"
+        android:description="@string/restriction_room_id_desc"
         android:defaultValue="0" />
     
     <restriction
         android:key="tenantId"
         android:title="Tenant ID"
         android:restrictionType="integer"
-        android:description="The ID of the tenant/organization"
+        android:description="@string/restriction_tenant_id_desc"
         android:defaultValue="0" />
     
     <restriction
         android:key="apiBaseURL"
         android:title="API Base URL"
         android:restrictionType="string"
-        android:description="The base URL for the API server"
+        android:description="@string/restriction_api_url_desc"
         android:defaultValue="https://ipad-scheduler.com" />
     
     <restriction
         android:key="deviceId"
         android:title="Device ID"
         android:restrictionType="integer"
-        android:description="Optional device ID for tracking"
+        android:description="@string/restriction_device_id_desc"
         android:defaultValue="0" />
     
 </restrictions>

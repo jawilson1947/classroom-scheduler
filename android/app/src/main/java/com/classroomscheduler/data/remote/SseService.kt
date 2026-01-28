@@ -2,10 +2,12 @@ package com.classroomscheduler.data.remote
 
 import android.util.Log
 import com.google.gson.Gson
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -82,7 +84,7 @@ class SseService(private val client: OkHttpClient) {
                     trySend(SseEvent.Error(t?.message ?: "Unknown error"))
                     
                     // Attempt to reconnect after 5 seconds
-                    kotlinx.coroutines.MainScope().launch {
+                    GlobalScope.launch {
                         delay(5000)
                         Log.d(TAG, "Attempting to reconnect SSE...")
                         connect()
@@ -114,7 +116,4 @@ data class SseEventData(
     val type: String
 )
 
-// Extension to launch coroutine in MainScope
-private fun kotlinx.coroutines.CoroutineScope.launch(
-    block: suspend kotlinx.coroutines.CoroutineScope.() -> Unit
-) = kotlinx.coroutines.launch { block() }
+
