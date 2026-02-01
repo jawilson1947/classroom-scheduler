@@ -19,7 +19,7 @@ fun FacilitatorIcon(
         model = iconUrl,
         contentDescription = "Facilitator Icon",
         modifier = Modifier
-            .size(20.dp)
+            .size(24.dp)
             .clip(CircleShape)
             .clickable { onClick() },
         contentScale = ContentScale.Crop
