@@ -200,7 +200,7 @@ function OrgAdminDashboard({ user }: { user: any }) {
                 />
                 <DashboardCard
                     title="Manage Rooms and Devices"
-                    description="Pair and manage iPad displays"
+                    description="Pair and manage Tablet Displays"
                     href="/admin/rooms"
                     icon="📱"
                     color="orange"
