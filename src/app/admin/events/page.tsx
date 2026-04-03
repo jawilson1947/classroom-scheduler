@@ -822,7 +822,7 @@ export default function EventsPage() {
                                             }
                                         })
                                         .map(event => (
-                                            <div key={event.id} className="event-card flex items-center justify-between border p-3 rounded-lg bg-white hover:bg-slate-50">
+                                            <div key={event.id} className="event-card flex items-start justify-between border p-3 rounded-lg bg-white hover:bg-slate-50">
                                                 <div>
                                                     <div className="flex items-center gap-2 mb-1">
                                                         {event.narrative ? (
@@ -848,31 +848,33 @@ export default function EventsPage() {
                                                         ) : (
                                                             <p>🕒 {new Date(event.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} • {new Date(event.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {new Date(event.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
                                                         )}
-                                                        {event.updated_by_firstname && event.updated_at && (
-                                                            <p className="text-slate-400 italic mt-1">
-                                                                Last change made by: {event.updated_by_firstname} {event.updated_by_lastname} on {new Date(event.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                            </p>
-                                                        )}
                                                     </div>
                                                 </div>
-                                                {canEdit && (
-                                                    <div className="flex items-center scale-90 origin-right no-print">
-                                                        <button
-                                                            onClick={() => handleEditEvent(event)}
-                                                            className="text-blue-600 hover:text-blue-800 p-2"
-                                                            title="Edit Event"
-                                                        >
-                                                            ✏️
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleDeleteEvent(event.id, event.title)}
-                                                            className="text-red-600 hover:text-red-800 p-2"
-                                                            title="Delete Event"
-                                                        >
-                                                            🗑️
-                                                        </button>
-                                                    </div>
-                                                )}
+                                                <div className="flex flex-col items-end shrink-0 no-print">
+                                                    {canEdit && (
+                                                        <div className="flex items-center scale-90 origin-right">
+                                                            <button
+                                                                onClick={() => handleEditEvent(event)}
+                                                                className="text-blue-600 hover:text-blue-800 p-2"
+                                                                title="Edit Event"
+                                                            >
+                                                                ✏️
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteEvent(event.id, event.title)}
+                                                                className="text-red-600 hover:text-red-800 p-2"
+                                                                title="Delete Event"
+                                                            >
+                                                                🗑️
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                    {event.updated_by_firstname && event.updated_at && (
+                                                        <p className="text-[11px] text-slate-400 italic text-right mt-1">
+                                                            Last change made by: {event.updated_by_firstname} {event.updated_by_lastname}<br />on {new Date(event.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} at {new Date(event.updated_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
                                         ))}
                                 </div>
