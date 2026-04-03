@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
             FROM events e 
             JOIN rooms r ON e.room_id = r.id 
             LEFT JOIN facilitators f ON e.facilitator_id = f.id
+            LEFT JOIN users u ON e.updated_by_user_id = u.id
             WHERE e.tenant_id = ?`;
         const params: any[] = [tenantId];
 
@@ -66,7 +67,9 @@ export async function GET(request: NextRequest) {
                 SELECT e.*, 
                        f.icon_url as facilitator_icon_url, 
                        f.picture_url as facilitator_picture_url, 
-                       f.bio as facilitator_bio 
+                       f.bio as facilitator_bio,
+                       u.firstname as updated_by_firstname,
+                       u.lastname as updated_by_lastname
                 ${baseQuery} 
                 ORDER BY e.start_time ASC`;
             const [rows] = await pool.query<RowDataPacket[]>(query, params);
@@ -88,7 +91,9 @@ export async function GET(request: NextRequest) {
             SELECT e.*, 
                    f.icon_url as facilitator_icon_url, 
                    f.picture_url as facilitator_picture_url, 
-                   f.bio as facilitator_bio 
+                   f.bio as facilitator_bio,
+                   u.firstname as updated_by_firstname,
+                   u.lastname as updated_by_lastname
             ${baseQuery} 
             ORDER BY e.start_time ASC LIMIT ? OFFSET ?`;
         // LIMIT and OFFSET parameters must be integers
@@ -114,6 +119,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
+        const session = await auth();
+        const sessionUser = session?.user as any;
+        const updatedByUserId = sessionUser?.id ? parseInt(sessionUser.id) : null;
+
         const body = await request.json();
         const { tenant_id, room_id, title, facilitator_name, facilitator_id, start_time, end_time, description, event_type, narrative, force } = body;
 
@@ -243,9 +252,9 @@ export async function POST(request: NextRequest) {
         }
 
         const [result] = await pool.query(
-            `INSERT INTO events (tenant_id, room_id, title, facilitator_name, facilitator_id, start_time, end_time, description, event_type, narrative, recurrence_days, daily_start_time, daily_end_time) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [tenant_id, room_id, title, facilitator_name, fac_id, start_time_db, end_time_db, description, event_type, narrative || null, recurrence_days, daily_start_time, daily_end_time]
+            `INSERT INTO events (tenant_id, room_id, title, facilitator_name, facilitator_id, start_time, end_time, description, event_type, narrative, recurrence_days, daily_start_time, daily_end_time, updated_by_user_id, updated_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP())`,
+            [tenant_id, room_id, title, facilitator_name, fac_id, start_time_db, end_time_db, description, event_type, narrative || null, recurrence_days, daily_start_time, daily_end_time, updatedByUserId]
         );
 
         // Broadcast the event creation to all connected clients
@@ -264,6 +273,10 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
     try {
+        const session = await auth();
+        const sessionUser = session?.user as any;
+        const updatedByUserId = sessionUser?.id ? parseInt(sessionUser.id) : null;
+
         const body = await request.json();
         const { id, tenant_id, room_id, title, facilitator_name, facilitator_id, start_time, end_time, description, event_type, narrative, force } = body;
 
@@ -384,9 +397,9 @@ export async function PUT(request: NextRequest) {
 
         await pool.query(
             `UPDATE events 
-       SET title = ?, facilitator_name = ?, facilitator_id = ?, start_time = ?, end_time = ?, description = ?, event_type = ?, narrative = ?, room_id = ?, recurrence_days = ?, daily_start_time = ?, daily_end_time = ?
+       SET title = ?, facilitator_name = ?, facilitator_id = ?, start_time = ?, end_time = ?, description = ?, event_type = ?, narrative = ?, room_id = ?, recurrence_days = ?, daily_start_time = ?, daily_end_time = ?, updated_by_user_id = ?, updated_at = UTC_TIMESTAMP()
        WHERE id = ? AND tenant_id = ?`,
-            [title, facilitator_name, fac_id, start_time_db, end_time_db, description, event_type, narrative || null, room_id, recurrence_days, daily_start_time, daily_end_time, id, tenant_id]
+            [title, facilitator_name, fac_id, start_time_db, end_time_db, description, event_type, narrative || null, room_id, recurrence_days, daily_start_time, daily_end_time, updatedByUserId, id, tenant_id]
         );
 
         // Broadcast the event update to all connected clients

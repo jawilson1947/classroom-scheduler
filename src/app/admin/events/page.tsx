@@ -52,6 +52,9 @@ interface Event {
     narrative?: string;
     facilitator_id?: number | null;
     Facilitator_id?: number | null; // API returns uppercase F sometimes
+    updated_by_firstname?: string | null;
+    updated_by_lastname?: string | null;
+    updated_at?: string | null;
 }
 
 interface Facilitator {
@@ -104,7 +107,7 @@ export default function EventsPage() {
     const [message, setMessage] = useState('');
     const [cancelEditModalOpen, setCancelEditModalOpen] = useState(false);
     const [deleteEventModalOpen, setDeleteEventModalOpen] = useState(false);
-    const [eventToDelete, setEventToDelete] = useState<number | null>(null);
+    const [eventToDelete, setEventToDelete] = useState<{ id: number; title: string } | null>(null);
 
     const [error, setError] = useState('');
     const [searchParams, setSearchParams] = useState<{ start_date: string, end_date: string, building_id?: string, room_id?: string } | null>(null);
@@ -386,8 +389,8 @@ export default function EventsPage() {
         });
     };
 
-    const handleDeleteEvent = async (id: number) => {
-        setEventToDelete(id);
+    const handleDeleteEvent = async (id: number, title: string) => {
+        setEventToDelete({ id, title });
         setDeleteEventModalOpen(true);
     };
 
@@ -395,7 +398,7 @@ export default function EventsPage() {
         if (!eventToDelete) return;
 
         try {
-            const res = await fetch(`/api/events?id=${eventToDelete}`, { method: 'DELETE' });
+            const res = await fetch(`/api/events?id=${eventToDelete.id}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Failed to delete event');
             mutateEvents();
             setMessage('Event deleted successfully');
@@ -845,6 +848,11 @@ export default function EventsPage() {
                                                         ) : (
                                                             <p>🕒 {new Date(event.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} • {new Date(event.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {new Date(event.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
                                                         )}
+                                                        {event.updated_by_firstname && event.updated_at && (
+                                                            <p className="text-slate-400 italic mt-1">
+                                                                Last change made by: {event.updated_by_firstname} {event.updated_by_lastname} on {new Date(event.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                            </p>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 {canEdit && (
@@ -857,7 +865,7 @@ export default function EventsPage() {
                                                             ✏️
                                                         </button>
                                                         <button
-                                                            onClick={() => handleDeleteEvent(event.id)}
+                                                            onClick={() => handleDeleteEvent(event.id, event.title)}
                                                             className="text-red-600 hover:text-red-800 p-2"
                                                             title="Delete Event"
                                                         >
@@ -1002,7 +1010,7 @@ export default function EventsPage() {
                     setDeleteEventModalOpen(false);
                 }}
                 title="Delete Event?"
-                message="Are you sure you want to delete this event? This action cannot be undone."
+                message={`Are you sure you want to delete "${eventToDelete?.title}"? This action cannot be undone.`}
                 confirmLabel="Delete"
                 cancelLabel="Cancel"
                 confirmButtonClass="bg-red-600 hover:bg-red-700"
