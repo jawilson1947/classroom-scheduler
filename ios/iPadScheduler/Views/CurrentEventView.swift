@@ -3,8 +3,12 @@ import WebKit
 //jaw 12/19/2025 
 struct CurrentEventView: View {
     let event: Event
+    /// When false (snapshot/preview), the pulsing animation is disabled so the
+    /// rendered frame is deterministic. Defaults to true — runtime is unchanged.
+    var animated: Bool = true
     @State private var isAnimating = false
     @State private var activeSheet: ActiveSheet?
+    @Environment(\.displayTheme) private var theme
     
     enum ActiveSheet: Identifiable {
         case narrative
@@ -42,16 +46,16 @@ struct CurrentEventView: View {
                         activeSheet = .narrative
                     }) {
                         Text(event.title)
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
+                            .font(.system(size: theme.typography.sized(theme.typography.currentTitleSize), weight: .bold))
+                            .foregroundColor(theme.colors.currentEventText.color)
                             .underline()
                     }
                     .buttonStyle(.plain)
                     .padding(.top, 4)
                 } else {
                     Text(event.title)
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(.white)
+                        .font(.system(size: theme.typography.sized(theme.typography.currentTitleSize), weight: .bold))
+                        .foregroundColor(theme.colors.currentEventText.color)
                         .padding(.top, 4)
                 }
                 
@@ -59,7 +63,7 @@ struct CurrentEventView: View {
                     HStack(alignment: .center, spacing: 8) {
                         Text(facilitator)
                             .font(.system(size: 13))
-                            .foregroundColor(.white.opacity(0.9))
+                            .foregroundColor(theme.colors.currentEventText.color.opacity(0.9))
                         
                         // Facilitator Icon - Clickable to show Bio
                         if event.facilitatorId != nil, 
@@ -108,43 +112,34 @@ struct CurrentEventView: View {
             VStack(alignment: .trailing, spacing: 4) {
                 if let start = event.displayStart {
                     Text(start, style: .time)
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.white)
+                        .font(.system(size: theme.typography.sized(theme.typography.currentTimeSize), weight: .bold))
+                        .foregroundColor(theme.colors.currentEventText.color)
                 }
                 
                 if let end = event.displayEnd {
                     Text("ends " + end.formatted(date: .omitted, time: .shortened))
                         .font(.system(size: 12))
-                        .foregroundColor(.white.opacity(0.8))
+                        .foregroundColor(theme.colors.currentEventText.color.opacity(0.8))
                 }
             }
         }
         .padding(20)
         .background(
-            ZStack {
-                // Vibrant Gradient Background
-                LinearGradient(
-                    colors: [
-                        Color(red: 0.1, green: 0.2, blue: 0.8), // Royal Blue
-                        Color(red: 0.4, green: 0.2, blue: 0.9)  // Electric Purple
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                
-                // Subtle overlay pattern or sheen could go here
-            }
+            // Token: colors.currentEvent (gradient fill)
+            theme.colors.currentEvent.view
         )
-        .cornerRadius(16)
+        .cornerRadius(CGFloat(theme.components.currentCornerRadius))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.3), lineWidth: 1)
+            // D2: NOW card radius derives as components.cornerRadius + 4
+            RoundedRectangle(cornerRadius: CGFloat(theme.components.currentCornerRadius))
+                .stroke(theme.colors.currentEventBorder.color, lineWidth: 1)
         )
+        // Shadow tint is not tokenized in v1 — kept literal.
         .shadow(color: Color.blue.opacity(0.3), radius: isAnimating ? 10 : 5, x: 0, y: 4)
         .scaleEffect(isAnimating ? 1.01 : 1.0)
-        .animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: isAnimating)
+        .animation(animated ? .easeInOut(duration: 2).repeatForever(autoreverses: true) : nil, value: isAnimating)
         .onAppear {
-            isAnimating = true
+            if animated { isAnimating = true }
         }
         .sheet(item: $activeSheet) { item in
             switch item {

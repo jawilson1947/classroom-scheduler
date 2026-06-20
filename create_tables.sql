@@ -80,3 +80,32 @@ CREATE TABLE password_reset_tokens (
   INDEX idx_tokens_email (email),
   INDEX idx_tokens_token (token)
 ) ENGINE = InnoDB;
+-- =====================================================================
+-- Display Theme Engine (added 2026-06-19). NOTE: this file is reference
+-- documentation and is known to drift from the live DB. The authoritative,
+-- idempotent migrations are scripts/migrations/001_create_theme_tables.js
+-- and 002_seed_themes.js — run those against the live database.
+-- =====================================================================
+CREATE TABLE themes (
+  id             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  tenant_id      BIGINT UNSIGNED NULL,            -- NULL = global theme, available to every tenant
+  key_name       VARCHAR(64)  NOT NULL,           -- stable machine key, e.g. 'system_default'
+  name           VARCHAR(255) NOT NULL,
+  description    TEXT NULL,
+  definition     JSON NOT NULL,                   -- theme spec validated against docs/theme.schema.v1.json
+  thumbnail_url  VARCHAR(512) NULL,
+  is_system      TINYINT(1) NOT NULL DEFAULT 0,
+  schema_version INT NOT NULL DEFAULT 1,
+  status         ENUM('active','archived') NOT NULL DEFAULT 'active',
+  created_at     DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_at     DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  CONSTRAINT fk_themes_tenant FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE,
+  UNIQUE KEY uq_themes_scope_key (tenant_id, key_name),
+  INDEX idx_themes_tenant (tenant_id)
+) ENGINE = InnoDB;
+
+ALTER TABLE tenants ADD COLUMN default_theme_id BIGINT UNSIGNED NULL,
+  ADD CONSTRAINT fk_tenants_theme FOREIGN KEY (default_theme_id) REFERENCES themes(id) ON DELETE SET NULL;
+
+ALTER TABLE rooms ADD COLUMN theme_id BIGINT UNSIGNED NULL,
+  ADD CONSTRAINT fk_rooms_theme FOREIGN KEY (theme_id) REFERENCES themes(id) ON DELETE SET NULL;

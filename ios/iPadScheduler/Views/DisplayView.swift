@@ -9,36 +9,53 @@ struct DisplayView: View {
     @State private var currentTime = Date()
   // jaw  
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
+
+    // MARK: - Injection for deterministic snapshots / previews
+    // All default to nil/true so runtime behavior is unchanged; tests pass fixed
+    // values to render a stable frame (fixed clock, fixed events, animations off).
+    var injectedEvents: [Event]? = nil
+    var injectedRoom: Room? = nil
+    var injectedNow: Date? = nil
+    var animated: Bool = true
+
+    /// True when rendering from injected fixtures (snapshot/preview); skip networking.
+    private var isInjected: Bool { injectedEvents != nil }
+    private var effectiveNow: Date { injectedNow ?? currentTime }
+    private var resolvedEvents: [Event] { injectedEvents ?? apiService?.events ?? [] }
+    private var resolvedRoom: Room? { injectedRoom ?? apiService?.room }
+
+    /// Active display theme, resolved server-side per room (room > tenant > system)
+    /// with a layout-aware fallback to `system_default`. Under `system_default`
+    /// every token below is 8-bit-identical to the literal it replaced.
+    private var theme: ThemeDefinition { DisplayLayout.resolve(resolvedRoom?.resolvedTheme) }
+
     var body: some View {
         ZStack {
-            // Background gradient
-            LinearGradient(
-                colors: [Color(red: 0.05, green: 0.06, blue: 0.20),
-                        Color(red: 0.08, green: 0.12, blue: 0.28),
-                        Color(red: 0.05, green: 0.06, blue: 0.20)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            // Background fill (token: colors.background)
+            theme.colors.background.view
             .ignoresSafeArea()
-            
+
             VStack(spacing: 0) {
                 // Header
                 VStack(spacing: 16) {
-                    Rectangle()
-                        .fill(Color.white)
-                        .frame(height: 1)
-                    
+                    if theme.header.dividers {
+                        Rectangle()
+                            .fill(theme.colors.dividerColor.color)
+                            .frame(height: 1)
+                    }
+
                     HeaderView(
-                        roomName: apiService?.room?.name ?? "Loading...",
-                        buildingName: apiService?.room?.buildingName ?? "",
-                        currentTime: currentTime,
+                        roomName: resolvedRoom?.name ?? "Loading...",
+                        buildingName: resolvedRoom?.buildingName ?? "",
+                        currentTime: effectiveNow,
                         isOnline: isDeviceOnline()
                     )
-                    
-                    Rectangle()
-                        .fill(Color.white)
-                        .frame(height: 1)
+
+                    if theme.header.dividers {
+                        Rectangle()
+                            .fill(theme.colors.dividerColor.color)
+                            .frame(height: 1)
+                    }
                 }
                 .padding(.horizontal, 32)
                 .padding(.top, 32)
@@ -48,7 +65,7 @@ struct DisplayView: View {
                     VStack(spacing: 24) {
                         // Current Event
                         if let currentEvent = getCurrentEvent() {
-                            CurrentEventView(event: currentEvent)
+                            CurrentEventView(event: currentEvent, animated: animated)
                                 .padding(.horizontal, 32)
                         }
                         
@@ -63,9 +80,9 @@ struct DisplayView: View {
                             }
                         }
                         
-                        // Past Events
+                        // Past Events (token: components.showPastEvents)
                         let past = getPastEvents()
-                        if !past.isEmpty {
+                        if theme.components.showPastEvents && !past.isEmpty {
                             VStack(alignment: .leading, spacing: 12) {
                                 ForEach(past) { event in
                                     EventCardView(event: event, isPast: true)
@@ -76,8 +93,8 @@ struct DisplayView: View {
                         
                         // No events message
                         // No events message or Logo
-                        if (apiService?.events.isEmpty ?? true) && !(apiService?.isLoading ?? false) {
-                            if let logoStats = apiService?.room?.tenantLogoUrl,
+                        if resolvedEvents.isEmpty && !(apiService?.isLoading ?? false) {
+                            if let logoStats = resolvedRoom?.tenantLogoUrl,
                                let dataStart = logoStats.range(of: ";base64,"),
                                let data = Data(base64Encoded: String(logoStats[dataStart.upperBound...])),
                                let uiImage = UIImage(data: data) {
@@ -109,60 +126,70 @@ struct DisplayView: View {
                 }
                 
                 // Footer
-                if let room = apiService?.room,
+                if theme.footer.show,
+                   let room = resolvedRoom,
                    let tenantName = room.tenantName,
                    let tenantAddress = room.tenantAddress {
                     VStack(spacing: 12) {
                         Rectangle()
-                            .fill(Color.white)
+                            .fill(theme.colors.dividerColor.color)
                             .frame(height: 1)
-                            .opacity(0.5) 
-                        
+                            .opacity(0.5)
+
                         ZStack {
-                            // Version - Left Aligned
-                            HStack {
-                                Text("Ver 2.5.3")
-                                    .font(.system(size: 13))
-                                    .foregroundColor(.white.opacity(0.9))
-                                Spacer()
+                            // Version - Left Aligned (token: footer.showVersion)
+                            if theme.footer.showVersion {
+                                HStack {
+                                    Text("Ver 2.5.3")
+                                        .font(.system(size: 13))
+                                        .foregroundColor(theme.colors.primaryText.color.opacity(0.9))
+                                    Spacer()
+                                }
                             }
-                            
-                            // Tenant Info - Centered
-                            Text("\(tenantName) | \(tenantAddress)")
-                                .font(.system(size: 13))
-                                .foregroundColor(.white.opacity(0.9))
-                                .multilineTextAlignment(.center)
+
+                            // Tenant Info - Centered (token: footer.showTenantInfo)
+                            if theme.footer.showTenantInfo {
+                                Text("\(tenantName) | \(tenantAddress)")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(theme.colors.primaryText.color.opacity(0.9))
+                                    .multilineTextAlignment(.center)
+                            }
                         }
                     }
                     .padding(.horizontal, 32)
                     .padding(.bottom, 40)
                 }
             }
-            
-            // Floating Refresh Button
-            VStack {
-                Spacer()
-                HStack {
+
+            // Floating Refresh Button (token: components.showRefreshButton)
+            if theme.components.showRefreshButton {
+                VStack {
                     Spacer()
-                    Button(action: {
-                        let generator = UIImpactFeedbackGenerator(style: .medium)
-                        generator.impactOccurred()
-                        print("[DisplayView] Manual refresh triggered")
-                        apiService?.fetchEvents()
-                    }) {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.system(size: 24))
-                            .foregroundColor(.white.opacity(0.8))
-                            .padding(12)
-                            .background(Color.black.opacity(0.3))
-                            .clipShape(Circle())
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            let generator = UIImpactFeedbackGenerator(style: .medium)
+                            generator.impactOccurred()
+                            print("[DisplayView] Manual refresh triggered")
+                            apiService?.fetchEvents()
+                        }) {
+                            Image(systemName: "arrow.clockwise")
+                                .font(.system(size: 24))
+                                .foregroundColor(.white.opacity(0.8))
+                                .padding(12)
+                                .background(Color.black.opacity(0.3))
+                                .clipShape(Circle())
+                        }
+                        .padding(.trailing, 24)
+                        .padding(.bottom, 24)
                     }
-                    .padding(.trailing, 24)
-                    .padding(.bottom, 24)
                 }
             }
         }
+        .environment(\.displayTheme, theme)
         .onAppear {
+            // Skip all networking when rendering from injected fixtures.
+            if isInjected { return }
             print("[DisplayView] onAppear triggered. Config present: \(configService.config != nil)")
             if let config = configService.config {
                 // Initialize services with configuration
@@ -193,9 +220,9 @@ struct DisplayView: View {
     }
     
     private func getCurrentEvent() -> Event? {
-        apiService?.events.first { event in
+        resolvedEvents.first { event in
             guard let start = event.displayStart, let end = event.displayEnd else { return false }
-            return currentTime >= start && currentTime <= end
+            return effectiveNow >= start && effectiveNow <= end
         }
     }
     
@@ -223,17 +250,17 @@ struct DisplayView: View {
     }
     
     private func getUpcomingEvents() -> [Event] {
-        apiService?.events.filter { event in
+        resolvedEvents.filter { event in
             guard let start = event.displayStart else { return false }
-            return start > currentTime
-        } ?? []
+            return start > effectiveNow
+        }
     }
-    
+
     private func getPastEvents() -> [Event] {
-        apiService?.events.filter { event in
+        resolvedEvents.filter { event in
             guard let end = event.displayEnd else { return false }
-            return end < currentTime
-        } ?? []
+            return end < effectiveNow
+        }
     }
 }
 
@@ -242,37 +269,49 @@ struct HeaderView: View {
     let buildingName: String
     let currentTime: Date
     let isOnline: Bool
-    
+    @Environment(\.displayTheme) private var theme
+
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 8) {
-                Text(roomName)
-                    .font(.system(size: 32, weight: .bold))
-                    .foregroundColor(.white)
-                
-                Text(buildingName)
-                    .font(.system(size: 14))
-                    .foregroundColor(Color(white: 0.6))
+                if theme.header.showRoomName {
+                    // header.title overrides the room name when set (null ⇒ room name).
+                    Text(theme.header.title ?? roomName)
+                        .font(.system(size: theme.typography.sized(theme.typography.headingSize), weight: .bold))
+                        .foregroundColor(theme.colors.primaryText.color)
+                }
+
+                if theme.header.showBuildingName {
+                    Text(buildingName)
+                        .font(.system(size: theme.typography.sized(theme.typography.subheadingSize)))
+                        .foregroundColor(theme.colors.secondaryText.color)
+                }
             }
-            
+
             Spacer()
-            
+
             VStack(alignment: .trailing, spacing: 4) {
-                Text(currentTime, style: .time)
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(.white)
-                
-                Text(currentTime, format: .dateTime.weekday(.wide).month(.wide).day().year())
-                    .font(.system(size: 13))
-                    .foregroundColor(Color(white: 0.6))
-                
-                HStack(spacing: 4) {
-                    Circle()
-                        .fill(isOnline ? Color.green : Color.red)
-                        .frame(width: 8, height: 8)
-                    Text(isOnline ? "Online" : "Offline")
-                        .font(.system(size: 10))
-                        .foregroundColor(isOnline ? Color.green : Color.red)
+                if theme.header.showClock {
+                    Text(currentTime, style: .time)
+                        .font(.system(size: theme.typography.sized(theme.typography.clockSize), weight: .bold))
+                        .foregroundColor(theme.colors.primaryText.color)
+                }
+
+                if theme.header.showDate {
+                    Text(currentTime, format: .dateTime.weekday(.wide).month(.wide).day().year())
+                        .font(.system(size: theme.typography.sized(theme.typography.dateSize)))
+                        .foregroundColor(theme.colors.secondaryText.color)
+                }
+
+                if theme.header.showOnlineStatus {
+                    HStack(spacing: 4) {
+                        Circle()
+                            .fill(isOnline ? theme.colors.onlineColor.color : theme.colors.offlineColor.color)
+                            .frame(width: 8, height: 8)
+                        Text(isOnline ? "Online" : "Offline")
+                            .font(.system(size: 10))
+                            .foregroundColor(isOnline ? theme.colors.onlineColor.color : theme.colors.offlineColor.color)
+                    }
                 }
             }
         }

@@ -12,5 +12,9 @@ data class Room(
     @SerializedName("tenant_address")
     val tenantAddress: String?,
     @SerializedName("tenant_logo_url")
-    val tenantLogoUrl: String?
+    val tenantLogoUrl: String?,
+    // Server-resolved display theme (room > tenant > system). Null for older servers;
+    // the view layer falls back to ThemeDefinition.systemDefault().
+    @SerializedName("resolved_theme")
+    val resolvedTheme: ThemeDefinition? = null
 )

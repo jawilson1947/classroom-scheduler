@@ -1,0 +1,188 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://classroomscheduler/docs/theme.schema.v1.json",
+  "title": "Display Theme Definition (v1)",
+  "description": "Data-driven display theme for the iPad (SwiftUI) and Android (Compose) clients. A theme combines a layout archetype with design tokens (colors, typography, text, visibility toggles). Clients ignore unknown keys; if 'layout' is unknown or a required field is missing, the client falls back to the system_default theme. Every field except schemaVersion and layout is optional and falls back to the documented default, so a definition only needs to specify what differs from the default look.",
+  "type": "object",
+  "required": ["schemaVersion", "layout"],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1,
+      "description": "Schema version. Bumped only on breaking changes; clients gate on this."
+    },
+    "layout": {
+      "type": "string",
+      "enum": ["agenda_list"],
+      "description": "Layout archetype the client renders. v1 ships only 'agenda_list' (the current vertical agenda used by both target designs). Adding a new archetype is a developer task that adds a coded view to both clients plus a value here (see docs/THEMES.md)."
+    },
+    "colors": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Color tokens. Plain colors are 6- or 8-digit hex (#RRGGBB or #RRGGBBAA). 'background' and 'currentEvent' additionally accept a fill object (solid | gradient | image_blur).",
+      "properties": {
+        "background": { "$ref": "#/$defs/fill" },
+        "panel": { "$ref": "#/$defs/hex" },
+        "panelOpacityPast": {
+          "type": "number", "minimum": 0, "maximum": 1,
+          "description": "Opacity applied to a past event's panel (dimming). Default 0.5."
+        },
+        "panelBorder": { "$ref": "#/$defs/hex" },
+        "headerAccentBar": {
+          "oneOf": [{ "$ref": "#/$defs/hex" }, { "type": "null" }],
+          "description": "Vertical/horizontal accent bar in the header (e.g. VCU gold). null = no bar."
+        },
+        "tickerBar": { "$ref": "#/$defs/hex", "description": "Scrolling ticker background. Only used when components.showTicker = true." },
+        "tickerText": { "$ref": "#/$defs/hex" },
+        "primaryText": { "$ref": "#/$defs/hex" },
+        "secondaryText": { "$ref": "#/$defs/hex" },
+        "accent": { "$ref": "#/$defs/hex", "description": "General accent (badges, highlights)." },
+        "currentEvent": { "$ref": "#/$defs/fill", "description": "Fill behind the NOW / current-event card." },
+        "currentEventText": { "$ref": "#/$defs/hex" },
+        "currentEventBorder": { "$ref": "#/$defs/hex" },
+        "pastEventText": { "$ref": "#/$defs/hex", "description": "Text color for past events (current default look uses green)." },
+        "dividerColor": { "$ref": "#/$defs/hex", "description": "Header/footer hairline rules." },
+        "onlineColor": { "$ref": "#/$defs/hex" },
+        "offlineColor": { "$ref": "#/$defs/hex" }
+      }
+    },
+    "typography": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Type sizes are in points/dp at scale 1.0. 'scale' multiplies every size, for one-knob density changes across display sizes.",
+      "properties": {
+        "fontFamily": {
+          "type": "string",
+          "description": "'system' (San Francisco / Roboto) or a font key registered in BOTH apps. v1 supports 'system' only; unknown keys fall back to 'system'.",
+          "default": "system"
+        },
+        "scale": { "type": "number", "exclusiveMinimum": 0, "default": 1.0 },
+        "headingSize": { "type": "number", "description": "Room name / board title. Default 32." },
+        "subheadingSize": { "type": "number", "description": "Building name. Default 14." },
+        "clockSize": { "type": "number", "description": "Header clock. Default 24." },
+        "dateSize": { "type": "number", "description": "Header date. Default 13." },
+        "eventTitleSize": { "type": "number", "description": "Upcoming/past event title. Default 14." },
+        "eventTimeSize": { "type": "number", "description": "Event start time. Default 13." },
+        "eventEndTimeSize": { "type": "number", "description": "Event end time. Default 10." },
+        "currentTitleSize": { "type": "number", "description": "Current-event title. Default 18." },
+        "currentTimeSize": { "type": "number", "description": "Current-event time. Default 16." },
+        "facilitatorSize": { "type": "number", "description": "Facilitator name line. Default 11." }
+      }
+    },
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "oneOf": [{ "type": "string" }, { "type": "null" }],
+          "description": "Fixed board title (e.g. \"WHAT'S HAPPENING TODAY?\"). null = use the room name instead.",
+          "default": null
+        },
+        "showRoomName": { "type": "boolean", "default": true },
+        "showBuildingName": { "type": "boolean", "default": true },
+        "showDate": { "type": "boolean", "default": true },
+        "showClock": { "type": "boolean", "default": true },
+        "showOnlineStatus": { "type": "boolean", "default": true },
+        "logoPosition": {
+          "type": "string",
+          "enum": ["left", "right", "center", "none"],
+          "default": "none",
+          "description": "Where the tenant logo appears in the header. Current default look shows the logo only in the empty state, so default is 'none'."
+        },
+        "dividers": { "type": "boolean", "default": true, "description": "Hairline rules above/below the header." }
+      }
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "eventRow": {
+          "type": "string",
+          "enum": ["title_left_time_right", "time_left_title_right"],
+          "default": "title_left_time_right",
+          "description": "Row arrangement. Current look = title left, time right."
+        },
+        "showCurrentEventHighlight": { "type": "boolean", "default": true, "description": "Render the NOW card for the in-progress event." },
+        "showFacilitator": { "type": "boolean", "default": true },
+        "showPastEvents": { "type": "boolean", "default": true },
+        "showTicker": { "type": "boolean", "default": false },
+        "tickerText": {
+          "oneOf": [{ "type": "string" }, { "type": "null" }],
+          "default": null,
+          "description": "Static ticker copy. null = none. (Dynamic ticker sources are out of scope for v1.)"
+        },
+        "clockPosition": {
+          "type": "string",
+          "enum": ["header_right", "header_center", "bottom_left", "bottom_right"],
+          "default": "header_right"
+        },
+        "cornerRadius": { "type": "number", "minimum": 0, "default": 12, "description": "Event card corner radius." },
+        "showRefreshButton": { "type": "boolean", "default": true, "description": "Floating manual-refresh button." }
+      }
+    },
+    "footer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "show": { "type": "boolean", "default": true },
+        "showVersion": { "type": "boolean", "default": true },
+        "showTenantInfo": { "type": "boolean", "default": true, "description": "Centered '<tenant> | <address>' line." }
+      }
+    }
+  },
+  "$defs": {
+    "hex": {
+      "type": "string",
+      "pattern": "^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+      "description": "#RRGGBB or #RRGGBBAA"
+    },
+    "gradientPoint": {
+      "type": "string",
+      "enum": ["top", "bottom", "leading", "trailing", "topLeading", "topTrailing", "bottomLeading", "bottomTrailing", "center"]
+    },
+    "fill": {
+      "description": "A solid color (hex string) or a fill object.",
+      "oneOf": [
+        { "$ref": "#/$defs/hex" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "solid" },
+            "color": { "$ref": "#/$defs/hex" }
+          },
+          "required": ["type", "color"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "colors"],
+          "properties": {
+            "type": { "const": "gradient" },
+            "colors": {
+              "type": "array",
+              "minItems": 2,
+              "items": { "$ref": "#/$defs/hex" }
+            },
+            "start": { "$ref": "#/$defs/gradientPoint", "default": "topLeading" },
+            "end": { "$ref": "#/$defs/gradientPoint", "default": "bottomTrailing" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "fallback"],
+          "description": "Blurred image background; 'url' is a tenant-uploaded asset (see /api/upload). 'fallback' is used while loading or if the image is missing.",
+          "properties": {
+            "type": { "const": "image_blur" },
+            "url": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
+            "blurRadius": { "type": "number", "minimum": 0, "default": 20 },
+            "fallback": { "$ref": "#/$defs/hex" }
+          }
+        }
+      ]
+    }
+  }
+}

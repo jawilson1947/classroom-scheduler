@@ -178,3 +178,57 @@ export async function DELETE(request: NextRequest) {
         return NextResponse.json({ error: 'Failed to delete tenant' }, { status: 500 });
     }
 }
+
+/**
+ * PATCH /api/tenants — set or clear the tenant's default display theme.
+ * Body: { id, default_theme_id }  (number to set, null to clear).
+ *
+ * Restricted to SYSTEM_ADMIN and ORG_ADMIN; ORG_ADMIN may only update its own
+ * tenant. A chosen theme must be global or belong to that tenant.
+ */
+export async function PATCH(request: NextRequest) {
+    try {
+        const session = await auth();
+        if (!session) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        const userRole = (session.user as any).role;
+        const userTenantId = (session.user as any).tenant_id;
+        if (!['SYSTEM_ADMIN', 'ORG_ADMIN'].includes(userRole)) {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        const body = await request.json();
+        const { id } = body;
+        const defaultThemeId: number | null = body.default_theme_id ?? null;
+
+        if (!id) {
+            return NextResponse.json({ error: 'Tenant ID is required' }, { status: 400 });
+        }
+        if (userRole === 'ORG_ADMIN' && Number(id) !== Number(userTenantId)) {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        // The theme must exist, be active, and be global or belong to this tenant.
+        if (defaultThemeId != null) {
+            const [themeRows] = await pool.query<RowDataPacket[]>(
+                `SELECT id, tenant_id FROM themes WHERE id = ? AND status = 'active'`,
+                [defaultThemeId]
+            );
+            if (themeRows.length === 0) {
+                return NextResponse.json({ error: 'Theme not found' }, { status: 404 });
+            }
+            const themeTenantId = themeRows[0].tenant_id as number | null;
+            if (themeTenantId != null && Number(themeTenantId) !== Number(id)) {
+                return NextResponse.json({ error: 'Theme not available to this tenant' }, { status: 403 });
+            }
+        }
+
+        await pool.query('UPDATE tenants SET default_theme_id = ? WHERE id = ?', [defaultThemeId, id]);
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Error setting tenant default theme:', error);
+        return NextResponse.json({ error: 'Failed to set default theme' }, { status: 500 });
+    }
+}

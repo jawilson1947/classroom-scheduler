@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "layout": "agenda_list",
+  "colors": {
+    "background": {
+      "type": "gradient",
+      "colors": ["#0D0F33", "#141F47", "#0D0F33"],
+      "start": "topLeading",
+      "end": "bottomTrailing"
+    },
+    "panel": "#141F47",
+    "panelOpacityPast": 0.5,
+    "panelBorder": "#404040",
+    "headerAccentBar": null,
+    "tickerBar": "#16213E",
+    "tickerText": "#FFFFFF",
+    "primaryText": "#FFFFFF",
+    "secondaryText": "#999999",
+    "accent": "#FFFFFF",
+    "currentEvent": {
+      "type": "gradient",
+      "colors": ["#1A33CC", "#6633E6"],
+      "start": "topLeading",
+      "end": "bottomTrailing"
+    },
+    "currentEventText": "#FFFFFF",
+    "currentEventBorder": "#FFFFFF4D",
+    "pastEventText": "#34C759",
+    "dividerColor": "#FFFFFF",
+    "onlineColor": "#34C759",
+    "offlineColor": "#FF3B30"
+  },
+  "typography": {
+    "fontFamily": "system",
+    "scale": 1.0,
+    "headingSize": 32,
+    "subheadingSize": 14,
+    "clockSize": 24,
+    "dateSize": 13,
+    "eventTitleSize": 14,
+    "eventTimeSize": 13,
+    "eventEndTimeSize": 10,
+    "currentTitleSize": 18,
+    "currentTimeSize": 16,
+    "facilitatorSize": 11
+  },
+  "header": {
+    "title": null,
+    "showRoomName": true,
+    "showBuildingName": true,
+    "showDate": true,
+    "showClock": true,
+    "showOnlineStatus": true,
+    "logoPosition": "none",
+    "dividers": true
+  },
+  "components": {
+    "eventRow": "title_left_time_right",
+    "showCurrentEventHighlight": true,
+    "showFacilitator": true,
+    "showPastEvents": true,
+    "showTicker": false,
+    "tickerText": null,
+    "clockPosition": "header_right",
+    "cornerRadius": 12,
+    "showRefreshButton": true
+  },
+  "footer": {
+    "show": true,
+    "showVersion": true,
+    "showTenantInfo": true
+  }
+}

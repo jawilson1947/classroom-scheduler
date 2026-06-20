@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "layout": "agenda_list",
+  "colors": {
+    "background": { "type": "image_blur", "url": null, "blurRadius": 24, "fallback": "#C9D2DA" },
+    "panel": "#EAF0F4",
+    "panelOpacityPast": 0.6,
+    "panelBorder": "#D2DAE2",
+    "headerAccentBar": "#E8B600",
+    "tickerBar": "#16213E",
+    "tickerText": "#FFFFFF",
+    "primaryText": "#2B2F36",
+    "secondaryText": "#5A6470",
+    "accent": "#E8B600",
+    "currentEvent": { "type": "solid", "color": "#E8B600" },
+    "currentEventText": "#2B2F36",
+    "currentEventBorder": "#C89F00",
+    "pastEventText": "#8A93A0",
+    "dividerColor": "#C7D0D9",
+    "onlineColor": "#2E7D32",
+    "offlineColor": "#C62828"
+  },
+  "typography": {
+    "fontFamily": "system",
+    "scale": 1.0,
+    "headingSize": 48,
+    "subheadingSize": 18,
+    "clockSize": 28,
+    "dateSize": 28,
+    "eventTitleSize": 32,
+    "eventTimeSize": 32,
+    "eventEndTimeSize": 20,
+    "currentTitleSize": 36,
+    "currentTimeSize": 34,
+    "facilitatorSize": 18
+  },
+  "header": {
+    "title": "WHAT'S HAPPENING TODAY?",
+    "showRoomName": true,
+    "showBuildingName": false,
+    "showDate": true,
+    "showClock": false,
+    "showOnlineStatus": false,
+    "logoPosition": "left",
+    "dividers": false
+  },
+  "components": {
+    "eventRow": "time_left_title_right",
+    "showCurrentEventHighlight": true,
+    "showFacilitator": false,
+    "showPastEvents": false,
+    "showTicker": true,
+    "tickerText": null,
+    "clockPosition": "bottom_left",
+    "cornerRadius": 14,
+    "showRefreshButton": true
+  },
+  "footer": {
+    "show": true,
+    "showVersion": false,
+    "showTenantInfo": true
+  }
+}

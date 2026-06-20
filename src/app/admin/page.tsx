@@ -855,6 +855,19 @@ function AdminPageContent() {
                                 </Link>
                             </section>
                         )}
+
+                        {/* Display Themes Link */}
+                        {selectedTenantId && (
+                            <section className="bg-white rounded-xl shadow p-5 hover:shadow-md transition-shadow">
+                                <Link href="/admin/themes" className="flex items-center justify-between group">
+                                    <div>
+                                        <h2 className="text-lg font-bold group-hover:text-blue-600 transition-colors">Display Themes</h2>
+                                        <p className="text-sm text-slate-500">Preview and assign display themes per room or org default</p>
+                                    </div>
+                                    <span className="text-2xl group-hover:translate-x-1 transition-transform">→</span>
+                                </Link>
+                            </section>
+                        )}
                     </div>
 
                     {/* Right Column: Rooms & Devices & Events */}

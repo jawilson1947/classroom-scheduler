@@ -1,14 +1,10 @@
 package com.classroomscheduler.presentation.display
 
-import android.graphics.Bitmap
-import android.util.Base64
 import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -24,9 +20,16 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.classroomscheduler.data.models.Event
+import com.classroomscheduler.data.models.Room
 import com.classroomscheduler.presentation.display.components.*
 import java.util.*
 
+/**
+ * Thin container: reads the view model + holds dialog state, delegates rendering
+ * to [AgendaBoard]. Splitting the presentation out lets snapshot tests / previews
+ * render the board from fixtures (fixed clock, events, animations off) without a
+ * Hilt graph. Behavior and composition output are unchanged.
+ */
 @Composable
 fun DisplayScreen(
     viewModel: DisplayViewModel = hiltViewModel()
@@ -34,7 +37,56 @@ fun DisplayScreen(
     val uiState by viewModel.uiState.collectAsState()
     var showNarrativeDialog by remember { mutableStateOf<Event?>(null) }
     var showFacilitatorDialog by remember { mutableStateOf<Event?>(null) }
-    
+
+    AgendaBoard(
+        room = uiState.room,
+        events = uiState.events,
+        now = Date(),
+        isOnline = viewModel.isOnline(),
+        isLoading = uiState.isLoading,
+        animated = true,
+        onRefresh = { viewModel.fetchEvents() },
+        onNarrativeClick = { showNarrativeDialog = it },
+        onFacilitatorClick = { showFacilitatorDialog = it }
+    )
+
+    // Narrative Dialog
+    showNarrativeDialog?.let { event ->
+        NarrativeDialog(
+            title = event.title,
+            htmlContent = event.narrative ?: "",
+            onDismiss = { showNarrativeDialog = null }
+        )
+    }
+
+    // Facilitator Bio Dialog
+    showFacilitatorDialog?.let { event ->
+        FacilitatorBioDialog(
+            name = event.facilitatorName ?: "Facilitator",
+            pictureUrl = event.facilitatorPictureUrl,
+            bio = event.facilitatorBio,
+            onDismiss = { showFacilitatorDialog = null }
+        )
+    }
+}
+
+/**
+ * Presentational agenda board. No view model dependency — all inputs are injected,
+ * so this is directly renderable in tests/previews. `now` drives current/upcoming/past
+ * partitioning; `animated` toggles the NOW-card pulse for deterministic snapshots.
+ */
+@Composable
+fun AgendaBoard(
+    room: Room?,
+    events: List<Event>,
+    now: Date,
+    isOnline: Boolean,
+    isLoading: Boolean,
+    animated: Boolean = true,
+    onRefresh: () -> Unit,
+    onNarrativeClick: (Event) -> Unit,
+    onFacilitatorClick: (Event) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -53,11 +105,11 @@ fun DisplayScreen(
         ) {
             // Header
             HeaderView(
-                roomName = uiState.room?.name ?: "Loading...",
-                buildingName = uiState.room?.buildingName ?: "",
-                isOnline = viewModel.isOnline()
+                roomName = room?.name ?: "Loading...",
+                buildingName = room?.buildingName ?: "",
+                isOnline = isOnline
             )
-            
+
             // Event List
             LazyColumn(
                 modifier = Modifier
@@ -66,43 +118,44 @@ fun DisplayScreen(
                 contentPadding = PaddingValues(horizontal = 32.dp, vertical = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                val currentEvent = getCurrentEvent(uiState.events)
-                val upcomingEvents = getUpcomingEvents(uiState.events)
-                val pastEvents = getPastEvents(uiState.events)
-                
+                val currentEvent = getCurrentEvent(events, now)
+                val upcomingEvents = getUpcomingEvents(events, now)
+                val pastEvents = getPastEvents(events, now)
+
                 // Current Event
                 if (currentEvent != null) {
                     item {
                         CurrentEventCard(
                             event = currentEvent,
-                            onNarrativeClick = { showNarrativeDialog = currentEvent },
-                            onFacilitatorClick = { showFacilitatorDialog = currentEvent }
+                            animated = animated,
+                            onNarrativeClick = { onNarrativeClick(currentEvent) },
+                            onFacilitatorClick = { onFacilitatorClick(currentEvent) }
                         )
                     }
                 }
-                
+
                 // Upcoming Events
                 items(upcomingEvents) { event ->
                     EventCard(
                         event = event,
                         isPast = false,
-                        onNarrativeClick = { showNarrativeDialog = event },
-                        onFacilitatorClick = { showFacilitatorDialog = event }
+                        onNarrativeClick = { onNarrativeClick(event) },
+                        onFacilitatorClick = { onFacilitatorClick(event) }
                     )
                 }
-                
+
                 // Past Events
                 items(pastEvents) { event ->
                     EventCard(
                         event = event,
                         isPast = true,
-                        onNarrativeClick = { showNarrativeDialog = event },
-                        onFacilitatorClick = { showFacilitatorDialog = event }
+                        onNarrativeClick = { onNarrativeClick(event) },
+                        onFacilitatorClick = { onFacilitatorClick(event) }
                     )
                 }
-                
+
                 // No events message or Logo
-                if (uiState.events.isEmpty() && !uiState.isLoading) {
+                if (events.isEmpty() && !isLoading) {
                     item {
                         Column(
                             modifier = Modifier
@@ -110,7 +163,7 @@ fun DisplayScreen(
                                 .padding(top = 60.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            uiState.room?.tenantLogoUrl?.let { logoUrl ->
+                            room?.tenantLogoUrl?.let { logoUrl ->
                                 if (logoUrl.startsWith("data:image")) {
                                     // Display base64 logo
                                     AsyncImage(
@@ -121,9 +174,9 @@ fun DisplayScreen(
                                     )
                                 }
                             }
-                            
+
                             Spacer(modifier = Modifier.height(16.dp))
-                            
+
                             Text(
                                 text = "No events scheduled for today",
                                 fontSize = 16.sp,
@@ -133,9 +186,8 @@ fun DisplayScreen(
                     }
                 }
             }
-            
+
             // Footer
-            val room = uiState.room
             val tenantName = room?.tenantName
             val tenantAddress = room?.tenantAddress
             if (tenantName != null && tenantAddress != null) {
@@ -145,10 +197,10 @@ fun DisplayScreen(
                 )
             }
         }
-        
+
         // Floating Refresh Button
         FloatingActionButton(
-            onClick = { viewModel.fetchEvents() },
+            onClick = onRefresh,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),
@@ -160,25 +212,6 @@ fun DisplayScreen(
                 tint = Color.White.copy(alpha = 0.8f)
             )
         }
-    }
-    
-    // Narrative Dialog
-    showNarrativeDialog?.let { event ->
-        NarrativeDialog(
-            title = event.title,
-            htmlContent = event.narrative ?: "",
-            onDismiss = { showNarrativeDialog = null }
-        )
-    }
-    
-    // Facilitator Bio Dialog
-    showFacilitatorDialog?.let { event ->
-        FacilitatorBioDialog(
-            name = event.facilitatorName ?: "Facilitator",
-            pictureUrl = event.facilitatorPictureUrl,
-            bio = event.facilitatorBio,
-            onDismiss = { showFacilitatorDialog = null }
-        )
     }
 }
 
@@ -235,7 +268,7 @@ fun FacilitatorBioDialog(
                 append(bio ?: "<p>No biography available.</p>")
                 append("</div>")
             }
-            
+
             AndroidView(
                 factory = { context ->
                     WebView(context).apply {
@@ -256,8 +289,7 @@ fun FacilitatorBioDialog(
     )
 }
 
-private fun getCurrentEvent(events: List<Event>): Event? {
-    val now = Date()
+private fun getCurrentEvent(events: List<Event>, now: Date): Event? {
     return events.firstOrNull { event ->
         val start = event.displayStart
         val end = event.displayEnd
@@ -265,16 +297,14 @@ private fun getCurrentEvent(events: List<Event>): Event? {
     }
 }
 
-private fun getUpcomingEvents(events: List<Event>): List<Event> {
-    val now = Date()
+private fun getUpcomingEvents(events: List<Event>, now: Date): List<Event> {
     return events.filter { event ->
         val start = event.displayStart
         start != null && start > now
     }
 }
 
-private fun getPastEvents(events: List<Event>): List<Event> {
-    val now = Date()
+private fun getPastEvents(events: List<Event>, now: Date): List<Event> {
     return events.filter { event ->
         val end = event.displayEnd
         end != null && end < now

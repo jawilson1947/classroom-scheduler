@@ -25,13 +25,12 @@ import java.util.*
 @Composable
 fun CurrentEventCard(
     event: Event,
+    animated: Boolean = true,
     onNarrativeClick: () -> Unit,
     onFacilitatorClick: () -> Unit
 ) {
-    var isAnimating by remember { mutableStateOf(true) }
-    
     val infiniteTransition = rememberInfiniteTransition(label = "pulse")
-    val scale by infiniteTransition.animateFloat(
+    val animatedScale by infiniteTransition.animateFloat(
         initialValue = 1.0f,
         targetValue = 1.01f,
         animationSpec = infiniteRepeatable(
@@ -40,8 +39,8 @@ fun CurrentEventCard(
         ),
         label = "scale"
     )
-    
-    val dotAlpha by infiniteTransition.animateFloat(
+
+    val animatedDotAlpha by infiniteTransition.animateFloat(
         initialValue = 0.5f,
         targetValue = 1.0f,
         animationSpec = infiniteRepeatable(
@@ -50,6 +49,10 @@ fun CurrentEventCard(
         ),
         label = "dotAlpha"
     )
+
+    // When not animated (snapshot/preview), use the resting values for a stable frame.
+    val scale = if (animated) animatedScale else 1.0f
+    val dotAlpha = if (animated) animatedDotAlpha else 0.5f
     
     Box(
         modifier = Modifier

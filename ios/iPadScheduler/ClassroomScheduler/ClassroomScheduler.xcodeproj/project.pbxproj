@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C5EC8E32FE59A570044B41E /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 5C5EC8E22FE59A570044B41E /* InlineSnapshotTesting */; };
+		5C5EC8E52FE59A570044B41E /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 5C5EC8E42FE59A570044B41E /* SnapshotTesting */; };
+		5C5EC8E72FE59A570044B41E /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 5C5EC8E62FE59A570044B41E /* SnapshotTestingCustomDump */; };
 		5CD1CD192EE8078500C5DDE8 /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD142EE8078500C5DDE8 /* ConfigurationView.swift */; };
 		5CD1CD1A2EE8078500C5DDE8 /* ConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD112EE8078500C5DDE8 /* ConfigurationService.swift */; };
 		5CD1CD1B2EE8078500C5DDE8 /* CurrentEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD152EE8078500C5DDE8 /* CurrentEventView.swift */; };
@@ -17,9 +20,22 @@
 		5CD1CD202EE8078500C5DDE8 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD102EE8078500C5DDE8 /* APIService.swift */; };
 		5CD1CD212EE8078500C5DDE8 /* DisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD162EE8078500C5DDE8 /* DisplayView.swift */; };
 		5CD1CD232EE80A1000C5DDE8 /* ClassroomScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CD222EE80A1000C5DDE8 /* ClassroomScheduler.swift */; };
+		5CD1CDA02EE8078500C5DDE8 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CDA12EE8078500C5DDE8 /* Theme.swift */; };
+		5CD1CDA22EE8078500C5DDE8 /* ThemeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1CDA32EE8078500C5DDE8 /* ThemeProvider.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		5C5EC8F02FE59B300044B41E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5CD1CCF72EE8055B00C5DDE8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5CD1CCFE2EE8055B00C5DDE8;
+			remoteInfo = ClassroomScheduler;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		5C5EC8EC2FE59B300044B41E /* ClassroomSchedulerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClassroomSchedulerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CD1CCFF2EE8055B00C5DDE8 /* ClassroomScheduler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClassroomScheduler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CD1CD0D2EE8078500C5DDE8 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		5CD1CD0E2EE8078500C5DDE8 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -31,9 +47,16 @@
 		5CD1CD162EE8078500C5DDE8 /* DisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayView.swift; sourceTree = "<group>"; };
 		5CD1CD172EE8078500C5DDE8 /* EventCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCardView.swift; sourceTree = "<group>"; };
 		5CD1CD222EE80A1000C5DDE8 /* ClassroomScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClassroomScheduler.swift; path = ../ClassroomScheduler.swift; sourceTree = SOURCE_ROOT; };
+		5CD1CDA12EE8078500C5DDE8 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		5CD1CDA32EE8078500C5DDE8 /* ThemeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		5C5EC8ED2FE59B300044B41E /* ClassroomSchedulerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ClassroomSchedulerTests;
+			sourceTree = "<group>";
+		};
 		5CD1CD012EE8055B00C5DDE8 /* ClassroomScheduler */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ClassroomScheduler;
@@ -42,6 +65,16 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5C5EC8E92FE59B300044B41E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5C5EC8E72FE59A570044B41E /* SnapshotTestingCustomDump in Frameworks */,
+				5C5EC8E32FE59A570044B41E /* InlineSnapshotTesting in Frameworks */,
+				5C5EC8E52FE59A570044B41E /* SnapshotTesting in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5CD1CCFC2EE8055B00C5DDE8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -60,6 +93,7 @@
 				5CD1CD132EE8078500C5DDE8 /* Services */,
 				5CD1CD182EE8078500C5DDE8 /* Views */,
 				5CD1CD012EE8055B00C5DDE8 /* ClassroomScheduler */,
+				5C5EC8ED2FE59B300044B41E /* ClassroomSchedulerTests */,
 				5CD1CD002EE8055B00C5DDE8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				5CD1CCFF2EE8055B00C5DDE8 /* ClassroomScheduler.app */,
+				5C5EC8EC2FE59B300044B41E /* ClassroomSchedulerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -77,6 +112,8 @@
 			children = (
 				5CD1CD0D2EE8078500C5DDE8 /* AppConfig.swift */,
 				5CD1CD0E2EE8078500C5DDE8 /* Event.swift */,
+				5CD1CDA12EE8078500C5DDE8 /* Theme.swift */,
+				5CD1CDA32EE8078500C5DDE8 /* ThemeProvider.swift */,
 			);
 			name = Models;
 			path = ../Models;
@@ -108,6 +145,32 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5C5EC8EB2FE59B300044B41E /* ClassroomSchedulerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5C5EC8F22FE59B300044B41E /* Build configuration list for PBXNativeTarget "ClassroomSchedulerTests" */;
+			buildPhases = (
+				5C5EC8E82FE59B300044B41E /* Sources */,
+				5C5EC8E92FE59B300044B41E /* Frameworks */,
+				5C5EC8EA2FE59B300044B41E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5C5EC8F12FE59B300044B41E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5C5EC8ED2FE59B300044B41E /* ClassroomSchedulerTests */,
+			);
+			name = ClassroomSchedulerTests;
+			packageProductDependencies = (
+				5C5EC8E22FE59A570044B41E /* InlineSnapshotTesting */,
+				5C5EC8E42FE59A570044B41E /* SnapshotTesting */,
+				5C5EC8E62FE59A570044B41E /* SnapshotTestingCustomDump */,
+			);
+			productName = ClassroomSchedulerTests;
+			productReference = 5C5EC8EC2FE59B300044B41E /* ClassroomSchedulerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		5CD1CCFE2EE8055B00C5DDE8 /* ClassroomScheduler */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5CD1CD0A2EE8055D00C5DDE8 /* Build configuration list for PBXNativeTarget "ClassroomScheduler" */;
@@ -137,9 +200,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 1640;
+				LastSwiftUpdateCheck = 2650;
+				LastUpgradeCheck = 2650;
 				TargetAttributes = {
+					5C5EC8EB2FE59B300044B41E = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = 5CD1CCFE2EE8055B00C5DDE8;
+					};
 					5CD1CCFE2EE8055B00C5DDE8 = {
 						CreatedOnToolsVersion = 16.4;
 					};
@@ -154,17 +221,28 @@
 			);
 			mainGroup = 5CD1CCF62EE8055B00C5DDE8;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				5C5EC8E12FE59A570044B41E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5CD1CD002EE8055B00C5DDE8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				5CD1CCFE2EE8055B00C5DDE8 /* ClassroomScheduler */,
+				5C5EC8EB2FE59B300044B41E /* ClassroomSchedulerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5C5EC8EA2FE59B300044B41E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5CD1CCFD2EE8055B00C5DDE8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -175,6 +253,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5C5EC8E82FE59B300044B41E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5CD1CCFB2EE8055B00C5DDE8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -184,6 +269,8 @@
 				5CD1CD1B2EE8078500C5DDE8 /* CurrentEventView.swift in Sources */,
 				5CD1CD232EE80A1000C5DDE8 /* ClassroomScheduler.swift in Sources */,
 				5CD1CD1C2EE8078500C5DDE8 /* Event.swift in Sources */,
+				5CD1CDA02EE8078500C5DDE8 /* Theme.swift in Sources */,
+				5CD1CDA22EE8078500C5DDE8 /* ThemeProvider.swift in Sources */,
 				5CD1CD1D2EE8078500C5DDE8 /* EventSourceService.swift in Sources */,
 				5CD1CD1E2EE8078500C5DDE8 /* AppConfig.swift in Sources */,
 				5CD1CD1F2EE8078500C5DDE8 /* EventCardView.swift in Sources */,
@@ -194,7 +281,59 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		5C5EC8F12FE59B300044B41E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5CD1CCFE2EE8055B00C5DDE8 /* ClassroomScheduler */;
+			targetProxy = 5C5EC8F02FE59B300044B41E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		5C5EC8F32FE59B300044B41E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VPA64V23J9;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dssoa.ClassroomSchedulerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClassroomScheduler.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ClassroomScheduler";
+			};
+			name = Debug;
+		};
+		5C5EC8F42FE59B300044B41E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VPA64V23J9;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dssoa.ClassroomSchedulerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClassroomScheduler.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ClassroomScheduler";
+			};
+			name = Release;
+		};
 		5CD1CD082EE8055D00C5DDE8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -254,6 +393,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -311,6 +451,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -339,7 +480,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dssoa.ClassroomScheduler;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -354,6 +495,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				ENABLE_TESTABILITY = YES;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = VPA64V23J9;
 				ENABLE_PREVIEWS = YES;
@@ -371,7 +513,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dssoa.ClassroomScheduler;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -383,6 +525,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5C5EC8F22FE59B300044B41E /* Build configuration list for PBXNativeTarget "ClassroomSchedulerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5C5EC8F32FE59B300044B41E /* Debug */,
+				5C5EC8F42FE59B300044B41E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		5CD1CCFA2EE8055B00C5DDE8 /* Build configuration list for PBXProject "ClassroomScheduler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -402,6 +553,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5C5EC8E12FE59A570044B41E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.19.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5C5EC8E22FE59A570044B41E /* InlineSnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C5EC8E12FE59A570044B41E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = InlineSnapshotTesting;
+		};
+		5C5EC8E42FE59A570044B41E /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C5EC8E12FE59A570044B41E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+		5C5EC8E62FE59A570044B41E /* SnapshotTestingCustomDump */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C5EC8E12FE59A570044B41E /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTestingCustomDump;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5CD1CCF72EE8055B00C5DDE8 /* Project object */;
 }

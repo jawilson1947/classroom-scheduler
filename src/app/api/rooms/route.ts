@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { RowDataPacket } from 'mysql2';
+import { resolveThemesForRooms } from '@/lib/themes';
+import { auth } from '@/auth';
 
 export async function GET(request: NextRequest) {
     try {
@@ -10,9 +12,10 @@ export async function GET(request: NextRequest) {
         const id = searchParams.get('id');
 
         let query = `
-          SELECT r.id, r.tenant_id, r.building_id, r.name, r.capacity,
-             b.name as building_name, 
+          SELECT r.id, r.tenant_id, r.building_id, r.name, r.capacity, r.theme_id,
+             b.name as building_name,
              t.name as tenant_name, t.full_address as tenant_address, t.logo_url as tenant_logo_url,
+             t.default_theme_id as tenant_default_theme_id,
              d.id as linked_device_id, d.pairing_code, d.last_seen_at
       FROM rooms r
       LEFT JOIN buildings b ON r.building_id = b.id
@@ -44,9 +47,25 @@ export async function GET(request: NextRequest) {
 
         const [rows] = await pool.query<RowDataPacket[]>(query, params);
 
-        console.log('Rooms query result for tenant', tenantId, ':', JSON.stringify(rows, null, 2));
+        // Attach the server-resolved display theme (room > tenant default > system).
+        // Additive: `resolved_theme` is null if nothing resolves; clients fall back
+        // to their built-in system_default and older shipped apps ignore the field.
+        let withThemes: RowDataPacket[] = rows;
+        try {
+            const resolved = await resolveThemesForRooms(
+                rows.map((r) => ({
+                    tenant_id: r.tenant_id ?? null,
+                    theme_id: r.theme_id ?? null,
+                    tenant_default_theme_id: r.tenant_default_theme_id ?? null,
+                }))
+            );
+            withThemes = rows.map((r, i) => ({ ...r, resolved_theme: resolved[i] }));
+        } catch (themeErr) {
+            console.error('Theme resolution failed; serving rooms without resolved_theme:', themeErr);
+            withThemes = rows.map((r) => ({ ...r, resolved_theme: null }));
+        }
 
-        return NextResponse.json(rows);
+        return NextResponse.json(withThemes);
     } catch (error) {
         console.error('Error fetching rooms:', error);
         return NextResponse.json({ error: 'Failed to fetch rooms' }, { status: 500 });
@@ -159,5 +178,71 @@ export async function DELETE(request: NextRequest) {
     } catch (error) {
         console.error('Error deleting room:', error);
         return NextResponse.json({ error: 'Failed to delete room' }, { status: 500 });
+    }
+}
+
+/**
+ * PATCH /api/rooms — assign or clear a room's display theme override.
+ * Body: { id, theme_id }  (theme_id: number to assign, null to clear → falls back
+ * to the tenant default, then system_default via server-side resolution).
+ *
+ * Restricted to SYSTEM_ADMIN and ORG_ADMIN. ORG_ADMIN is scoped to its own tenant,
+ * and an assigned theme must be visible to that tenant (global or same-tenant).
+ */
+export async function PATCH(request: NextRequest) {
+    try {
+        const session = await auth();
+        if (!session) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        const userRole = (session.user as any).role;
+        const userTenantId = (session.user as any).tenant_id;
+        if (!['SYSTEM_ADMIN', 'ORG_ADMIN'].includes(userRole)) {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        const body = await request.json();
+        const { id } = body;
+        const themeId: number | null = body.theme_id ?? null;
+
+        if (!id) {
+            return NextResponse.json({ error: 'Room ID is required' }, { status: 400 });
+        }
+
+        // Load the room's tenant for scoping checks.
+        const [roomRows] = await pool.query<RowDataPacket[]>(
+            'SELECT tenant_id FROM rooms WHERE id = ?',
+            [id]
+        );
+        if (roomRows.length === 0) {
+            return NextResponse.json({ error: 'Room not found' }, { status: 404 });
+        }
+        const roomTenantId = roomRows[0].tenant_id as number | null;
+
+        if (userRole === 'ORG_ADMIN' && roomTenantId !== Number(userTenantId)) {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        // Validate the theme exists, is active, and is visible to the room's tenant.
+        if (themeId != null) {
+            const [themeRows] = await pool.query<RowDataPacket[]>(
+                `SELECT id, tenant_id FROM themes WHERE id = ? AND status = 'active'`,
+                [themeId]
+            );
+            if (themeRows.length === 0) {
+                return NextResponse.json({ error: 'Theme not found' }, { status: 404 });
+            }
+            const themeTenantId = themeRows[0].tenant_id as number | null;
+            if (themeTenantId != null && themeTenantId !== roomTenantId) {
+                return NextResponse.json({ error: 'Theme not available to this room\'s tenant' }, { status: 403 });
+            }
+        }
+
+        await pool.query('UPDATE rooms SET theme_id = ? WHERE id = ?', [themeId, id]);
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Error assigning room theme:', error);
+        return NextResponse.json({ error: 'Failed to assign theme' }, { status: 500 });
     }
 }
