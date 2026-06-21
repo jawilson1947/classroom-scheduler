@@ -127,9 +127,10 @@ struct Room: Codable, Identifiable {
     let tenantName: String?
     let tenantAddress: String?
     let tenantLogoUrl: String?
-    /// Server-resolved display theme (room > tenant > system). Optional & lenient:
-    /// nil for older servers; the view layer falls back to ThemeDefinition.systemDefault.
-    let resolvedTheme: ThemeDefinition?
+    /// Server-resolved display theme envelope (room > tenant > system). The tokens
+    /// live under `.definition`. Optional & lenient: nil for older servers; the view
+    /// layer falls back to ThemeDefinition.systemDefault.
+    let resolvedTheme: ResolvedThemeEnvelope?
 
     enum CodingKeys: String, CodingKey {
         case id

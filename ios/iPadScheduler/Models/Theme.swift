@@ -47,6 +47,26 @@ struct ThemeDefinition: Codable, Equatable {
     static let systemDefault = ThemeDefinition()
 }
 
+/// Wrapper the server attaches as `resolved_theme` on each room. The actual token
+/// spec lives under `definition`; the other fields are metadata. Decoding the
+/// envelope (rather than a bare `ThemeDefinition`) is required — otherwise the
+/// tokens are read one level too high and every field silently falls back to the
+/// `system_default` defaults. All fields optional so a malformed/absent envelope
+/// degrades gracefully to `system_default` instead of failing the room decode.
+struct ResolvedThemeEnvelope: Codable, Equatable {
+    let id: Int?
+    let keyName: String?
+    let name: String?
+    let schemaVersion: Int?
+    let definition: ThemeDefinition?
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, definition
+        case keyName = "key_name"
+        case schemaVersion = "schema_version"
+    }
+}
+
 /// Layout archetypes this client can render. v1 = agenda_list only.
 enum LayoutArchetype: String {
     case agendaList = "agenda_list"

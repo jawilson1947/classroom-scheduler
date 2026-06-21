@@ -27,7 +27,7 @@ struct DisplayView: View {
     /// Active display theme, resolved server-side per room (room > tenant > system)
     /// with a layout-aware fallback to `system_default`. Under `system_default`
     /// every token below is 8-bit-identical to the literal it replaced.
-    private var theme: ThemeDefinition { DisplayLayout.resolve(resolvedRoom?.resolvedTheme) }
+    private var theme: ThemeDefinition { DisplayLayout.resolve(resolvedRoom?.resolvedTheme?.definition) }
 
     var body: some View {
         ZStack {

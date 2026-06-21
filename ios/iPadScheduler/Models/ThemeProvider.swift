@@ -17,7 +17,7 @@ final class ThemeProvider: ObservableObject {
 
     /// Update from a room payload, applying the layout fallback.
     func update(from room: Room?) {
-        theme = DisplayLayout.resolve(room?.resolvedTheme)
+        theme = DisplayLayout.resolve(room?.resolvedTheme?.definition)
     }
 }
 
