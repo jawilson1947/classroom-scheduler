@@ -122,7 +122,7 @@ export default function DashboardPage() {
 
 function SystemAdminDashboard() {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <DashboardCard
                 title="Settings"
                 description="Organizations, users, buildings, rooms, events, themes"
@@ -162,7 +162,7 @@ function OrgAdminDashboard({ user }: { user: any }) {
                     <div className="text-3xl font-bold">{tenant.name}</div>
                 </div>
             )}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] gap-3">
                 <DashboardCard
                     title="Settings"
                     description="Organization, users, buildings, rooms, themes, and more"
@@ -198,7 +198,7 @@ function OrgAdminDashboard({ user }: { user: any }) {
 
 function SchedulerDashboard() {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-4">
             <DashboardCard
                 title="Manage Events"
                 description="Create, edit, and delete events"
@@ -219,7 +219,7 @@ function SchedulerDashboard() {
 
 function ViewerDashboard() {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-4">
             <DashboardCard
                 title="View Schedule"
                 description="View all scheduled events (read-only)"
@@ -256,10 +256,10 @@ function DashboardCard({ title, description, href, icon, color }: DashboardCardP
 
     return (
         <Link href={href}>
-            <div className={`block max-w-sm p-6 ${colorClasses[color]} border border-gray-200 rounded-lg shadow hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}>
-                <div className="text-6xl mb-4">{icon}</div>
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-white">{title}</h5>
-                <p className="font-normal text-white/90">{description}</p>
+            <div className={`block h-full p-4 ${colorClasses[color]} border border-gray-200 rounded-lg shadow hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}>
+                <div className="text-3xl mb-2">{icon}</div>
+                <h5 className="mb-1 text-base font-bold tracking-tight text-white">{title}</h5>
+                <p className="font-normal text-xs text-white/90">{description}</p>
             </div>
         </Link>
     );

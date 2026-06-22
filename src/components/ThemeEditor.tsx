@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import ThemePreview, { ThemeDefinition } from '@/components/ThemePreview';
+import { generateThemeFromFile } from '@/lib/themeFromImage';
 
 export interface EditableTheme {
     id: number;
@@ -55,6 +56,8 @@ export default function ThemeEditor({ mode, initial, role, tenantId, tenantName,
     const [validating, setValidating] = useState(false);
     const [saving, setSaving] = useState(false);
     const [saveError, setSaveError] = useState<string | null>(null);
+    const [genBusy, setGenBusy] = useState(false);
+    const [genError, setGenError] = useState<string | null>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Parse + debounced schema validation as the JSON changes.
@@ -96,6 +99,25 @@ export default function ThemeEditor({ mode, initial, role, tenantId, tenantName,
     const applyTemplate = (idx: number) => {
         const def = idx < 0 ? BLANK : templates[idx]?.definition ?? BLANK;
         setJsonText(JSON.stringify(def, null, 2));
+    };
+
+    // Build a starting theme (palette + blurred background) from an image or PDF.
+    const handleGenerateFromFile = async (file?: File) => {
+        if (!file) return;
+        setGenBusy(true);
+        setGenError(null);
+        try {
+            const { definition, suggestedName } = await generateThemeFromFile(file);
+            setJsonText(JSON.stringify(definition, null, 2));
+            if (!name.trim()) {
+                setName(suggestedName);
+                if (!keyTouched) setKeyName(deriveKey(suggestedName));
+            }
+        } catch (e) {
+            setGenError((e as Error).message || 'Could not build a theme from that file.');
+        } finally {
+            setGenBusy(false);
+        }
     };
 
     const canSave =
@@ -165,6 +187,7 @@ export default function ThemeEditor({ mode, initial, role, tenantId, tenantName,
                         </div>
 
                         {!isEdit && (
+                            <>
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Scope</label>
@@ -186,6 +209,24 @@ export default function ThemeEditor({ mode, initial, role, tenantId, tenantName,
                                     </select>
                                 </div>
                             </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Create from image or PDF</label>
+                                <input
+                                    type="file"
+                                    accept="image/png,image/jpeg,application/pdf"
+                                    disabled={genBusy}
+                                    onChange={(e) => handleGenerateFromFile(e.target.files?.[0])}
+                                    className="w-full text-sm border rounded p-2 file:mr-3 file:px-3 file:py-1 file:rounded file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 disabled:opacity-50"
+                                />
+                                <p className="text-xs mt-1">
+                                    {genBusy
+                                        ? <span className="text-slate-500">Analyzing…</span>
+                                        : genError
+                                            ? <span className="text-red-600">{genError}</span>
+                                            : <span className="text-slate-400">Derives a color palette and blurred background. Best results: a landscape image ~1280–1920px on the long edge, with a few strong colors (mostly-white files give a pale palette; only a PDF&apos;s first page is used). The image shows on the displays; the preview shows the fallback color.</span>}
+                                </p>
+                            </div>
+                            </>
                         )}
 
                         <div>
