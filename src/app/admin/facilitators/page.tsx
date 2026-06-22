@@ -266,8 +266,8 @@ export default function FacilitatorsPage() {
             <div className="max-w-5xl mx-auto space-y-6">
                 <header className="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm">
                     <div className="flex items-center gap-4">
-                        <Link href="/dashboard" className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
-                            ← Back to Dashboard
+                        <Link href="/admin" className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                            ← Back to Settings
                         </Link>
                         <h1 className="text-2xl font-bold text-slate-900">Manage Facilitators</h1>
                     </div>

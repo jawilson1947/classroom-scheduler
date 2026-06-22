@@ -107,16 +107,42 @@ export default function ThemesPage() {
         }
     };
 
-    // Authoring permissions: SYSTEM_ADMIN manages any non-system theme; ORG_ADMIN
-    // manages only its own tenant's (never global/system).
+    // The only theme that can never be edited or archived is the global System Default.
+    // Every other theme (including seeded examples) is fair game, so any can be used as
+    // an editable starting point.
+    const isSystemDefault = (t: Theme) => t.key_name === 'system_default' && t.tenant_id == null;
+    // Authoring permissions: SYSTEM_ADMIN manages any theme except the System Default.
+    // ORG_ADMIN manages global themes (tenant_id null) and its own tenant's themes, but
+    // not another tenant's branded theme. Nobody edits the System Default.
     const canAuthor = role === 'SYSTEM_ADMIN' || role === 'ORG_ADMIN';
     const canManageTheme = (t: Theme) =>
-        canAuthor && !t.is_system && (role === 'SYSTEM_ADMIN' || t.tenant_id === selectedTenantId);
+        canAuthor && !isSystemDefault(t) &&
+        (role === 'SYSTEM_ADMIN' || t.tenant_id == null || t.tenant_id === selectedTenantId);
 
     const templates = themeList.map((t) => ({ name: t.name, definition: t.definition }));
 
     const refreshAll = async () => {
         await Promise.all([mutateThemes(), mutateTenants(), mutateRooms()]);
+    };
+
+    // Open the editor in "create" mode pre-filled from an existing theme. Works for any
+    // theme (including the System Default and global themes) — copying never changes the
+    // source. The copy gets a fresh name/key and is scoped per the editor's defaults.
+    const deriveKey = (s: string) =>
+        s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 64);
+    const duplicateTheme = (t: Theme) => {
+        setEditor({
+            mode: 'create',
+            initial: {
+                id: 0,
+                tenant_id: t.tenant_id,
+                key_name: deriveKey(`${t.key_name}_copy`),
+                name: `${t.name} (Copy)`,
+                description: t.description,
+                definition: t.definition,
+                is_system: false,
+            } as EditableTheme,
+        });
     };
 
     const handleArchive = async (t: Theme) => {
@@ -144,7 +170,7 @@ export default function ThemesPage() {
                 <header className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
                         <a href="/admin" className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
-                            ← Back
+                            ← Back to Settings
                         </a>
                         <div>
                             <h1 className="text-3xl font-bold text-slate-900">Display Themes</h1>
@@ -213,25 +239,36 @@ export default function ThemesPage() {
                                         <div className="p-3">
                                             <div className="flex items-center gap-2 flex-wrap">
                                                 <span className="font-bold text-slate-900">{t.name}</span>
-                                                {t.is_system && <span className="text-[10px] uppercase tracking-wide bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">System</span>}
+                                                {isSystemDefault(t) && <span className="text-[10px] uppercase tracking-wide bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">System</span>}
                                                 {t.tenant_id != null && <span className="text-[10px] uppercase tracking-wide bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">Branded</span>}
                                                 {defaultThemeId === t.id && <span className="text-[10px] uppercase tracking-wide bg-green-100 text-green-700 px-1.5 py-0.5 rounded">Org default</span>}
                                             </div>
                                             {t.description && <p className="text-sm text-slate-500 mt-1">{t.description}</p>}
-                                            {canManageTheme(t) && (
+                                            {canAuthor && (
                                                 <div className="flex gap-2 mt-3">
                                                     <button
-                                                        onClick={() => setEditor({ mode: 'edit', initial: t as EditableTheme })}
-                                                        className="flex-1 bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700 text-sm"
+                                                        onClick={() => duplicateTheme(t)}
+                                                        className="flex-1 bg-slate-600 text-white py-1 px-3 rounded hover:bg-slate-700 text-sm"
+                                                        title="Create a new theme starting from this one"
                                                     >
-                                                        ✏️ Edit
+                                                        ⧉ Duplicate
                                                     </button>
-                                                    <button
-                                                        onClick={() => handleArchive(t)}
-                                                        className="flex-1 bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700 text-sm"
-                                                    >
-                                                        🗑️ Archive
-                                                    </button>
+                                                    {canManageTheme(t) && (
+                                                        <button
+                                                            onClick={() => setEditor({ mode: 'edit', initial: t as EditableTheme })}
+                                                            className="flex-1 bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700 text-sm"
+                                                        >
+                                                            ✏️ Edit
+                                                        </button>
+                                                    )}
+                                                    {canManageTheme(t) && (
+                                                        <button
+                                                            onClick={() => handleArchive(t)}
+                                                            className="flex-1 bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700 text-sm"
+                                                        >
+                                                            🗑️ Archive
+                                                        </button>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>

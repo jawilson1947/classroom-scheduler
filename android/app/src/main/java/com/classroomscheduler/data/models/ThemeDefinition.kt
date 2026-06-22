@@ -52,6 +52,21 @@ data class ThemeDefinition(
     }
 }
 
+/**
+ * Wrapper the server attaches as `resolved_theme` on each room. The actual token
+ * spec lives under `definition`; the other fields are metadata. Decoding the
+ * envelope (rather than a bare `ThemeDefinition`) is required — otherwise the tokens
+ * are read one level too high and every field silently falls back to system_default.
+ * Mirror of iOS `ResolvedThemeEnvelope`.
+ */
+data class ResolvedThemeEnvelope(
+    val id: Int? = null,
+    @SerializedName("key_name") val keyName: String? = null,
+    val name: String? = null,
+    @SerializedName("schema_version") val schemaVersion: Int? = null,
+    val definition: ThemeDefinition? = null
+)
+
 data class ThemeColors(
     @SerializedName("background") private val _background: Fill? = null,
     @SerializedName("panel") private val _panel: String? = null,

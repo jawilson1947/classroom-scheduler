@@ -119,6 +119,11 @@ export default function EventsPage() {
     const isScheduler = user?.role === 'SCHEDULER';
     const isViewer = user?.role === 'VIEWER';
     const canEdit = isOrgAdmin || isScheduler; // Only ORG_ADMIN and SCHEDULER can edit
+    // Admins return to the Settings hub; Scheduler/Viewer (who reach this page from the
+    // dashboard and can't open Settings) return to their dashboard.
+    const isAdmin = user?.role === 'SYSTEM_ADMIN' || isOrgAdmin;
+    const backHref = isAdmin ? '/admin' : '/dashboard';
+    const backLabel = isAdmin ? '← Back to Settings' : '← Back to Dashboard';
 
     // Auto-select tenant for ORG_ADMIN and fetch tenant details
     useEffect(() => {
@@ -428,8 +433,8 @@ export default function EventsPage() {
             <div className="max-w-7xl mx-auto space-y-6">
                 <header className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                        <a href="/dashboard" className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
-                            ← Back
+                        <a href={backHref} className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                            {backLabel}
                         </a>
                         <h1 className="text-3xl font-bold text-slate-900">
                             {currentTenant?.name || 'Events & Schedule Management'}

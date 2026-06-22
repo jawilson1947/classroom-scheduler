@@ -197,8 +197,8 @@ export default function OrganizationPage() {
             <div className="max-w-xl mx-auto space-y-4">
                 <header className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <a href="/dashboard" className="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">
-                            ← Back
+                        <a href="/admin" className="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">
+                            ← Back to Settings
                         </a>
                         <h1 className="text-2xl font-bold text-slate-900">Manage Organization</h1>
                     </div>

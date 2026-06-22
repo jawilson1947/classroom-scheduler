@@ -147,8 +147,8 @@ export default function BuildingsPage() {
             <div className="max-w-7xl mx-auto space-y-6">
                 <header className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                        <a href="/dashboard" className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
-                            ← Back
+                        <a href="/admin" className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                            ← Back to Settings
                         </a>
                         <h1 className="text-3xl font-bold text-slate-900">
                             {tenantName || 'Buildings Management'}

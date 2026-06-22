@@ -6,8 +6,12 @@
  * name, description and schema_version in place (matched on tenant_id IS NULL
  * + key_name) without creating duplicates.
  *
- *   - system_default  (is_system = 1)  — exact current look; cannot be deleted.
- *   - vcu_light                         — "What's Happening Today" example.
+ *   - system_default (is_system = 1, managed) — the locked System Default. This is the
+ *     ONLY theme that cannot be edited or archived, and the seed keeps it in sync on
+ *     every run.
+ *   - vcu_light — the "What's Happening Today" example. Seeded once; thereafter it is an
+ *     ordinary editable/archivable theme, so re-running the seed will NOT overwrite an
+ *     admin's edits or un-archive it.
  *
  * Run after 001, from the project root:
  *   node scripts/migrations/002_seed_themes.js
@@ -28,6 +32,7 @@ const THEMES = [
         description: 'The standard dark agenda board. Used everywhere unless a tenant default or room override is set.',
         file: 'system_default.json',
         is_system: 1,
+        managed: true, // locked theme: always kept in sync by the seed
     },
     {
         key_name: 'vcu_light',
@@ -35,6 +40,7 @@ const THEMES = [
         description: 'Light board with gold accents, large centered date, and a bottom ticker. Hides past events and facilitators.',
         file: 'vcu_light.json',
         is_system: 0,
+        managed: false, // example theme: seed once, then leave admin edits/archive alone
     },
 ];
 
@@ -60,6 +66,11 @@ async function run() {
             );
 
             if (existing.length > 0) {
+                if (!t.managed) {
+                    // User-owned example theme: don't overwrite admin edits or un-archive it.
+                    console.log(`Theme '${t.key_name}' already exists (id ${existing[0].id}); leaving admin edits and status untouched.`);
+                    continue;
+                }
                 await connection.query(
                     `UPDATE themes
                         SET name = ?, description = ?, definition = ?, is_system = ?,

@@ -124,18 +124,18 @@ function SystemAdminDashboard() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <DashboardCard
-                title="Manage All Tenants"
-                description="View and manage all organizations in the system"
+                title="Settings"
+                description="Organizations, users, buildings, rooms, events, themes"
                 href="/admin"
-                icon="🏢"
+                icon="⚙️"
                 color="blue"
             />
             <DashboardCard
-                title="User Management"
-                description="Manage users across all tenants"
-                href="/dashboard/users"
-                icon="👥"
-                color="purple"
+                title="All Events"
+                description="View and manage all events"
+                href="/admin/events"
+                icon="📅"
+                color="green"
             />
             <DashboardCard
                 title="System Overview"
@@ -143,13 +143,6 @@ function SystemAdminDashboard() {
                 href="#"
                 icon="📊"
                 color="orange"
-            />
-            <DashboardCard
-                title="All Events"
-                description="View and manage all events"
-                href="/admin?view=events"
-                icon="📅"
-                color="green"
             />
         </div>
     );
@@ -171,25 +164,11 @@ function OrgAdminDashboard({ user }: { user: any }) {
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <DashboardCard
-                    title="Manage Organization"
-                    description="Edit organization details and logo"
-                    href="/admin/organization"
+                    title="Settings"
+                    description="Organization, users, buildings, rooms, themes, and more"
+                    href="/admin"
                     icon="⚙️"
                     color="blue"
-                />
-                <DashboardCard
-                    title="Manage Buildings"
-                    description="Manage buildings for your organization"
-                    href="/admin/buildings"
-                    icon="🏢"
-                    color="blue"
-                />
-                <DashboardCard
-                    title="Manage Users"
-                    description="Create and manage user accounts"
-                    href="/dashboard/users"
-                    icon="👥"
-                    color="purple"
                 />
                 <DashboardCard
                     title="Events & Schedule"

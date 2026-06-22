@@ -118,8 +118,9 @@ export async function GET(request: NextRequest) {
 // ---- Authoring (create / edit / archive) -------------------------------------
 //
 // SYSTEM_ADMIN may manage global themes (tenant_id null) and any tenant's themes.
-// ORG_ADMIN may manage only themes scoped to its own tenant (never global, never
-// is_system). All definitions are validated against the v1 JSON Schema.
+// ORG_ADMIN may manage global themes and its own tenant's themes (but not another
+// tenant's). The only theme nobody can edit or archive is the global System Default
+// (key_name 'system_default'). All definitions are validated against the v1 JSON Schema.
 
 interface AuthCtx { role: string; tenantId: number | null; }
 
@@ -135,6 +136,9 @@ async function requireAuthor(): Promise<AuthCtx | NextResponse> {
 }
 
 const KEY_RE = /^[a-z0-9_]{1,64}$/;
+
+/** The one theme that can never be edited or archived: the global System Default. */
+const SYSTEM_DEFAULT_KEY = 'system_default';
 
 export async function POST(request: NextRequest) {
     try {
@@ -189,16 +193,22 @@ export async function POST(request: NextRequest) {
 /** Load a theme's ownership fields and enforce that the author may manage it. */
 async function loadManageable(id: number, ctx: AuthCtx): Promise<{ tenant_id: number | null } | NextResponse> {
     const [rows] = await pool.query<RowDataPacket[]>(
-        'SELECT id, tenant_id, is_system FROM themes WHERE id = ?',
+        'SELECT id, tenant_id, key_name FROM themes WHERE id = ?',
         [id]
     );
     if (rows.length === 0) return NextResponse.json({ error: 'Theme not found' }, { status: 404 });
     const t = rows[0];
-    if (t.is_system === 1) {
-        return NextResponse.json({ error: 'The system theme cannot be modified' }, { status: 403 });
+    // Only the built-in System Default (global, key_name 'system_default') is locked.
+    // Every other theme — including seeded examples like "What's Happening Today" — may
+    // be edited or archived, so any of them can serve as an editable starting point.
+    if (t.key_name === SYSTEM_DEFAULT_KEY && t.tenant_id == null) {
+        return NextResponse.json({ error: 'The System Default theme cannot be modified' }, { status: 403 });
     }
-    if (ctx.role === 'ORG_ADMIN' && (t.tenant_id == null || Number(t.tenant_id) !== ctx.tenantId)) {
-        return NextResponse.json({ error: 'You can only manage your own organization\'s themes' }, { status: 403 });
+    // ORG_ADMIN may manage global themes (tenant_id null) and its own tenant's themes,
+    // but never another tenant's branded theme. (Editing a global theme affects every
+    // organization that uses it.)
+    if (ctx.role === 'ORG_ADMIN' && t.tenant_id != null && Number(t.tenant_id) !== ctx.tenantId) {
+        return NextResponse.json({ error: 'You can only manage global or your own organization\'s themes' }, { status: 403 });
     }
     return { tenant_id: t.tenant_id ?? null };
 }

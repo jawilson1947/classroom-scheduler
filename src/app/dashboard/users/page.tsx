@@ -176,8 +176,8 @@ export default function UsersPage() {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-8">
                     <div>
-                        <Link href="/dashboard" className="text-slate-400 hover:text-white mb-2 inline-block">
-                            ← Back to Dashboard
+                        <Link href="/admin" className="text-slate-400 hover:text-white mb-2 inline-block">
+                            ← Back to Settings
                         </Link>
                         <h1 className="text-4xl font-bold text-white">User Management</h1>
                         {currentTenantName && (
